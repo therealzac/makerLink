@@ -1,0 +1,3 @@
+module.exports = {
+  MESSAGES_RECIEVED: "MESSAGES_RECIEVED"
+}
