@@ -9,5 +9,6 @@ json.extract!(
         :view_count,
         :expiration_date,
         :flagged,
-        :flag
+        :flag,
+        :tasks
 )

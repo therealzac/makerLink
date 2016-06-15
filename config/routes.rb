@@ -9,7 +9,7 @@ Myapp::Application.routes.draw do
     resources :flags, only: [:create, :update, :destroy]
     resources :cohorts, only: [:create, :update, :destroy]
     resources :groups, only: [:create, :update, :destroy]
-
+    resources :tasks, only: [:create, :update, :destroy]
   end
 
 resource :session, only: [:show, :create, :destroy, :update]

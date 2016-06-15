@@ -32,13 +32,12 @@ var App = React.createClass({
         newBackground = this.getRandomBackground();
       }
 
-      this.setState({dashboardBackground: newBackground });
+      this.setState({dashboardBackground: newBackground});
     }
   },
 
   componentDidMount: function () {
     if (!this.state.session.user) { ApiUtil.fetchSession() }
-    
     this.sessionListener = SessionStore.addListener(this._onChange);
   },
 
@@ -48,10 +47,10 @@ var App = React.createClass({
 
   _onChange: function () {
     var session = SessionStore.getSession();
+    var user = session.user;
 
     this.setState({session: session});
 
-    var user = session.user;
     if (user) {
       switch (user.type) {
         case "customer":
@@ -59,7 +58,8 @@ var App = React.createClass({
           break;
 
         case "dev":
-          this.context.router.push('/dev');
+        // We're gonna wanna change this back to /dev.
+          this.context.router.push('/project');
           break;
 
         case "admin":

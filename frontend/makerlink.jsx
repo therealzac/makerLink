@@ -1,37 +1,38 @@
-var React = require('react'),
-    ReactDOM = require('react-dom'),
-    Router = require('react-router').Router,
-    Route = require('react-router').Route,
-    IndexRoute = require('react-router').IndexRoute,
-    hashHistory = require('react-router').hashHistory;
+const React = require('react'),
+      ReactDOM = require('react-dom'),
+      Router = require('react-router').Router,
+      Route = require('react-router').Route,
+      IndexRoute = require('react-router').IndexRoute,
+      hashHistory = require('react-router').hashHistory,
 
-var App = require('./components/app');
-var Landing = require('./components/landing');
-var Login = require('./components/login');
-var Signup = require('./components/signup');
-var SubmissionForm = require('./components/submissionForm');
-var Dashboard = require('./components/dashboard');
-var Inbox = require('./components/inbox');
-var Settings = require('./components/settings');
-var Admin = require('./components/admin/admin');
-var Customer = require('./components/customer/customer');
-var Dev = require('./components/dev/dev');
-var Project = require('./components/customer/projectShow.jsx');
+      App = require('./components/app'),
+      Landing = require('./components/landing'),
+      Login = require('./components/login'),
+      Signup = require('./components/signup'),
+      SubmissionForm = require('./components/submissionForm'),
+      Dashboard = require('./components/dashboard'),
+      Inbox = require('./components/inbox'),
+      Settings = require('./components/settings'),
+      Admin = require('./components/admin/admin'),
+      Customer = require('./components/customer/customer'),
+      Dev = require('./components/dev/dev'),
+      Project = require('./components/customer/projectShow.jsx'),
 
-var routes = (
-  <Route path="/" component={App}>
-    <IndexRoute component={Landing}/>
-    <Route path="/login" component={Login}/>
-    <Route path="/signup" component={Signup}/>
-    <Route path="/submission" component={SubmissionForm}/>
-    <Route path="/dashboard" component={Dashboard}>
-      <IndexRoute component={Customer}/>
-      <Route path = "/dev" component={Dev}/>
-      <Route path = "/admin" component={Admin}/>
-      <Route path = "/project" component={Project}/>
-    </Route>
-  </Route>
-)
+      routes = (
+        <Route path="/" component={App}>
+          <IndexRoute component={Landing}/>
+          <Route path="/login" component={Login}/>
+          <Route path="/signup" component={Signup}/>
+          <Route path="/submission" component={SubmissionForm}/>
+          <Route path="/dashboard" component={Dashboard}>
+            <IndexRoute component={Customer}/>
+            <Route path="/dev" component={Dev}/>
+            <Route path="/admin" component={Admin}/>
+            // Bullshit project path.
+            <Route path="/project" component={Project}/>
+          </Route>
+        </Route>
+      )
 
 document.addEventListener("DOMContentLoaded", function () {
   ReactDOM.render(

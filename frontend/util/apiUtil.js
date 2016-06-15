@@ -139,10 +139,22 @@ var ApiUtil = {
       error: function(error) {
         ApiActions.invalidEntry(error);
       }
-    })
+    });
+  },
 
-  }
-
+  createTask: function (task) {
+    $.ajax({
+      url: "api/tasks",
+      data: {task: task},
+      method: "POST",
+      success: function (task) {
+        console.log(task);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
+      }
+    });
+  },
 }
 
 module.exports = ApiUtil;

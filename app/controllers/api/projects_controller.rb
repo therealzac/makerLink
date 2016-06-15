@@ -1,9 +1,4 @@
 class Api::ProjectsController < ApplicationController
-  def new
-
-  end
-
-
   def create
     @project = Project.create(project_params)
     if @project.save
@@ -19,14 +14,14 @@ class Api::ProjectsController < ApplicationController
 private
    def project_params
     params.require(:project).permit(
-    :author_id,
-    :dev_id,
-    :name,
-    :pitch,
-    :description,
-    :url,
-    :view_count,
-    :expiration_date
+      :author_id,
+      :dev_id,
+      :name,
+      :pitch,
+      :description,
+      :url,
+      :view_count,
+      :expiration_date
     )
   end
 

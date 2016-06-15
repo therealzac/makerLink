@@ -51,22 +51,20 @@
 	    Router = __webpack_require__(159).Router,
 	    Route = __webpack_require__(159).Route,
 	    IndexRoute = __webpack_require__(159).IndexRoute,
-	    hashHistory = __webpack_require__(159).hashHistory;
-
-	var App = __webpack_require__(220);
-	var Landing = __webpack_require__(221);
-	var Login = __webpack_require__(254);
-	var Signup = __webpack_require__(255);
-	var SubmissionForm = __webpack_require__(256);
-	var Dashboard = __webpack_require__(257);
-	var Inbox = __webpack_require__(258);
-	var Settings = __webpack_require__(260);
-	var Admin = __webpack_require__(261);
-	var Customer = __webpack_require__(272);
-	var Dev = __webpack_require__(274);
-	var Project = __webpack_require__(281);
-
-	var routes = React.createElement(
+	    hashHistory = __webpack_require__(159).hashHistory,
+	    App = __webpack_require__(220),
+	    Landing = __webpack_require__(221),
+	    Login = __webpack_require__(254),
+	    Signup = __webpack_require__(255),
+	    SubmissionForm = __webpack_require__(256),
+	    Dashboard = __webpack_require__(257),
+	    Inbox = __webpack_require__(258),
+	    Settings = __webpack_require__(260),
+	    Admin = __webpack_require__(261),
+	    Customer = __webpack_require__(272),
+	    Dev = __webpack_require__(275),
+	    Project = __webpack_require__(277),
+	    routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
 	  React.createElement(IndexRoute, { component: Landing }),
@@ -79,6 +77,7 @@
 	    React.createElement(IndexRoute, { component: Customer }),
 	    React.createElement(Route, { path: '/dev', component: Dev }),
 	    React.createElement(Route, { path: '/admin', component: Admin }),
+	    '// Bullshit project path.',
 	    React.createElement(Route, { path: '/project', component: Project })
 	  )
 	);
@@ -25278,7 +25277,6 @@
 	    if (!this.state.session.user) {
 	      ApiUtil.fetchSession();
 	    }
-
 	    this.sessionListener = SessionStore.addListener(this._onChange);
 	  },
 
@@ -25288,10 +25286,10 @@
 
 	  _onChange: function _onChange() {
 	    var session = SessionStore.getSession();
+	    var user = session.user;
 
 	    this.setState({ session: session });
 
-	    var user = session.user;
 	    if (user) {
 	      switch (user.type) {
 	        case "customer":
@@ -25299,7 +25297,8 @@
 	          break;
 
 	        case "dev":
-	          this.context.router.push('/dev');
+	          // We're gonna wanna change this back to /dev.
+	          this.context.router.push('/project');
 	          break;
 
 	        case "admin":
@@ -26576,8 +26575,21 @@
 	        ApiActions.invalidEntry(_error10);
 	      }
 	    });
-	  }
+	  },
 
+	  createTask: function createTask(task) {
+	    $.ajax({
+	      url: "api/tasks",
+	      data: { task: task },
+	      method: "POST",
+	      success: function success(task) {
+	        console.log(task);
+	      },
+	      error: function error(_error11) {
+	        ApiActions.invalidEntry(_error11);
+	      }
+	    });
+	  }
 	};
 
 	module.exports = ApiUtil;
@@ -35413,7 +35425,7 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var AdminSideNavItem = __webpack_require__(279);
+	var AdminSideNavItem = __webpack_require__(263);
 
 	var AdminSideNav = React.createClass({
 	  displayName: 'AdminSideNav',
@@ -35487,7 +35499,60 @@
 	module.exports = AdminSideNav;
 
 /***/ },
-/* 263 */,
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var CohortIndexItem = React.createClass({
+	  displayName: "CohortIndexItem",
+
+	  getInitialState: function getInitialState() {
+	    if (this.props.isActive) {
+	      return { className: "active" };
+	    } else {
+	      return { className: "" };
+	    }
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    if (newProps.isActive) {
+	      this.setState({ className: "active" });
+	    } else {
+	      this.setState({ className: "" });
+	    }
+	  },
+
+	  handleClick: function handleClick(e) {
+	    e.preventDefault();
+	    this.props.onClick(this.props.cohort);
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      "li",
+	      { className: this.state.className, onClick: this.handleClick },
+	      React.createElement(
+	        "a",
+	        null,
+	        " ",
+	        React.createElement("i", { className: "fa fa-th-large" }),
+	        " ",
+	        React.createElement(
+	          "span",
+	          { className: "nav-label" },
+	          this.props.cohort.name
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = CohortIndexItem;
+
+/***/ },
 /* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -36203,7 +36268,7 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var CustomerSideNavItem = __webpack_require__(280);
+	var CustomerSideNavItem = __webpack_require__(274);
 
 	var AdminSideNav = React.createClass({
 	  displayName: 'AdminSideNav',
@@ -36288,10 +36353,66 @@
 /* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var ProjectIndexItem = React.createClass({
+	  displayName: "ProjectIndexItem",
+
+	  getInitialState: function getInitialState() {
+	    if (this.props.isActive) {
+	      return { className: "active" };
+	    } else {
+	      return { className: "" };
+	    }
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    if (newProps.isActive) {
+	      this.setState({ className: "active" });
+	    } else {
+	      this.setState({ className: "" });
+	    }
+	  },
+
+	  handleClick: function handleClick(e) {
+	    e.preventDefault();
+	    this.props.onClick(this.props.project);
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      "li",
+	      { id: "cohorts", className: this.state.className, onClick: this.handleClick },
+	      React.createElement(
+	        "a",
+	        null,
+	        " ",
+	        React.createElement("i", { className: "fa fa-th-large" }),
+	        " ",
+	        React.createElement(
+	          "span",
+	          { className: "nav-label" },
+	          this.props.project.name
+	        ),
+	        " ",
+	        React.createElement("span", { className: "fa arrow" })
+	      )
+	    );
+	  }
+	});
+
+	module.exports = ProjectIndexItem;
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var DevSideNav = __webpack_require__(275);
+	var DevSideNav = __webpack_require__(276);
 	var ProjectIndex = __webpack_require__(266);
 	var Footer = __webpack_require__(222);
 
@@ -36361,7 +36482,7 @@
 	module.exports = Dev;
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -36408,813 +36529,338 @@
 	module.exports = DevSideNav;
 
 /***/ },
-/* 276 */,
-/* 277 */,
-/* 278 */,
-/* 279 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
-
-	var CohortIndexItem = React.createClass({
-	  displayName: "CohortIndexItem",
-
-	  getInitialState: function getInitialState() {
-	    if (this.props.isActive) {
-	      return { className: "active" };
-	    } else {
-	      return { className: "" };
-	    }
-	  },
-
-	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    if (newProps.isActive) {
-	      this.setState({ className: "active" });
-	    } else {
-	      this.setState({ className: "" });
-	    }
-	  },
-
-	  handleClick: function handleClick(e) {
-	    e.preventDefault();
-	    this.props.onClick(this.props.cohort);
-	  },
-
-	  render: function render() {
-	    return React.createElement(
-	      "li",
-	      { className: this.state.className, onClick: this.handleClick },
-	      React.createElement(
-	        "a",
-	        null,
-	        " ",
-	        React.createElement("i", { className: "fa fa-th-large" }),
-	        " ",
-	        React.createElement(
-	          "span",
-	          { className: "nav-label" },
-	          this.props.cohort.name
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = CohortIndexItem;
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	var ProjectIndexItem = React.createClass({
-	  displayName: "ProjectIndexItem",
-
-	  getInitialState: function getInitialState() {
-	    if (this.props.isActive) {
-	      return { className: "active" };
-	    } else {
-	      return { className: "" };
-	    }
-	  },
-
-	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    if (newProps.isActive) {
-	      this.setState({ className: "active" });
-	    } else {
-	      this.setState({ className: "" });
-	    }
-	  },
-
-	  handleClick: function handleClick(e) {
-	    e.preventDefault();
-	    this.props.onClick(this.props.project);
-	  },
-
-	  render: function render() {
-	    return React.createElement(
-	      "li",
-	      { id: "cohorts", className: this.state.className, onClick: this.handleClick },
-	      React.createElement(
-	        "a",
-	        null,
-	        " ",
-	        React.createElement("i", { className: "fa fa-th-large" }),
-	        " ",
-	        React.createElement(
-	          "span",
-	          { className: "nav-label" },
-	          this.props.project.name
-	        ),
-	        " ",
-	        React.createElement("span", { className: "fa arrow" })
-	      )
-	    );
-	  }
-	});
-
-	module.exports = ProjectIndexItem;
-
-/***/ },
-/* 281 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(228);
 
 	var projectShow = React.createClass({
-	    displayName: "projectShow",
+	    displayName: 'projectShow',
 
 	    contextTypes: { router: React.PropTypes.object.isRequired },
 
 	    getInitialState: function getInitialState() {
-	        var project = this.props.session.proje;
-	        return { name: "whateva", author: "whoeva", url: "blah" };
+	        return {};
 	    },
 
-	    componentDidMount: function componentDidMount() {
-	        var lineData = {
-	            labels: ["2/18", "2/19", "2/20", "2/21", "2/22"],
-	            datasets: [{
-	                label: "Example dataset",
-	                fillColor: "rgba(26,179,148,0.5)",
-	                strokeColor: "rgba(26,179,148,0.7)",
-	                pointColor: "rgba(26,179,148,1)",
-	                pointStrokeColor: "#fff",
-	                pointHighlightFill: "#fff",
-	                pointHighlightStroke: "rgba(26,179,148,1)",
-	                data: [10, 20, 30, 50, 80]
-	            }]
-	        };
-
-	        var lineOptions = {
-	            scaleShowGridLines: true,
-	            scaleGridLineColor: "rgba(0,0,0,.05)",
-	            scaleGridLineWidth: 1,
-	            bezierCurve: true,
-	            bezierCurveTension: 0.4,
-	            pointDot: true,
-	            pointDotRadius: 4,
-	            pointDotStrokeWidth: 1,
-	            pointHitDetectionRadius: 20,
-	            datasetStroke: true,
-	            datasetStrokeWidth: 2,
-	            datasetFill: true,
-	            responsive: true
-	        };
-
-	        var ctx = document.getElementById("lineChart").getContext("2d");
-	        var myNewChart = new Chart(ctx).Line(lineData, lineOptions);
+	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	        var projects = newProps.session.projects;
+	        var user = newProps.session.user;
+	        var project = projects ? projects[0] : {};
+	        var self = this;
+	        this.setState({ project: project, user: user });
 
 	        $("#todo, #inprogress, #completed").sortable({
 	            connectWith: ".connectList",
-	            update: function update(event, ui) {
-
-	                var todo = $("#todo").sortable("toArray");
-	                var inprogress = $("#inprogress").sortable("toArray");
-	                var completed = $("#completed").sortable("toArray");
-	                $('.output').html("ToDo: " + window.JSON.stringify(todo) + "<br/>" + "In Progress: " + window.JSON.stringify(inprogress) + "<br/>" + "Completed: " + window.JSON.stringify(completed));
+	            update: function update() {
+	                self.updateTasks();
 	            }
 	        }).disableSelection();
 	    },
 
-	    goToProjectSubmission: function goToProjectSubmission() {
-	        this.context.router.push("/submission");
-	    },
-
-	    makeActive: function makeActive(e) {
-	        e.preventDefault();
-	        if (e.currentTarget.className === "active") {
-	            return;
-	        } else {
-	            var clickedProject = e.currentTarget.className;
-	            this.setState(this.props.session.projects[clickedProject]);
-	        }
-	    },
-
-	    projectList: function projectList() {
+	    componentDidMount: function componentDidMount() {
 	        var self = this;
+	        // var lineData = {
+	        //     labels: ["2/18", "2/19", "2/20", "2/21", "2/22"],
+	        //     datasets: [
+	        //         {
+	        //             label: "Example dataset",
+	        //             fillColor: "rgba(26,179,148,0.5)",
+	        //             strokeColor: "rgba(26,179,148,0.7)",
+	        //             pointColor: "rgba(26,179,148,1)",
+	        //             pointStrokeColor: "#fff",
+	        //             pointHighlightFill: "#fff",
+	        //             pointHighlightStroke: "rgba(26,179,148,1)",
+	        //             data: [10, 20, 30, 50, 80 ]
+	        //         }
+	        //     ]
+	        // };
+	        //
+	        // var lineOptions = {
+	        //     scaleShowGridLines: true,
+	        //     scaleGridLineColor: "rgba(0,0,0,.05)",
+	        //     scaleGridLineWidth: 1,
+	        //     bezierCurve: true,
+	        //     bezierCurveTension: 0.4,
+	        //     pointDot: true,
+	        //     pointDotRadius: 4,
+	        //     pointDotStrokeWidth: 1,
+	        //     pointHitDetectionRadius: 20,
+	        //     datasetStroke: true,
+	        //     datasetStrokeWidth: 2,
+	        //     datasetFill: true,
+	        //     responsive: true,
+	        // };
+	        //
+	        //
+	        // var ctx = document.getElementById("lineChart").getContext("2d");
+	        // var myNewChart = new Chart(ctx).Line(lineData, lineOptions);
+	        //
+	        $("#todo, #inprogress, #completed").sortable({
+	            connectWith: ".connectList",
+	            update: function update() {
+	                self.updateTasks();
+	            }
+	        }).disableSelection();
+	    },
 
-	        if (this.props.session.projects) {
-	            this.props.session.projects.map(function (project, idx) {
-	                if (self.state.name === project.name) {
-	                    var thisClass = "active";
-	                } else {
-	                    var thisClass = idx.toString();
-	                }
-	                return React.createElement(
-	                    "li",
-	                    { id: "projects", key: idx, className: thisClass, onClick: self.makeActive },
-	                    React.createElement(
-	                        "a",
-	                        null,
-	                        React.createElement(
-	                            "span",
-	                            { className: "nav-label" },
-	                            project.name
-	                        )
-	                    )
-	                );
-	            });
+	    addTask: function addTask(e) {
+	        e.preventDefault();
+	        var body = $('#new-task').val();
+
+	        var task = {
+	            author_id: this.state.user.id,
+	            project_id: this.state.project.id,
+	            body: body
+	        };
+
+	        ApiUtil.createTask(task);
+	    },
+
+	    updateTasks: function updateTasks() {
+	        // This gets the body of the first thing on the todo column... finish the job.
+	        console.log($("#todo")[0].children[0].children[0].innerHTML);
+	    },
+
+	    renderColumnWithStatusOf: function renderColumnWithStatusOf(status) {
+	        if (!this.state.project || !this.state.project.tasks) {
+	            return;
 	        }
+
+	        switch (status) {
+	            case 0:
+	                var statusId = "todo";
+	                break;
+	            case 1:
+	                var statusId = "inprogress";
+	                break;
+	            case 2:
+	                var statusId = "completed";
+	                break;
+	        }
+
+	        return React.createElement(
+	            'ul',
+	            { className: 'sortable-list connectList agile-list', id: statusId },
+	            this.state.project.tasks.map(function (task, idx) {
+	                if (task.status === status) {
+	                    return React.createElement(
+	                        'li',
+	                        { className: 'info-element', key: idx },
+	                        task.body,
+	                        React.createElement(
+	                            'div',
+	                            { className: 'agile-detail' },
+	                            React.createElement('i', { className: 'fa fa-clock-o' }),
+	                            ' ',
+	                            task.updated_at
+	                        )
+	                    );
+	                }
+	            })
+	        );
 	    },
 
 	    render: function render() {
 	        var self = this;
 	        return React.createElement(
-	            "div",
+	            'div',
 	            null,
 	            React.createElement(
-	                "div",
-	                { className: "row" },
+	                'div',
+	                { className: 'row' },
 	                React.createElement(
-	                    "div",
-	                    { className: "col-lg-12" },
+	                    'div',
+	                    { className: 'col-lg-12' },
 	                    React.createElement(
-	                        "div",
-	                        { className: "wrapper wrapper-content animated fadeInUp" },
+	                        'div',
+	                        { className: 'wrapper wrapper-content animated fadeInUp' },
 	                        React.createElement(
-	                            "div",
-	                            { className: "ibox" },
+	                            'div',
+	                            { className: 'ibox' },
 	                            React.createElement(
-	                                "div",
-	                                { className: "ibox-content" },
+	                                'div',
+	                                { className: 'ibox-content' },
 	                                React.createElement(
-	                                    "div",
-	                                    { className: "row m-t-sm" },
+	                                    'div',
+	                                    { className: 'row m-t-sm' },
 	                                    React.createElement(
-	                                        "div",
-	                                        { className: "col-lg-12" },
+	                                        'div',
+	                                        { className: 'col-lg-12' },
 	                                        React.createElement(
-	                                            "div",
-	                                            { className: "panel blank-panel" },
+	                                            'div',
+	                                            { className: 'panel blank-panel' },
 	                                            React.createElement(
-	                                                "div",
-	                                                { className: "panel-heading" },
+	                                                'div',
+	                                                { className: 'panel-heading' },
 	                                                React.createElement(
-	                                                    "div",
-	                                                    { className: "panel-options" },
+	                                                    'div',
+	                                                    { className: 'panel-options' },
 	                                                    React.createElement(
-	                                                        "ul",
-	                                                        { className: "nav nav-tabs" },
+	                                                        'ul',
+	                                                        { className: 'nav nav-tabs' },
 	                                                        React.createElement(
-	                                                            "li",
-	                                                            { className: "active" },
+	                                                            'li',
+	                                                            { className: 'active' },
 	                                                            React.createElement(
-	                                                                "a",
-	                                                                { href: "#tab-1", "data-toggle": "tab" },
-	                                                                "Dashboard"
+	                                                                'a',
+	                                                                { href: '#tab-1', 'data-toggle': 'tab' },
+	                                                                'Dashboard'
 	                                                            )
 	                                                        ),
 	                                                        React.createElement(
-	                                                            "li",
-	                                                            { className: "" },
+	                                                            'li',
+	                                                            { className: '' },
 	                                                            React.createElement(
-	                                                                "a",
-	                                                                { href: "#tab-2", "data-toggle": "tab" },
-	                                                                "Planner Thing"
+	                                                                'a',
+	                                                                { href: '#tab-2', 'data-toggle': 'tab' },
+	                                                                'Planner Thing'
 	                                                            )
 	                                                        )
 	                                                    )
 	                                                )
 	                                            ),
 	                                            React.createElement(
-	                                                "div",
-	                                                { className: "panel-body" },
+	                                                'div',
+	                                                { className: 'panel-body' },
 	                                                React.createElement(
-	                                                    "div",
-	                                                    { className: "tab-content" },
+	                                                    'div',
+	                                                    { className: 'tab-content' },
 	                                                    React.createElement(
-	                                                        "div",
-	                                                        { className: "tab-pane active", id: "tab-1" },
+	                                                        'div',
+	                                                        { className: 'tab-pane active', id: 'tab-1' },
 	                                                        React.createElement(
-	                                                            "div",
-	                                                            { className: "ibox-content" },
+	                                                            'div',
+	                                                            { className: 'ibox-content' },
 	                                                            React.createElement(
-	                                                                "div",
+	                                                                'div',
 	                                                                null,
 	                                                                React.createElement(
-	                                                                    "span",
-	                                                                    { className: "pull-right text-right" },
-	                                                                    React.createElement(
-	                                                                        "small",
-	                                                                        null,
-	                                                                        "Average number of tasks completed per day: ",
-	                                                                        React.createElement(
-	                                                                            "strong",
-	                                                                            null,
-	                                                                            "38"
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement("br", null),
-	                                                                    "Total tasks completed: 243"
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    "h1",
-	                                                                    { className: "m-b-xs" },
+	                                                                    'h1',
+	                                                                    { className: 'm-b-xs' },
 	                                                                    this.state.name
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "h3",
-	                                                                    { className: "font-bold no-margins" },
+	                                                                    'h3',
+	                                                                    { className: 'font-bold no-margins' },
 	                                                                    this.state.url
 	                                                                )
 	                                                            ),
 	                                                            React.createElement(
-	                                                                "div",
+	                                                                'div',
 	                                                                null,
-	                                                                React.createElement("canvas", { id: "lineChart", height: "70" })
+	                                                                React.createElement('canvas', { id: 'lineChart', height: '70' })
 	                                                            ),
 	                                                            React.createElement(
-	                                                                "div",
-	                                                                { className: "m-t-md" },
+	                                                                'div',
+	                                                                { className: 'm-t-md' },
 	                                                                React.createElement(
-	                                                                    "small",
-	                                                                    { className: "pull-right" },
+	                                                                    'small',
+	                                                                    { className: 'pull-right' },
 	                                                                    React.createElement(
-	                                                                        "i",
-	                                                                        { className: "fa fa-clock-o" },
-	                                                                        " "
+	                                                                        'i',
+	                                                                        { className: 'fa fa-clock-o' },
+	                                                                        ' '
 	                                                                    ),
-	                                                                    "Update on 02.24.2016"
+	                                                                    'Update on 02.24.2016'
 	                                                                ),
-	                                                                React.createElement("small", null)
+	                                                                React.createElement('small', null)
 	                                                            )
 	                                                        ),
 	                                                        React.createElement(
-	                                                            "div",
-	                                                            { className: "agile-custom  animated fadeInRight" },
+	                                                            'div',
+	                                                            { className: 'agile-custom  animated fadeInRight' },
 	                                                            React.createElement(
-	                                                                "div",
-	                                                                { className: "row" },
+	                                                                'div',
+	                                                                { className: 'row' },
 	                                                                React.createElement(
-	                                                                    "div",
-	                                                                    { className: "col-lg-4" },
+	                                                                    'div',
+	                                                                    { className: 'col-lg-4' },
 	                                                                    React.createElement(
-	                                                                        "div",
-	                                                                        { className: "ibox" },
+	                                                                        'div',
+	                                                                        { className: 'ibox' },
 	                                                                        React.createElement(
-	                                                                            "div",
-	                                                                            { className: "ibox-content" },
+	                                                                            'div',
+	                                                                            { className: 'ibox-content' },
 	                                                                            React.createElement(
-	                                                                                "h3",
+	                                                                                'h3',
 	                                                                                null,
-	                                                                                "To-do"
+	                                                                                'To-do'
 	                                                                            ),
 	                                                                            React.createElement(
-	                                                                                "p",
-	                                                                                { className: "small" },
-	                                                                                React.createElement("i", { className: "fa fa-hand-o-up" }),
-	                                                                                " Drag task between list"
+	                                                                                'p',
+	                                                                                { className: 'small' },
+	                                                                                React.createElement('i', { className: 'fa fa-hand-o-up' }),
+	                                                                                ' Drag task between list'
 	                                                                            ),
 	                                                                            React.createElement(
-	                                                                                "div",
-	                                                                                { className: "input-group" },
-	                                                                                React.createElement("input", { type: "text", placeholder: "Add new task. ", className: "input input-sm form-control" }),
+	                                                                                'div',
+	                                                                                { className: 'input-group' },
+	                                                                                React.createElement('input', { id: 'new-task', type: 'text', placeholder: 'Add new task. ', className: 'input input-sm form-control' }),
 	                                                                                React.createElement(
-	                                                                                    "span",
-	                                                                                    { className: "input-group-btn" },
+	                                                                                    'span',
+	                                                                                    { className: 'input-group-btn' },
 	                                                                                    React.createElement(
-	                                                                                        "button",
-	                                                                                        { type: "button", className: "btn btn-sm btn-white" },
-	                                                                                        " ",
-	                                                                                        React.createElement("i", { className: "fa fa-plus" }),
-	                                                                                        " Add task"
+	                                                                                        'button',
+	                                                                                        { onClick: this.addTask, type: 'button', className: 'btn btn-sm btn-white' },
+	                                                                                        ' ',
+	                                                                                        React.createElement('i', { className: 'fa fa-plus' }),
+	                                                                                        ' Add task'
 	                                                                                    )
 	                                                                                )
 	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                "ul",
-	                                                                                { className: "sortable-list connectList agile-list", id: "todo" },
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task1" },
-	                                                                                    "Simply dummy text of the printing and typesetting industry.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 12.10.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task2" },
-	                                                                                    "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 05.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "info-element", id: "task3" },
-	                                                                                    "Sometimes by accident, sometimes on purpose (injected humour and the like).",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 16.11.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "danger-element", id: "task4" },
-	                                                                                    "All the Lorem Ipsum generators",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-primary" },
-	                                                                                            "Done"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 06.10.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task5" },
-	                                                                                    "Which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 09.12.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task6" },
-	                                                                                    "Packages and web page editors now use Lorem Ipsum as",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-primary" },
-	                                                                                            "Done"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 08.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task7" },
-	                                                                                    "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 05.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "info-element", id: "task8" },
-	                                                                                    "Sometimes by accident, sometimes on purpose (injected humour and the like).",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 16.11.2015"
-	                                                                                    )
-	                                                                                )
-	                                                                            )
+	                                                                            this.renderColumnWithStatusOf(0)
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "div",
-	                                                                    { className: "col-lg-4" },
+	                                                                    'div',
+	                                                                    { className: 'col-lg-4' },
 	                                                                    React.createElement(
-	                                                                        "div",
-	                                                                        { className: "ibox" },
+	                                                                        'div',
+	                                                                        { className: 'ibox' },
 	                                                                        React.createElement(
-	                                                                            "div",
-	                                                                            { className: "ibox-content" },
+	                                                                            'div',
+	                                                                            { className: 'ibox-content' },
 	                                                                            React.createElement(
-	                                                                                "h3",
+	                                                                                'h3',
 	                                                                                null,
-	                                                                                "In Progress"
+	                                                                                'In Progress'
 	                                                                            ),
 	                                                                            React.createElement(
-	                                                                                "p",
-	                                                                                { className: "small" },
-	                                                                                React.createElement("i", { className: "fa fa-hand-o-up" }),
-	                                                                                " Drag task between list"
+	                                                                                'p',
+	                                                                                { className: 'small' },
+	                                                                                React.createElement('i', { className: 'fa fa-hand-o-up' }),
+	                                                                                ' Drag task between list'
 	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                "ul",
-	                                                                                { className: "sortable-list connectList agile-list", id: "inprogress" },
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task9" },
-	                                                                                    "Quisque venenatis ante in porta suscipit.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 12.10.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task10" },
-	                                                                                    "Phasellus sit amet tortor sed enim mollis accumsan in consequat orci.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 05.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task11" },
-	                                                                                    "Nunc sed arcu at ligula faucibus tempus ac id felis. Vestibulum et nulla quis turpis sagittis fringilla.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 16.11.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task12" },
-	                                                                                    "Ut porttitor augue non sapien mollis accumsan. Nulla non elit eget lacus elementum viverra.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 09.12.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "info-element", id: "task13" },
-	                                                                                    "Packages and web page editors now use Lorem Ipsum as",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-primary" },
-	                                                                                            "Done"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 08.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task14" },
-	                                                                                    "Quisque lacinia tellus et odio ornare maximus.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 05.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "danger-element", id: "task15" },
-	                                                                                    "Enim mollis accumsan in consequat orci.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 11.04.2015"
-	                                                                                    )
-	                                                                                )
-	                                                                            )
+	                                                                            this.renderColumnWithStatusOf(1)
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "div",
-	                                                                    { className: "col-lg-4" },
+	                                                                    'div',
+	                                                                    { className: 'col-lg-4' },
 	                                                                    React.createElement(
-	                                                                        "div",
-	                                                                        { className: "ibox" },
+	                                                                        'div',
+	                                                                        { className: 'ibox' },
 	                                                                        React.createElement(
-	                                                                            "div",
-	                                                                            { className: "ibox-content" },
+	                                                                            'div',
+	                                                                            { className: 'ibox-content' },
 	                                                                            React.createElement(
-	                                                                                "h3",
+	                                                                                'h3',
 	                                                                                null,
-	                                                                                "Completed"
+	                                                                                'Completed'
 	                                                                            ),
 	                                                                            React.createElement(
-	                                                                                "p",
-	                                                                                { className: "small" },
-	                                                                                React.createElement("i", { className: "fa fa-hand-o-up" }),
-	                                                                                " Drag task between list"
+	                                                                                'p',
+	                                                                                { className: 'small' },
+	                                                                                React.createElement('i', { className: 'fa fa-hand-o-up' }),
+	                                                                                ' Drag task between list'
 	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                "ul",
-	                                                                                { className: "sortable-list connectList agile-list", id: "completed" },
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "info-element", id: "task16" },
-	                                                                                    "Sometimes by accident, sometimes on purpose (injected humour and the like).",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 16.11.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task17" },
-	                                                                                    "Ut porttitor augue non sapien mollis accumsan. Nulla non elit eget lacus elementum viverra.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 09.12.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task18" },
-	                                                                                    "Which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 09.12.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task19" },
-	                                                                                    "Packages and web page editors now use Lorem Ipsum as",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-primary" },
-	                                                                                            "Done"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 08.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task20" },
-	                                                                                    "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 05.04.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "info-element", id: "task21" },
-	                                                                                    "Sometimes by accident, sometimes on purpose (injected humour and the like).",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 16.11.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "warning-element", id: "task22" },
-	                                                                                    "Simply dummy text of the printing and typesetting industry.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Tag"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 12.10.2015"
-	                                                                                    )
-	                                                                                ),
-	                                                                                React.createElement(
-	                                                                                    "li",
-	                                                                                    { className: "success-element", id: "task23" },
-	                                                                                    "Many desktop publishing packages and web page editors now use Lorem Ipsum as their default.",
-	                                                                                    React.createElement(
-	                                                                                        "div",
-	                                                                                        { className: "agile-detail" },
-	                                                                                        React.createElement(
-	                                                                                            "a",
-	                                                                                            { href: "#", className: "pull-right btn btn-xs btn-white" },
-	                                                                                            "Mark"
-	                                                                                        ),
-	                                                                                        React.createElement("i", { className: "fa fa-clock-o" }),
-	                                                                                        " 05.04.2015"
-	                                                                                    )
-	                                                                                )
-	                                                                            )
+	                                                                            this.renderColumnWithStatusOf(2)
 	                                                                        )
 	                                                                    )
 	                                                                )
@@ -37222,386 +36868,386 @@
 	                                                        )
 	                                                    ),
 	                                                    React.createElement(
-	                                                        "div",
-	                                                        { className: "tab-pane", id: "tab-2" },
+	                                                        'div',
+	                                                        { className: 'tab-pane', id: 'tab-2' },
 	                                                        React.createElement(
-	                                                            "table",
-	                                                            { className: "table table-striped" },
+	                                                            'table',
+	                                                            { className: 'table table-striped' },
 	                                                            React.createElement(
-	                                                                "thead",
+	                                                                'thead',
 	                                                                null,
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "th",
+	                                                                        'th',
 	                                                                        null,
-	                                                                        "Status"
+	                                                                        'Status'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "th",
+	                                                                        'th',
 	                                                                        null,
-	                                                                        "Title"
+	                                                                        'Title'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "th",
+	                                                                        'th',
 	                                                                        null,
-	                                                                        "Start Time"
+	                                                                        'Start Time'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "th",
+	                                                                        'th',
 	                                                                        null,
-	                                                                        "End Time"
+	                                                                        'End Time'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "th",
+	                                                                        'th',
 	                                                                        null,
-	                                                                        "Comments"
+	                                                                        'Comments'
 	                                                                    )
 	                                                                )
 	                                                            ),
 	                                                            React.createElement(
-	                                                                "tbody",
+	                                                                'tbody',
 	                                                                null,
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Completed"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Completed'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "Create project in webapp"
+	                                                                        'Create project in webapp'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable."
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable.'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Accepted"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Accepted'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "Various versions"
+	                                                                        'Various versions'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Sent"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Sent'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "There are many variations"
+	                                                                        'There are many variations'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which"
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Reported"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Reported'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "Latin words"
+	                                                                        'Latin words'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "Latin words, combined with a handful of model sentence structures"
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'Latin words, combined with a handful of model sentence structures'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Accepted"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Accepted'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "The generated Lorem"
+	                                                                        'The generated Lorem'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Sent"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Sent'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "The first line"
+	                                                                        'The first line'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32."
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Reported"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Reported'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "The standard chunk"
+	                                                                        'The standard chunk'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested."
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested.'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Completed"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Completed'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "Lorem Ipsum is that"
+	                                                                        'Lorem Ipsum is that'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable."
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable.'
 	                                                                        )
 	                                                                    )
 	                                                                ),
 	                                                                React.createElement(
-	                                                                    "tr",
+	                                                                    'tr',
 	                                                                    null,
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "span",
-	                                                                            { className: "label label-primary" },
-	                                                                            React.createElement("i", { className: "fa fa-check" }),
-	                                                                            " Sent"
+	                                                                            'span',
+	                                                                            { className: 'label label-primary' },
+	                                                                            React.createElement('i', { className: 'fa fa-check' }),
+	                                                                            ' Sent'
 	                                                                        )
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "Contrary to popular"
+	                                                                        'Contrary to popular'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "12.07.2014 10:10:1"
+	                                                                        '12.07.2014 10:10:1'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
-	                                                                        "14.07.2014 10:16:36"
+	                                                                        '14.07.2014 10:16:36'
 	                                                                    ),
 	                                                                    React.createElement(
-	                                                                        "td",
+	                                                                        'td',
 	                                                                        null,
 	                                                                        React.createElement(
-	                                                                            "p",
-	                                                                            { className: "small" },
-	                                                                            "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classNameical"
+	                                                                            'p',
+	                                                                            { className: 'small' },
+	                                                                            'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classNameical'
 	                                                                        )
 	                                                                    )
 	                                                                )
