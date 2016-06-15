@@ -80,8 +80,8 @@ school_id: 1
 
 User.create(
   first_name: "Becky",
-  last_name: "One",
-  email: "1dev@gmail.com",
+  last_name: "Flakes",
+  email: "becky@gmail.com",
   password: "password",
   mobile: "(505) 401-0936",
   cohort_id: 1,
@@ -89,8 +89,8 @@ User.create(
 
 User.create(
   first_name: "Jo",
-  last_name: "Two",
-  email: "2dev@gmail.com",
+  last_name: "Trevino",
+  email: "jo@gmail.com",
   password: "password",
   mobile: "(505) 401-0936",
   cohort_id: 1,

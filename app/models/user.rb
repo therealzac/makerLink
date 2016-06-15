@@ -53,16 +53,16 @@ class User < ActiveRecord::Base
   end
 
   def type
-    return "customer" if self.is_customer?
     return "dev" if self.is_dev?
     return "admin" if self.is_admin?
+    return "customer" if self.is_customer?
   end
 
   def news
     self.received_messages.select { |message| !message.is_read }
   end
 
-  def name
+  def full_name
     self.first_name + " " + self.last_name
   end
 

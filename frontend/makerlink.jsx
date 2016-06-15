@@ -16,6 +16,7 @@ var Settings = require('./components/settings');
 var Admin = require('./components/admin/admin');
 var Customer = require('./components/customer/customer');
 var Dev = require('./components/dev/dev');
+var Project = require('./components/customer/projectShow.jsx');
 
 var routes = (
   <Route path="/" component={App}>
@@ -27,6 +28,7 @@ var routes = (
       <IndexRoute component={Customer}/>
       <Route path = "/dev" component={Dev}/>
       <Route path = "/admin" component={Admin}/>
+      <Route path = "/project" component={Project}/>
     </Route>
   </Route>
 )

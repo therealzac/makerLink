@@ -53,11 +53,11 @@ var Signup = React.createClass({
     return (
       <div className="signup-middle-box text-center loginscreen  animated fadeInDown">
           <div className="makerlink-signup">
-            <h3>Welcome to MakerLink</h3>
+            <h3>Let's get started!</h3>
             <p style={{color: "red"}}>{this.state.message}</p>
 
             <form className="m-t" role="form">
-                <div className="form-group">
+                <div className="form-group" style={{float: "left"}}>
                     <input type="text"
                       name="user[first_name]"
                       className="form-control"
@@ -66,7 +66,7 @@ var Signup = React.createClass({
                       valueLink={this.linkState("first_name")}/>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group" style={{float: "right"}}>
                     <input type="text"
                       name="user[last_name]"
                       className="form-control"
@@ -112,7 +112,7 @@ var Signup = React.createClass({
                     valueLink={this.linkState("number")}/>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group" style={{float: "left"}}>
                   <input type="text"
                     name="stripe[exp_month]"
                     className="form-control"
@@ -120,7 +120,7 @@ var Signup = React.createClass({
                     valueLink={this.linkState("exp_month")}/>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group" style={{float: "right"}}>
                   <input type="text"
                     name="stripe[exp_year]"
                     className="form-control"
@@ -136,8 +136,9 @@ var Signup = React.createClass({
                     valueLink={this.linkState("cvc")}/>
                 </div>
 
-                <div className="form-group">
-                    <label>Developer or Admin?</label>
+
+                <div className="form-group" style={{float: "left"}}>
+                    <label>Developer?</label>
                     <input type="text"
                       name="user[cohort]"
                       className="form-control"
@@ -146,7 +147,8 @@ var Signup = React.createClass({
                       valueLink={this.linkState("cohort_id")}/>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group" style={{float: "right"}}>
+                    <label>Admin?</label>
                     <input type="text"
                       name="user[school]"
                       className="form-control"

@@ -1,5 +1,5 @@
 var React = require('react');
-var CohortIndexItem = require('./cohortIndexItem');
+var AdminSideNavItem = require('./adminSideNavItem');
 
 var AdminSideNav = React.createClass({
   getInitialState: function () {
@@ -15,12 +15,12 @@ var AdminSideNav = React.createClass({
         var isActive = activeCohort === cohort ? true : false;
 
         return (
-          <CohortIndexItem
+          <AdminSideNavItem
             cohort={cohort}
             isActive={isActive}
             key={idx}
             onClick={setActiveCohortCallback}>
-          </CohortIndexItem>
+          </AdminSideNavItem>
         )
       });
 
@@ -33,16 +33,24 @@ var AdminSideNav = React.createClass({
 
   render: function () {
     return (
-        <nav className="navbar-default navbar-static-side sidebar-content" role="navigation">
+        <nav className="navbar-default navbar-static-side sidebar-content">
           <div className="sidebar-collapse">
               <ul className="nav metismenu" id="side-menu">
+
                   <li className="nav-header">
                       <div className="logo-element">
                           mL
                       </div>
                   </li>
-                  <li><a><span className="label label-primary" onClick={this.props.showCohortFormCallback}>NEW COHORT</span></a></li>
+
+                  <li><a><span
+                    className="label label-primary"
+                    onClick={this.props.showCohortFormCallback}>
+                    NEW COHORT
+                  </span></a></li>
+
                   { this.renderCohorts() }
+
               </ul>
           </div>
         </nav>

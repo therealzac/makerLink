@@ -7,69 +7,59 @@ class Api::FlagsController < ApplicationController
       group = @flag.group
       school = @flag.school
       @project = @flag.project
-      customer = @project.author
+      client = @project.author
 
       # Flag project for front end update.
-      @project.flagged = true 
+      @project.flagged = true
 
-      # Set messages and notify admins if group has reached consensus on @project.
+      # Set messages if everyone in the group has flagged this project.
       if group.everyone_else_is_down?(@project, dev)
         @flag.pending_approval = true
 
         returnToUserWithNews = true
 
-        adminSubject = group.name + " has flagged " + @project.name + "!"
-        adminBody = "This project is awaiting your approval. Click here for details."
+        adminNews = group.name + " has flagged " + @project.name + "! " +
+          "Click here for details."
 
-        devSubject = "Everyone's on board for " + @project.name + "!"
-        devBody = "Your instructors have been notified."
+        clientNews = "A group from " + school.name + " wants to work on " +
+          @project.name + "!"
 
-        customerSubject = "A group from " + school.name + " likes " + @project.name + "!"
-        customerBody = "Blah blah blah."
+        devNews = "Everyone's on board for " + @project.name + "! " +
+          "Your instructors are reviewing the project to determine feasibility."
 
         adminRecipients = school.admins
         adminRecipients.each do |recipient|
           message = Message.create(
-            author_id: dev.id,
             recipient_id: recipient.id,
-            subject: adminSubject,
-            body: adminBody
+            author_id: dev.id,
+            body: adminNews
           )
-
         end
       end
 
-      # Notify group members with current message.
+      # Notify devs with current message.
       devRecipients = group.devs
-      unless devSubject && devBody
-        devSubject = dev.first_name + " has flagged " + @project.name + "!"
-        devBody = "Check it out."
+      unless devNews
+        devNews = dev.first_name + " has flagged " + @project.name + "!"
         devRecipients -= [dev]
       end
 
       devRecipients.each do |recipient|
         message = Message.create(
-          author_id: dev.id,
           recipient_id: recipient.id,
-          subject: devSubject,
-          body: devBody
+          author_id: dev.id,
+          body: devNews
         )
 
         @message = message if returnToUserWithNews
       end
 
-      # Notify customer with current message.
-      customer = @project.author
-      unless customerSubject && customerBody
-        customerSubject = "A dev from " + school.name + " likes " + @project.name + "!"
-        customerBody = "Blah blah blah."
-      end
-
+      # Notify client with current message.
+      clientNews = dev.full_name + " likes " + @project.name + "!" unless clientNews
       message = Message.create(
         author_id: dev.id,
-        recipient_id: customer.id,
-        subject: customerSubject,
-        body: customerBody
+        recipient_id: client.id,
+        body: clientNews
       )
 
       @flag.save
@@ -91,29 +81,27 @@ class Api::FlagsController < ApplicationController
         dev = @flag.dev
         group = @flag.group
         school = @flag.school
-        customer = @project.author
+        client = @project.author
 
-        devBody = "The customer has been notified."
-        devSubject = "Your instructor has approved " + @project.name + "!"
+        clientNews = "You've received a bid for " + @project.name + "! " +
+          "Click here for more details."
 
-        customerSubject = "A group from " + school.name + " has picked up your project!"
-        customerBody = "BlAh blah"
+        devNews = "Your instructors have approved " + @project.name + "! " +
+          "The client has been notified."
 
         devRecipients = group.devs
         devRecipients.each do |recipient|
           Message.create(
+          recipient_id: recipient.id,
             author_id: dev.id,
-            recipient_id: recipient.id,
-            subject: devSubject,
-            body: devBody
+            body: devNews
           )
         end
 
         Message.create(
+        recipient_id: client.id,
           author_id: dev.id,
-          recipient_id: customer.id,
-          subject: customerSubject,
-          body: customerBody
+          body: clientNews
         )
       end
 

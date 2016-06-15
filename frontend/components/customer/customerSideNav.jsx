@@ -1,5 +1,5 @@
 var React = require('react');
-var ProjectIndexItem = require('./projectIndexItem.jsx');
+var CustomerSideNavItem = require('./customerSideNavItem.jsx');
 
 var AdminSideNav = React.createClass({
   contextTypes: { router: React.PropTypes.object.isRequired },
@@ -27,12 +27,12 @@ var AdminSideNav = React.createClass({
         if (currentProject === project) { isActive = true }
 
         return(
-          <ProjectIndexItem
+          <CustomerSideNavItem
             project={project}
             key={idx}
             isActive={isActive}
             onClick={self.props.setActiveProjectCallback}>
-          </ProjectIndexItem>
+          </CustomerSideNavItem>
         )
       });
     }

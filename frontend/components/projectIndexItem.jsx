@@ -39,13 +39,28 @@ var ProjectIndexItem = React.createClass({
         project = this.state.project,
         flag = project ? project.flag : null;
 
-    if (dev && dev.group_id && !project.flagged) {
+    if (dev && !dev.group_id) {
       return (
-        <a><span className="label label-primary" onClick={this.flagProject}>FLAG PROJECT</span></a>
+        <a><span
+          className="label">
+          CANT FLAG PROJECTS YET...
+        </span></a>
+      )
+    } else if (dev && dev.group_id && !project.flagged) {
+      return (
+        <a><span
+          className="label label-primary"
+          onClick={this.flagProject}>
+          FLAG PROJECT
+        </span></a>
       )
     } else if (admin && flag && !flag.instructor_approved) {
       return (
-        <a><span className="label label-primary" onClick={this.approveProject}>APPROVE PROJECT</span></a>
+        <a><span
+          className="label label-primary"
+          onClick={this.approveProject}>
+          APPROVE PROJECT
+        </span></a>
       )
     }
   },
@@ -58,14 +73,14 @@ var ProjectIndexItem = React.createClass({
         description = project ? project.description : null;
 
     return (
-    <div className="grow">
-        <img src="https://unsplash.it/g/200/300/?random" alt="ALT"/>
-        <p style={{fontSize: "18px"}}> {name} </p>
-        <p>{pitch}</p>
-        <p>{url}</p>
-        <p>{description}</p>
-        <p>{ this.renderActionButton() }</p>
-    </div>
+      <div className="grow">
+          <img src="https://unsplash.it/g/200/300/?random" alt="ALT"/>
+          <p style={{fontSize: "18px"}}> {name} </p>
+          <p>{pitch}</p>
+          <p>{url}</p>
+          <p>{description}</p>
+          <p>{ this.renderActionButton() }</p>
+      </div>
     )
   }
 });

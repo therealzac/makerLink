@@ -15,13 +15,13 @@ var ProjectIndex = React.createClass({
         admin = this.state.admin,
         projects = this.state.projects;
 
-    var columnSize = Math.ceil(projects.length / 4);
+    var columnSize = Math.ceil(projects.length / 3);
     var columns = [];
 
     // Index projects while rendering them for O(1) update.
     var projectIdx = 0;
 
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 3; i++) {
       columns.push(projects.slice(i * columnSize, (i + 1) * columnSize));
     }
 
