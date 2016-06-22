@@ -6,7 +6,7 @@ var ApiActions = {
 
   receiveSession: function (session) {
     AppDispatcher.dispatch({
-      actionType: SessionConstants.SESSION_RECIEVED,
+      actionType: SessionConstants.SESSION_RECEIVED,
       session: session
     });
   },
@@ -26,21 +26,21 @@ var ApiActions = {
 
   receiveCohort: function(cohort) {
     AppDispatcher.dispatch({
-        actionType: SessionConstants.COHORT_RECIEVED,
+        actionType: SessionConstants.COHORT_RECEIVED,
         cohort: cohort
     })
   },
 
   updateCohort: function(cohort) {
     AppDispatcher.dispatch({
-        actionType: SessionConstants.GROUP_RECIEVED,
+        actionType: SessionConstants.GROUP_RECEIVED,
         cohort: cohort
     })
   },
 
   receiveFlag: function(flag, projectIdx){
     AppDispatcher.dispatch({
-      actionType: SessionConstants.FLAG_RECIEVED,
+      actionType: SessionConstants.FLAG_RECEIVED,
       flag: flag,
       projectIdx: projectIdx
     });
@@ -48,9 +48,16 @@ var ApiActions = {
 
   receiveProject: function(project) {
     AppDispatcher.dispatch({
-      actionType: SessionConstants.PROJECT_RECIEVED,
+      actionType: SessionConstants.PROJECT_RECEIVED,
       project: project
     });
+  },
+
+  receiveProjectWithNewTask: function (project) {
+    AppDispatcher.dispatch({
+      actionType: SessionConstants.UPDATED_PROJECT_RECEIVED,
+      project: project
+    })
   }
 }
 

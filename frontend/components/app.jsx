@@ -2,6 +2,8 @@ var React = require('react');
 var Landing = require('./landing.jsx');
 var NavBar = require('./navbar.jsx');
 var ApiUtil = require('../util/apiUtil.js');
+var HTML5Backend = require('react-dnd-html5-backend');
+var DragDropContext = require('react-dnd').DragDropContext;
 var SessionStore = require('../stores/session.js');
 
 var App = React.createClass({
@@ -73,7 +75,8 @@ var App = React.createClass({
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => React.cloneElement(child, {
         changeBackground: this.changeBackground,
-        session: this.state.session
+        session: this.state.session,
+        
       })
     );
 
@@ -91,4 +94,4 @@ var App = React.createClass({
   }
 });
 
-module.exports = App;
+module.exports = DragDropContext(HTML5Backend)(App);

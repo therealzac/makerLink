@@ -12,11 +12,11 @@ SessionStore.__onDispatch = function (payload) {
   console.log(payload);
   switch (payload.actionType) {
 
-    case SessionConstants.USER_RECIEVED:
+    case SessionConstants.USER_RECEIVED:
       ApiUtil.fetchSession();
       break;
 
-    case SessionConstants.SESSION_RECIEVED:
+    case SessionConstants.SESSION_RECEIVED:
       setSession(payload.session);
       SessionStore.__emitChange();
       break;
@@ -31,23 +31,28 @@ SessionStore.__onDispatch = function (payload) {
       SessionStore.__emitChange();
       break;
 
-    case SessionConstants.FLAG_RECIEVED:
+    case SessionConstants.FLAG_RECEIVED:
       flagProject(payload.flag, payload.projectIdx);
       SessionStore.__emitChange();
       break;
 
-    case SessionConstants.COHORT_RECIEVED:
+    case SessionConstants.COHORT_RECEIVED:
       addCohort(payload.cohort);
       SessionStore.__emitChange();
       break;
 
-    case SessionConstants.GROUP_RECIEVED:
+    case SessionConstants.GROUP_RECEIVED:
       updateCohort(payload.cohort);
       SessionStore.__emitChange();
       break;
 
-    case SessionConstants.PROJECT_RECIEVED:
+    case SessionConstants.PROJECT_RECEIVED:
       addProject(payload.project);
+      SessionStore.__emitChange();
+      break;
+
+    case SessionConstants.UPDATED_PROJECT_RECEIVED:
+      updateProject(payload.project);
       SessionStore.__emitChange();
       break;
   }
@@ -87,6 +92,10 @@ var addProject = function(project) {
 
   if (!user.projects) { return user.projects = [project] }
   user.projects.push(project);
+}
+
+var updateProject = function (project) {
+  _session.projects[project.idx] = project;
 }
 
 var clearSession = function () {

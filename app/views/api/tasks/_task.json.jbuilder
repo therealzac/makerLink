@@ -1,0 +1,9 @@
+json.extract!(task,
+  :id,
+  :author_id,
+  :project_id,
+  :body,
+  :status,
+  :created_at,
+  :updated_at
+)

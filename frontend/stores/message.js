@@ -18,7 +18,7 @@ var _messages = initialMessages;
 
 MessageStore.__onDispatch = function (payload) {
   switch (payload.actionType) {
-    case MessageConstants.MESSAGES_RECIEVED:
+    case MessageConstants.MESSAGES_RECEIVED:
       setMessages(payload.messages);
       __emitChange();
       break;

@@ -142,19 +142,36 @@ var ApiUtil = {
     });
   },
 
-  createTask: function (task) {
+  createTask: function (task, projectIdx) {
     $.ajax({
       url: "api/tasks",
       data: {task: task},
       method: "POST",
-      success: function (task) {
-        console.log(task);
+      success: function (project) {
+        project.idx = projectIdx;
+        ApiActions.receiveProjectWithNewTask(project);
       },
       error: function (error) {
         ApiActions.invalidEntry(error);
       }
     });
   },
+
+  updateTask: function (task, projectIdx, successCallback) {
+    var now = new Date;
+
+    task.updated_at = now.toUTCString();
+    $.ajax({
+      url: 'api/tasks/' + task.id + '/',
+      data: {task: task},
+      method: "PATCH",
+      success: function (project) {
+        successCallback();
+        project.idx = projectIdx;
+        ApiActions.receiveProjectWithNewTask(project);
+      },
+    })
+  }
 }
 
 module.exports = ApiUtil;
