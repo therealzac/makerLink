@@ -25300,7 +25300,7 @@
 
 	        case "dev":
 	          // We're gonna wanna change this back to /dev.
-	          this.context.router.push('/project');
+	          this.context.router.push('/dev');
 	          break;
 
 	        case "admin":
