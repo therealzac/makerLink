@@ -7,9 +7,7 @@ var PropTypes = React.PropTypes;
  */
 var source = {
   beginDrag: function (props) {
-    return {
-      text: props.text
-    };
+    return props.task;
   }
 }
 
@@ -22,7 +20,6 @@ function collect(connect, monitor) {
     isDragging: monitor.isDragging()
   };
 }
-
 
 var KanbanItem = React.createClass({
   propTypes: {
@@ -41,16 +38,12 @@ var KanbanItem = React.createClass({
     this.setState(newProps);
   },
 
-  sendTask: function () {
-    this.state.handleTaskUpdateCallback(this.state.task);
-  },
-
   render: function () {
     var isDragging = this.props.isDragging;
     var connectDragSource = this.props.connectDragSource;
 
     return connectDragSource(
-      <li className="info-element" onMouseUp={this.sendTask}>
+      <li className="info-element">
         {this.state.task.body}
         <div className="agile-detail">
           <i className="fa fa-clock-o"></i> {this.state.task.updated_at}

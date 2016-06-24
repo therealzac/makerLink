@@ -75,8 +75,7 @@ var App = React.createClass({
     const childrenWithProps = React.Children.map(this.props.children,
       (child) => React.cloneElement(child, {
         changeBackground: this.changeBackground,
-        session: this.state.session,
-        
+        session: this.state.session
       })
     );
 

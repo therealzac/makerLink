@@ -49,7 +49,21 @@ var projectShow = React.createClass({
     });
   },
 
+  addTask: function (e) {
+    e.preventDefault();
+    var body = $('#new-task').val();
+
+    var task = {
+      author_id: this.state.user.id,
+      project_id: this.state.project.id,
+      body: body
+    }
+
+    ApiUtil.createTask(task, this.state.project.idx);
+  },
+
   render: function () {
+    var projectIdx = this.state.project ? this.state.project.idx : null;
     return(
       <div>
       <div className="row">
@@ -111,8 +125,13 @@ var projectShow = React.createClass({
                                       </span>
                                   </div>
 
-                                  <KanbanColumn tasks={this.state.todo}/>
-                                  
+                                  <KanbanColumn
+                                    projectIdx={projectIdx}
+                                    statusCode={0}
+                                    statusWord={"todo"}
+                                    tasks={this.state.todo}>
+                                  </KanbanColumn>
+
                               </div>
                           </div>
                       </div>
@@ -123,8 +142,13 @@ var projectShow = React.createClass({
                                   <h3>In Progress</h3>
                                   <p className="small"><i className="fa fa-hand-o-up"></i> Drag task between list</p>
 
-                                    <KanbanColumn tasks={this.state.inprogress}/>
-                                    
+                                    <KanbanColumn
+                                      projectIdx={projectIdx}
+                                      statusCode={1}
+                                      statusWord={"inprogress"}
+                                      tasks={this.state.inprogress}>
+                                    </KanbanColumn>
+
                               </div>
                           </div>
                       </div>
@@ -134,8 +158,13 @@ var projectShow = React.createClass({
                                   <h3>Completed</h3>
                                   <p className="small"><i className="fa fa-hand-o-up"></i> Drag task between list</p>
 
-                                    <KanbanColumn tasks={this.state.completed}/>
-                                    
+                                    <KanbanColumn
+                                      projectIdx={projectIdx}
+                                      statusCode={2}
+                                      statusWord={"completed"}
+                                      tasks={this.state.completed}>
+                                    </KanbanColumn>
+
                               </div>
                           </div>
                       </div>

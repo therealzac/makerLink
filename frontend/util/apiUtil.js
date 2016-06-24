@@ -157,20 +157,19 @@ var ApiUtil = {
     });
   },
 
-  updateTask: function (task, projectIdx, successCallback) {
+  updateTask: function (task, projectIdx) {
     var now = new Date;
-
     task.updated_at = now.toUTCString();
+
     $.ajax({
       url: 'api/tasks/' + task.id + '/',
       data: {task: task},
       method: "PATCH",
       success: function (project) {
-        successCallback();
         project.idx = projectIdx;
         ApiActions.receiveProjectWithNewTask(project);
       },
-    })
+    });
   }
 }
 

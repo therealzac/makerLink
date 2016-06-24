@@ -1,57 +1,39 @@
 var React = require('react');
 var KanbanItem = require('./kanbanItem.jsx');
-var findDOMNode = require('react-dom').findDOMNode;
-var DropTarget = require('react-dnd').DropTarget;
+var ApiUtil = require('../../util/apiUtil.js');
+
 var PropTypes = React.PropTypes;
-var self = this;
+
+var DropTarget = require('react-dnd').DropTarget;
+var findDOMNode = require('react-dom').findDOMNode;
 
 var ColumnTarget = {
   canDrop: function (props, monitor) {
-    // You can disallow drop based on props or item
-    var thisColumn = monitor.getItem();
-    console.log("dragging!");
-    // console.log(thisColumn);
+    var item = monitor.getItem();
     return true;
   },
 
   hover: function (props, monitor, component) {
-    // This is fired very often and lets you perform side effects
-    // in response to the hover. You can't handle enter and leave
-    // here—if you need them, put monitor.isOver() into collect() so you
-    // can just use componentWillReceiveProps() to handle enter/leave.
-
-    // You can access the coordinates if you need them
     var clientOffset = monitor.getClientOffset();
     var componentRect = findDOMNode(component).getBoundingClientRect();
-
-    // You can check whether we're over a nested drop target
     var isJustOverThisOne = monitor.isOver({ shallow: true });
-
-    // You will receive hover() even for items for which canDrop() is false
     var canDrop = monitor.canDrop();
   },
 
   drop: function (props, monitor, component) {
-    if (monitor.didDrop()) {
-      // If you want, you can check whether some nested
-      // target already handled drop
-      return;
-    }
+    var task = monitor.getItem();
 
-    // Obtain the dragged item
-    var item = monitor.getItem();
+    if (monitor.didDrop() || task.status === props.statusCode) { return }
 
-    // You can do something with it
-    ChessActions.movePiece(item.fromPosition, props.position);
+    task.status = props.statusCode;
 
-    // You can also do nothing and return a drop result,
-    // which will be available as monitor.getDropResult()
-    // in the drag source's endDrag() method
-    return { moved: true };
+    ApiUtil.updateTask(task, props.projectIdx);
   }
 };
 
-
+/**
+ * Specifies which props to inject into your component.
+ */
 function collect(connect, monitor) {
   return {
     // Call this function inside render()
@@ -66,36 +48,62 @@ function collect(connect, monitor) {
 }
 
 var Column = React.createClass({
+  propTypes: {
+    // column: PropTypes.object.isRequired,
+  // x: PropTypes.number.isRequired,
+  // y: PropTypes.number.isRequired,
+  isOver: PropTypes.bool.isRequired
+},
   getInitialState: function () {
     return {}
   },
 
-  componentWillReceiveProps: function (newProps) {
-    this.setState(newProps);
+  componentWillReceiveProps: function (nextProps) {
+    if (!this.props.isOver && nextProps.isOver) {
+      // You can use this as enter handler
+    }
+
+    if (this.props.isOver && !nextProps.isOver) {
+      // You can use this as leave handler
+    }
+
+    if (this.props.isOverCurrent && !nextProps.isOverCurrent) {
+      // You can be more specific and track enter/leave
+      // shallowly, not including nested targets
+    }
+
+    this.setState(nextProps);
   },
 
-  renderTasks: function () {
-    if (!this.state.tasks) { return }
-    return this.state.tasks.map(function (task, idx) {
-        return (
-            <KanbanItem
-              task={task}
-              key={idx}>
-            </KanbanItem>
-          )
-      });
-  },
+    renderTasks: function () {
+      if (!this.state.tasks) { return }
+      return this.state.tasks.map(function (task, idx) {
+          return (
+              <KanbanItem
+                task={task}
+                key={idx}>
+              </KanbanItem>
+            )
+        });
+    },
 
   render: function () {
-    var self = this;
-    var idx;
+    // Your component receives its own props as usual
+    var position = this.props.position;
 
-    return (
+    // These props are injected by React DnD,
+    // as defined by your `collect` function above:
+    var isOver = this.props.isOver;
+    var canDrop = this.props.canDrop;
+    var connectDropTarget = this.props.connectDropTarget;
+
+    return connectDropTarget(
       <ul className="sortable-list connectList agile-list">
         { this.renderTasks() }
       </ul>
     )
   }
 });
+
 
 module.exports = DropTarget("KanbanItem", ColumnTarget, collect)(Column);
