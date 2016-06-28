@@ -1,6 +1,7 @@
 var React = require('react');
 var CustomerSideNav = require('./customerSideNav.jsx');
 var ProjectShow = require('../projectShow.jsx');
+var ApiUtil = require('../../util/apiUtil.js');
 var Footer = require('../footer.jsx');
 
 var Customer = React.createClass({
@@ -34,6 +35,17 @@ var Customer = React.createClass({
     this.setState({activeProject: project});
   },
 
+  slackButton: function () {
+    return (
+      <p><a className="btn btn-lg btn-primary" onClick={this.slackIt} role="button">Slack!</a></p>
+    )
+  },
+
+  slackIt: function (e) {
+    e.preventDefault();
+    ApiUtil.hitSlack();
+  },
+
   render: function () {
     return(
       <div id='customer'>
@@ -53,6 +65,8 @@ var Customer = React.createClass({
                     user={this.state.user}
                     project={this.state.activeProject}>
                   </ProjectShow>
+
+                  { this.slackButton() }
 
                 </div>
               </div>

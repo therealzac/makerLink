@@ -26605,6 +26605,17 @@
 	        ApiActions.receiveProjectWithNewTask(project);
 	      }
 	    });
+	  },
+
+	  hitSlack: function hitSlack(text) {
+	    $.ajax({
+	      url: 'api/slack',
+	      data: 'payload=' + JSON.stringify({ "text": text }),
+	      method: "POST",
+	      success: function success() {
+	        console.log("done");
+	      }
+	    });
 	  }
 	};
 
@@ -43846,6 +43857,7 @@
 	var React = __webpack_require__(1);
 	var CustomerSideNav = __webpack_require__(424);
 	var ProjectShow = __webpack_require__(426);
+	var ApiUtil = __webpack_require__(228);
 	var Footer = __webpack_require__(222);
 
 	var Customer = React.createClass({
@@ -43885,6 +43897,23 @@
 	    this.setState({ activeProject: project });
 	  },
 
+	  slackButton: function slackButton() {
+	    return React.createElement(
+	      'p',
+	      null,
+	      React.createElement(
+	        'a',
+	        { className: 'btn btn-lg btn-primary', onClick: this.slackIt, role: 'button' },
+	        'Slack!'
+	      )
+	    );
+	  },
+
+	  slackIt: function slackIt(e) {
+	    e.preventDefault();
+	    ApiUtil.hitSlack();
+	  },
+
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -43910,7 +43939,8 @@
 	                { className: 'ibox' },
 	                React.createElement(ProjectShow, {
 	                  user: this.state.user,
-	                  project: this.state.activeProject })
+	                  project: this.state.activeProject }),
+	                this.slackButton()
 	              )
 	            )
 	          )

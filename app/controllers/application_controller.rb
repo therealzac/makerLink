@@ -7,7 +7,11 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   Stripe.api_key = "sk_test_9NWrmNu1xmzxjKAkzVGFB6GM"
 
-  
+  Slack.configure do |config|
+    config.token = 'xoxp-54439358022-54398440627-54831498307-fc685aae62'
+    fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
+  end
+
 
   def current_user
     return nil unless session[:session_token]

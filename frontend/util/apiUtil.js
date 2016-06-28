@@ -170,7 +170,18 @@ var ApiUtil = {
         ApiActions.receiveProjectWithNewTask(project);
       },
     });
-  }
+  },
+
+  hitSlack: function (text) {
+    $.ajax({
+      url: 'api/slack',
+      data: 'payload=' + JSON.stringify({ "text": text }),
+      method: "POST",
+      success: function () {
+        console.log("done");
+      }
+    });
+  },
 }
 
 module.exports = ApiUtil;
