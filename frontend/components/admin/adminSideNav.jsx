@@ -3,32 +3,31 @@ var AdminSideNavItem = require('./adminSideNavItem');
 
 var AdminSideNav = React.createClass({
   getInitialState: function () {
-    return { cohorts: this.props.cohorts }
+    return this.props;
   },
 
   renderCohorts: function () {
-    if (this.props.cohorts) {
-      var activeCohort = this.props.activeCohort;
-      var setActiveCohortCallback = this.props.setActiveCohortCallback;
+    var activeCohort = this.state.activeCohort;
+    var setActiveCohortCallback = this.props.setActiveCohortCallback;
 
-      var reactCohorts = this.props.cohorts.map(function(cohort, idx) {
-        var isActive = activeCohort === cohort ? true : false;
+    var reactCohorts = this.state.cohorts.map(function(cohort, idx) {
+      var isActive = activeCohort === cohort ? "active" : "";
 
-        return (
-          <AdminSideNavItem
-            cohort={cohort}
-            isActive={isActive}
-            key={idx}
-            onClick={setActiveCohortCallback}>
-          </AdminSideNavItem>
-        )
-      });
+      return (
+        <AdminSideNavItem
+          cohort={cohort}
+          isActive={isActive}
+          key={idx}
+          onClick={setActiveCohortCallback}>
+        </AdminSideNavItem>
+      )
+    });
 
-      return reactCohorts;
-    }
+    return reactCohorts;
   },
 
   componentWillReceiveProps: function (newProps) {
+    this.setState(newProps);
   },
 
   render: function () {

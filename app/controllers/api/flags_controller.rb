@@ -24,8 +24,7 @@ class Api::FlagsController < ApplicationController
         clientNews = "A group from " + school.name + " wants to work on " +
           @project.name + "!"
 
-        devNews = "Everyone's on board for " + @project.name + "! " +
-          "Your instructors are reviewing the project to determine feasibility."
+        devNews = "Everyone's on board for " + @project.name + "!"
 
         adminRecipients = school.admins
         adminRecipients.each do |recipient|

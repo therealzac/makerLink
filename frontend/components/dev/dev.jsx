@@ -6,10 +6,8 @@ var Footer = require('../footer.jsx');
 
 var Dev = React.createClass({
   getInitialState: function() {
-    var session = this.props.session;
-
-    var dev = session.user ? session.user : null;
-    var projects = session.projects ? session.projects : [];
+    var dev = this.props.user;
+    var projects = this.props.projects;
 
     return {
       dev: dev,
@@ -18,15 +16,7 @@ var Dev = React.createClass({
   },
 
   componentWillReceiveProps: function (newProps) {
-    var session = newProps.session;
-
-    var dev = session.user ? session.user : null;
-    var projects = session.projects ? session.projects : [];
-
-    this.setState({
-      dev: dev,
-      projects: projects
-    });
+    this.setState({ dev: newProps.user, projects: newProps.projects });
   },
 
   render: function () {
@@ -42,10 +32,12 @@ var Dev = React.createClass({
             <div className="col-lg-12">
               <div className="wrapper wrapper-content animated fadeInUp">
                 <div className="ibox">
+
                   <ProjectIndex
-                    dev={dev}
-                    projects={projects}>
+                    dev={this.state.dev}
+                    projects={this.state.projects}>
                   </ProjectIndex>
+
                 </div>
               </div>
             </div>

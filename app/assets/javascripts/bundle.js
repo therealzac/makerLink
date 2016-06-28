@@ -58,12 +58,11 @@
 	    Signup = __webpack_require__(408),
 	    SubmissionForm = __webpack_require__(409),
 	    Dashboard = __webpack_require__(410),
-	    Inbox = __webpack_require__(411),
-	    Settings = __webpack_require__(413),
-	    Admin = __webpack_require__(414),
-	    Customer = __webpack_require__(425),
-	    Dev = __webpack_require__(428),
-	    Project = __webpack_require__(430),
+	    Settings = __webpack_require__(411),
+	    Admin = __webpack_require__(412),
+	    Customer = __webpack_require__(423),
+	    Dev = __webpack_require__(429),
+	    Project = __webpack_require__(426),
 	    routes = React.createElement(
 	  Route,
 	  { path: '/', component: App },
@@ -25299,7 +25298,6 @@
 	          break;
 
 	        case "dev":
-	          // We're gonna wanna change this back to /dev.
 	          this.context.router.push('/dev');
 	          break;
 
@@ -26305,7 +26303,7 @@
 	                React.createElement(
 	                  'strong',
 	                  null,
-	                  newsItem.subject
+	                  newsItem.body
 	                ),
 	                React.createElement('br', null)
 	              )
@@ -42444,10 +42442,6 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Inbox = __webpack_require__(411);
-	var SessionStore = __webpack_require__(236);
-	var MessageStore = __webpack_require__(412);
-	var apiUtil = __webpack_require__(228);
 
 	var Dashboard = React.createClass({
 	  displayName: 'Dashboard',
@@ -42456,7 +42450,11 @@
 
 	  getInitialState: function getInitialState() {
 	    var session = this.props.session;
-	    return { session: session };
+	    var user = session.user ? session.user : {};
+	    var projects = session.projects ? this.indexObjects(session.projects) : [];
+	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
+
+	    return { user: user, projects: projects, cohorts: cohorts };
 	  },
 
 	  componentDidMount: function componentDidMount() {
@@ -42464,14 +42462,31 @@
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    this.setState({ session: newProps.session });
+	    var session = newProps.session;
+	    var user = session.user ? session.user : {};
+	    var projects = session.projects ? this.indexObjects(session.projects) : [];
+	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
+	    if (!user) {
+	      this.context.router.push('/login');
+	    }
+
+	    this.setState({ user: user, projects: projects, cohorts: cohorts });
 	  },
 
-	  renderChildrenWithProps: function renderChildrenWithProps() {
-	    var _this = this;
+	  indexObjects: function indexObjects(objects) {
+	    objects.forEach(function (object, idx) {
+	      object.idx = idx;
+	    });
 
+	    return objects;
+	  },
+
+	  renderChildrenWithProps: function renderChildrenWithProps(user, projects, cohorts) {
+	    var user = this.state.user;
+	    var projects = this.state.projects;
+	    var cohorts = this.state.cohorts;;
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
-	      return React.cloneElement(child, { session: _this.state.session });
+	      return React.cloneElement(child, { user: user, projects: projects, cohorts: cohorts });
 	    });
 
 	    return childrenWithProps;
@@ -42490,334 +42505,6 @@
 
 /***/ },
 /* 411 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	var Inbox = React.createClass({
-	    displayName: 'Inbox',
-
-	    componentDidMount: function componentDidMount() {
-	        $('.i-checks').iCheck({
-	            checkboxClass: 'icheckbox_square-green',
-	            radioClass: 'iradio_square-green'
-	        });
-	    },
-
-	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            { className: 'wrapper wrapper-content' },
-	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-lg-3' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'ibox float-e-margins' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'ibox-content mailbox-content' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'file-manager' },
-	                                React.createElement(
-	                                    'a',
-	                                    { className: 'btn btn-block btn-primary compose-mail' },
-	                                    'Compose Mail'
-	                                ),
-	                                React.createElement('div', { className: 'space-25' }),
-	                                React.createElement(
-	                                    'h5',
-	                                    null,
-	                                    'Folders'
-	                                ),
-	                                React.createElement(
-	                                    'ul',
-	                                    { className: 'folder-list m-b-md', style: { padding: "0" } },
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            null,
-	                                            ' ',
-	                                            React.createElement('i', { className: 'fa fa-inbox ' }),
-	                                            ' Inbox ',
-	                                            React.createElement(
-	                                                'span',
-	                                                { className: 'label label-warning pull-right' },
-	                                                this.props.messages.unreadMessages.length
-	                                            ),
-	                                            ' '
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            null,
-	                                            ' ',
-	                                            React.createElement('i', { className: 'fa fa-envelope-o' }),
-	                                            ' Send Mail'
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            null,
-	                                            ' ',
-	                                            React.createElement('i', { className: 'fa fa-file-text-o' }),
-	                                            ' Drafts ',
-	                                            React.createElement(
-	                                                'span',
-	                                                { className: 'label label-danger pull-right' },
-	                                                this.props.messages.drafts.length
-	                                            )
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            null,
-	                                            ' ',
-	                                            React.createElement('i', { className: 'fa fa-trash-o' }),
-	                                            ' Trash'
-	                                        )
-	                                    )
-	                                ),
-	                                React.createElement('div', { className: 'clearfix' })
-	                            )
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-lg-9 animated fadeInRight' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'mail-box-header' },
-	                        React.createElement(
-	                            'form',
-	                            { method: 'get', action: 'index.html', className: 'pull-right mail-search' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'input-group' },
-	                                React.createElement('input', { type: 'text', className: 'form-control input-sm', name: 'search', placeholder: 'Search email' }),
-	                                React.createElement(
-	                                    'div',
-	                                    { className: 'input-group-btn' },
-	                                    React.createElement(
-	                                        'button',
-	                                        { type: 'submit', className: 'btn btn-sm btn-primary' },
-	                                        'Search'
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'h2',
-	                            null,
-	                            'Inbox (',
-	                            this.props.messages.unreadMessages.length,
-	                            ')'
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'mail-tools tooltip-demo m-t-md' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'btn-group pull-right' },
-	                                React.createElement(
-	                                    'button',
-	                                    { className: 'btn btn-white btn-sm' },
-	                                    React.createElement('i', { className: 'fa fa-arrow-left' })
-	                                ),
-	                                React.createElement(
-	                                    'button',
-	                                    { className: 'btn btn-white btn-sm' },
-	                                    React.createElement('i', { className: 'fa fa-arrow-right' })
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'left', title: 'Refresh inbox' },
-	                                React.createElement('i', { className: 'fa fa-refresh' }),
-	                                ' Refresh'
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Mark as read' },
-	                                React.createElement('i', { className: 'fa fa-eye' }),
-	                                ' '
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Mark as important' },
-	                                React.createElement('i', { className: 'fa fa-exclamation' }),
-	                                ' '
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Move to trash' },
-	                                React.createElement('i', { className: 'fa fa-trash-o' }),
-	                                ' '
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'mail-box' },
-	                        React.createElement(
-	                            'table',
-	                            { className: 'table table-hover table-mail' },
-	                            React.createElement(
-	                                'tbody',
-	                                null,
-	                                this.props.messages.unreadMessages.forEach(function (message) {
-	                                    return React.createElement(
-	                                        'tr',
-	                                        { className: 'unread' },
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'check-mail' },
-	                                            React.createElement('input', { type: 'checkbox', className: 'i-checks' })
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'mail-ontact' },
-	                                            React.createElement(
-	                                                'a',
-	                                                null,
-	                                                message.author
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'mail-subject' },
-	                                            React.createElement(
-	                                                'a',
-	                                                null,
-	                                                message.body
-	                                            )
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: '' },
-	                                            React.createElement('i', { className: 'fa fa-paperclip' })
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'text-right mail-date' },
-	                                            '6.10 AM'
-	                                        )
-	                                    );
-	                                }),
-	                                this.props.messages.unreadMessages.forEach(function (message) {
-	                                    return React.createElement(
-	                                        'tr',
-	                                        { className: 'read' },
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'check-mail' },
-	                                            React.createElement('input', { type: 'checkbox', className: 'i-checks' })
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'mail-ontact' },
-	                                            React.createElement(
-	                                                'a',
-	                                                null,
-	                                                message.author
-	                                            ),
-	                                            ' '
-	                                        ),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'mail-subject' },
-	                                            React.createElement(
-	                                                'a',
-	                                                null,
-	                                                message.body
-	                                            )
-	                                        ),
-	                                        React.createElement('td', { className: '' }),
-	                                        React.createElement(
-	                                            'td',
-	                                            { className: 'text-right mail-date' },
-	                                            'Jan 16'
-	                                        )
-	                                    );
-	                                })
-	                            )
-	                        )
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = Inbox;
-
-/***/ },
-/* 412 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Store = __webpack_require__(237).Store;
-	var AppDispatcher = __webpack_require__(230);
-	var MessageConstants = __webpack_require__(234);
-	var ApiUtil = __webpack_require__(228);
-	var History = __webpack_require__(159).History;
-
-	var MessageStore = new Store(AppDispatcher);
-
-	var initialMessages = {
-	  receivedMessages: [],
-	  unreadMessages: [],
-	  sentMessages: [],
-	  drafts: [],
-	  trash: []
-	};
-
-	var _messages = initialMessages;
-
-	MessageStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case MessageConstants.MESSAGES_RECEIVED:
-	      setMessages(payload.messages);
-	      __emitChange();
-	      break;
-	  }
-	};
-
-	var setMessages = function setMessages(messages) {
-	  _messages = messages;
-	};
-
-	var clearMessages = function clearMessages() {
-	  _messages = initialMessages;
-	};
-
-	MessageStore.getMessages = function () {
-	  return _messages;
-	};
-
-	module.exports = MessageStore;
-
-/***/ },
-/* 413 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -43217,64 +42904,67 @@
 	module.exports = Profile;
 
 /***/ },
-/* 414 */
+/* 412 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1),
-	    AdminSideNav = __webpack_require__(415),
-	    GroupIndex = __webpack_require__(417),
-	    DevIndex = __webpack_require__(421),
-	    CohortForm = __webpack_require__(423),
-	    GroupForm = __webpack_require__(424),
+	    AdminSideNav = __webpack_require__(413),
+	    GroupIndex = __webpack_require__(415),
+	    DevIndex = __webpack_require__(419),
+	    CohortForm = __webpack_require__(421),
+	    GroupForm = __webpack_require__(422),
 	    Footer = __webpack_require__(222);
 
 	var Admin = React.createClass({
 	  displayName: 'Admin',
 
 	  getInitialState: function getInitialState() {
-	    return { cohortForm: "hidden", groupForm: "hidden", cohortShow: "hidden" };
+	    return {
+	      cohorts: this.props.cohorts,
+	      activeCohort: this.props.cohorts[0],
+	      cohortShow: this.props.cohorts[0] ? "ibox-content" : "hidden",
+	      cohortForm: "hidden",
+	      groupForm: "hidden",
+	      message: this.props.message,
+	      user: this.props.user,
+	      projects: this.props.projects
+	    };
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    var user = newProps.session.user,
-	        projects = newProps.session.projects,
-	        message = newProps.session.message,
-	        newCohorts = newProps.session.cohorts,
-	        oldCohort = this.state.activeCohort,
-	        activeCohort;
+	    var activeCohort = this.state.activeCohort,
+	        cohortShow = this.state.cohortShow;
 
-	    if (oldCohort) {
-	      newCohorts.forEach(function (cohort) {
-	        if (cohort.id === oldCohort.id) {
+	    if (this.state.activeCohort) {
+	      newProps.cohorts.forEach(function (cohort) {
+	        if (cohort.id === activeCohort.id) {
 	          activeCohort = cohort;
-	        }
+	        };
 	      });
-	    } else if (newCohorts) {
-	      activeCohort = newCohorts[0];
+	    } else {
+	      if (newProps.cohorts[0]) {
+	        activeCohort = newProps.cohorts[0];
+	      };
+	      cohortShow = "ibox-content";
 	    }
 
-	    var cohortShow = activeCohort ? "ibox-content" : "hidden";
-	    var school_id = user ? user.school_id : null;
-
 	    this.setState({
-	      cohorts: newCohorts,
+	      cohorts: newProps.cohorts,
 	      activeCohort: activeCohort,
-	      school_id: school_id,
 	      cohortForm: "hidden",
-	      groupForm: "hidden",
 	      cohortShow: cohortShow,
-	      message: message,
-	      user: user,
-	      projects: projects
+	      groupForm: "hidden",
+	      message: newProps.message,
+	      user: newProps.user,
+	      projects: newProps.projects
 	    });
 	  },
 
-	  showCohortFormCallback: function showCohortFormCallback() {
+	  showCohortForm: function showCohortForm() {
 	    this.setState({
 	      activeCohort: null,
-	      cohort_id: null,
 	      cohortShow: "hidden",
 	      cohortForm: "ibox-content",
 	      groupForm: "hidden"
@@ -43289,21 +42979,17 @@
 	    });
 	  },
 
-	  setActiveCohortCallback: function setActiveCohortCallback(cohort) {
+	  setActiveCohort: function setActiveCohort(cohort) {
 	    this.setState({
 	      activeCohort: cohort,
-	      cohort_id: cohort.id,
 	      cohortForm: "hidden",
 	      cohortShow: "ibox-content",
 	      groupForm: "hidden"
 	    });
 	  },
 
-	  setActiveGroupCallback: function setActiveGroupCallback(group) {
-	    this.setState({
-	      activeGroup: group,
-	      group_id: group.id
-	    });
+	  setActiveGroup: function setActiveGroup(group) {
+	    this.setState({ activeGroup: group });
 	  },
 
 	  renderNewGroupButton: function renderNewGroupButton() {
@@ -43322,28 +43008,21 @@
 	  },
 
 	  render: function render() {
-	    var user = this.state.user;
-	    var projects = this.state.projects;
-	    var activeCohort = this.state.activeCohort;
-	    var activeGroup = this.state.activeGroup;
-	    var cohorts = this.state.cohorts;
-	    var school_id = this.state.school_id;
-	    var message = this.state.message;
-
-	    var devs = activeCohort ? activeCohort.devs : [];
-	    var soloDevs = activeCohort ? activeCohort.solo_devs : [];
-	    var cohort_id = activeCohort ? activeCohort.id : null;
-	    var groups = activeCohort ? activeCohort.groups : [];
-	    var activeCohortName = activeCohort ? activeCohort.name : "";
+	    var activeCohort = this.state.activeCohort,
+	        activeCohortDevs = activeCohort ? activeCohort.devs : [],
+	        soloDevs = activeCohort ? activeCohort.solo_devs : [],
+	        cohort_id = activeCohort ? activeCohort.id : null,
+	        groups = activeCohort ? activeCohort.groups : [],
+	        activeCohortName = activeCohort ? activeCohort.name : "";
 
 	    return React.createElement(
 	      'div',
 	      { id: 'admin' },
 	      React.createElement(AdminSideNav, {
-	        cohorts: cohorts,
+	        cohorts: this.state.cohorts,
 	        activeCohort: activeCohort,
-	        showCohortFormCallback: this.showCohortFormCallback,
-	        setActiveCohortCallback: this.setActiveCohortCallback }),
+	        showCohortFormCallback: this.showCohortForm,
+	        setActiveCohortCallback: this.setActiveCohort }),
 	      React.createElement(
 	        'div',
 	        { id: 'page-wrapper', className: 'gray-bg sidebar-content' },
@@ -43363,15 +43042,15 @@
 	                  'div',
 	                  { className: this.state.cohortForm },
 	                  React.createElement(CohortForm, {
-	                    message: message,
-	                    school_id: school_id,
-	                    setActiveCohortCallback: this.setActiveCohortCallback })
+	                    message: this.state.message,
+	                    school_id: this.state.user.school_id,
+	                    setActiveCohortCallback: this.setActiveCohort })
 	                ),
 	                React.createElement(
 	                  'div',
 	                  { className: this.state.groupForm },
 	                  React.createElement(GroupForm, {
-	                    message: message,
+	                    message: this.state.message,
 	                    soloDevs: soloDevs,
 	                    cohort_id: cohort_id })
 	                ),
@@ -43390,11 +43069,11 @@
 	                    cohort_id
 	                  ),
 	                  React.createElement(GroupIndex, {
-	                    admin: user,
-	                    projects: projects,
+	                    admin: this.state.user,
+	                    projects: this.state.projects,
 	                    groups: groups,
-	                    activeGroup: activeGroup,
-	                    setActiveGroupCallback: this.setActiveGroupCallback }),
+	                    activeGroup: this.state.activeGroup,
+	                    setActiveGroupCallback: this.setActiveGroup }),
 	                  React.createElement(
 	                    'a',
 	                    null,
@@ -43405,7 +43084,7 @@
 	                    null,
 	                    'DEVS:'
 	                  ),
-	                  React.createElement(DevIndex, { devs: devs })
+	                  React.createElement(DevIndex, { devs: activeCohortDevs })
 	                )
 	              )
 	            )
@@ -43420,41 +43099,41 @@
 	module.exports = Admin;
 
 /***/ },
-/* 415 */
+/* 413 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var AdminSideNavItem = __webpack_require__(416);
+	var AdminSideNavItem = __webpack_require__(414);
 
 	var AdminSideNav = React.createClass({
 	  displayName: 'AdminSideNav',
 
 	  getInitialState: function getInitialState() {
-	    return { cohorts: this.props.cohorts };
+	    return this.props;
 	  },
 
 	  renderCohorts: function renderCohorts() {
-	    if (this.props.cohorts) {
-	      var activeCohort = this.props.activeCohort;
-	      var setActiveCohortCallback = this.props.setActiveCohortCallback;
+	    var activeCohort = this.state.activeCohort;
+	    var setActiveCohortCallback = this.props.setActiveCohortCallback;
 
-	      var reactCohorts = this.props.cohorts.map(function (cohort, idx) {
-	        var isActive = activeCohort === cohort ? true : false;
+	    var reactCohorts = this.state.cohorts.map(function (cohort, idx) {
+	      var isActive = activeCohort === cohort ? "active" : "";
 
-	        return React.createElement(AdminSideNavItem, {
-	          cohort: cohort,
-	          isActive: isActive,
-	          key: idx,
-	          onClick: setActiveCohortCallback });
-	      });
+	      return React.createElement(AdminSideNavItem, {
+	        cohort: cohort,
+	        isActive: isActive,
+	        key: idx,
+	        onClick: setActiveCohortCallback });
+	    });
 
-	      return reactCohorts;
-	    }
+	    return reactCohorts;
 	  },
 
-	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {},
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    this.setState(newProps);
+	  },
 
 	  render: function render() {
 	    return React.createElement(
@@ -43500,30 +43179,28 @@
 	module.exports = AdminSideNav;
 
 /***/ },
-/* 416 */
+/* 414 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var React = __webpack_require__(1);
 
-	var CohortIndexItem = React.createClass({
-	  displayName: "CohortIndexItem",
+	var AdminSideNavItem = React.createClass({
+	  displayName: "AdminSideNavItem",
 
 	  getInitialState: function getInitialState() {
-	    if (this.props.isActive) {
-	      return { className: "active" };
-	    } else {
-	      return { className: "" };
-	    }
+	    var cohort = this.props.cohort ? this.props.cohort : {};
+	    var isActive = this.props.isActive;
+
+	    return { isActive: isActive, cohort: cohort };
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    if (newProps.isActive) {
-	      this.setState({ className: "active" });
-	    } else {
-	      this.setState({ className: "" });
-	    }
+	    var isActive = newProps.isActive;
+	    var cohort = newProps.cohort;
+
+	    return { isActive: isActive, cohort: cohort };
 	  },
 
 	  handleClick: function handleClick(e) {
@@ -43534,7 +43211,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "li",
-	      { className: this.state.className, onClick: this.handleClick },
+	      { className: this.state.isActive, onClick: this.handleClick },
 	      React.createElement(
 	        "a",
 	        null,
@@ -43544,23 +43221,23 @@
 	        React.createElement(
 	          "span",
 	          { className: "nav-label" },
-	          this.props.cohort.name
+	          this.state.cohort.name
 	        )
 	      )
 	    );
 	  }
 	});
 
-	module.exports = CohortIndexItem;
+	module.exports = AdminSideNavItem;
 
 /***/ },
-/* 417 */
+/* 415 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var GroupIndexItem = __webpack_require__(418);
+	var GroupIndexItem = __webpack_require__(416);
 
 	var groupIndex = React.createClass({
 	  displayName: 'groupIndex',
@@ -43617,13 +43294,13 @@
 	module.exports = groupIndex;
 
 /***/ },
-/* 418 */
+/* 416 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var ProjectIndex = __webpack_require__(419);
+	var ProjectIndex = __webpack_require__(417);
 
 	var GroupIndexItem = React.createClass({
 	  displayName: 'GroupIndexItem',
@@ -43646,27 +43323,19 @@
 	  },
 
 	  render: function render() {
-	    var admin = this.state.admin,
-	        styling = this.getStyling(),
-	        projects = this.state.projects,
-	        groupName = this.state.group.name,
-	        setActiveGroup = this.props.handleClick;
-
 	    return React.createElement(
 	      'li',
-	      { className: styling, onClick: setActiveGroup },
+	      { className: this.getStyling(), onClick: this.handleClick },
 	      React.createElement(
 	        'a',
 	        null,
 	        React.createElement(
 	          'span',
 	          { className: 'nav-label' },
-	          groupName
+	          this.state.group.name
 	        )
 	      ),
-	      React.createElement(ProjectIndex, {
-	        admin: admin,
-	        projects: projects })
+	      React.createElement(ProjectIndex, { admin: admin, projects: this.state.projects })
 	    );
 	  }
 	});
@@ -43674,13 +43343,13 @@
 	module.exports = GroupIndexItem;
 
 /***/ },
-/* 419 */
+/* 417 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var ProjectIndexItem = __webpack_require__(420);
+	var ProjectIndexItem = __webpack_require__(418);
 
 	var ProjectIndex = React.createClass({
 	  displayName: 'ProjectIndex',
@@ -43700,9 +43369,7 @@
 
 	    var columnSize = Math.ceil(projects.length / 3);
 	    var columns = [];
-
-	    // Index projects while rendering them for O(1) update.
-	    var projectIdx = 0;
+	    var key = 0;
 
 	    for (var i = 0; i < 3; i++) {
 	      columns.push(projects.slice(i * columnSize, (i + 1) * columnSize));
@@ -43712,14 +43379,12 @@
 	      return React.createElement(
 	        'div',
 	        { className: 'col-md-3', key: colIdx },
-	        column.map(function (project, rowIdx) {
-	          project.projectIdx = projectIdx;
-	          projectIdx++;
-
+	        column.map(function (project) {
+	          key++;
 	          return React.createElement(ProjectIndexItem, {
 	            dev: dev,
 	            admin: admin,
-	            key: projectIdx,
+	            key: key,
 	            project: project });
 	        })
 	      );
@@ -43746,7 +43411,7 @@
 	module.exports = ProjectIndex;
 
 /***/ },
-/* 420 */
+/* 418 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -43877,13 +43542,13 @@
 	module.exports = ProjectIndexItem;
 
 /***/ },
-/* 421 */
+/* 419 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var DevIndexItem = __webpack_require__(422);
+	var DevIndexItem = __webpack_require__(420);
 
 	var DevIndex = React.createClass({
 	  displayName: 'DevIndex',
@@ -43925,7 +43590,7 @@
 	module.exports = DevIndex;
 
 /***/ },
-/* 422 */
+/* 420 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -43986,7 +43651,7 @@
 	module.exports = DevIndexItem;
 
 /***/ },
-/* 423 */
+/* 421 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44060,7 +43725,7 @@
 	module.exports = CohortForm;
 
 /***/ },
-/* 424 */
+/* 422 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44068,7 +43733,7 @@
 	var React = __webpack_require__(1);
 	var LinkedStateMixin = __webpack_require__(223);
 	var ApiUtil = __webpack_require__(228);
-	var DevIndex = __webpack_require__(421);
+	var DevIndex = __webpack_require__(419);
 
 	var GroupForm = React.createClass({
 	  displayName: 'GroupForm',
@@ -44173,57 +43838,51 @@
 	module.exports = GroupForm;
 
 /***/ },
-/* 425 */
+/* 423 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var CustomerSideNav = __webpack_require__(426);
+	var CustomerSideNav = __webpack_require__(424);
+	var ProjectShow = __webpack_require__(426);
 	var Footer = __webpack_require__(222);
 
 	var Customer = React.createClass({
 	  displayName: 'Customer',
 
 	  getInitialState: function getInitialState() {
-	    var customer = this.props.session.user;
-
-	    if (customer) {
-	      customer.currentProject = customer.projects[0];
-	      return customer;
-	    }
-
-	    return { projects: [], currentProject: null };
+	    return {
+	      user: this.props.user,
+	      projects: this.props.projects,
+	      activeProject: this.props.projects[0]
+	    };
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    var customer = this.props.session.user;
+	    var activeProject = this.state.activeProject;
 
-	    if (customer) {
-	      customer.currentProject = customer.projects[0];
-	      this.setState(customer);
+	    if (activeProject) {
+	      newProps.projects.forEach(function (project) {
+	        if (project.id === activeProject.id) {
+	          activeProject = project;
+	        };
+	      });
+	    } else {
+	      if (newProps.projects[0]) {
+	        activeProject = newProps.projects[0];
+	      };
 	    }
 
-	    return { projects: [], currentProject: null };
-	  },
-
-	  projectShow: function projectShow() {
-	    if (this.state.currentProject) {
-	      return React.createElement(
-	        'div',
-	        { className: 'ibox-content' },
-	        React.createElement(
-	          'h1',
-	          null,
-	          this.state.currentProject.name
-	        )
-	      );
-	    }
+	    this.setState({
+	      user: newProps.user,
+	      projects: newProps.projects,
+	      activeProject: activeProject
+	    });
 	  },
 
 	  setActiveProjectCallback: function setActiveProjectCallback(project) {
-
-	    this.setState({ currentProject: project });
+	    this.setState({ activeProject: project });
 	  },
 
 	  render: function render() {
@@ -44232,7 +43891,7 @@
 	      { id: 'customer' },
 	      React.createElement(CustomerSideNav, {
 	        projects: this.state.projects,
-	        currentProject: this.state.currentProject,
+	        activeProject: this.state.activeProject,
 	        setActiveProjectCallback: this.setActiveProjectCallback }),
 	      React.createElement(
 	        'div',
@@ -44249,7 +43908,9 @@
 	              React.createElement(
 	                'div',
 	                { className: 'ibox' },
-	                this.projectShow()
+	                React.createElement(ProjectShow, {
+	                  user: this.state.user,
+	                  project: this.state.activeProject })
 	              )
 	            )
 	          )
@@ -44263,13 +43924,13 @@
 	module.exports = Customer;
 
 /***/ },
-/* 426 */
+/* 424 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var CustomerSideNavItem = __webpack_require__(427);
+	var CustomerSideNavItem = __webpack_require__(425);
 
 	var AdminSideNav = React.createClass({
 	  displayName: 'AdminSideNav',
@@ -44277,10 +43938,11 @@
 	  contextTypes: { router: React.PropTypes.object.isRequired },
 
 	  getInitialState: function getInitialState() {
-	    return {
-	      projects: this.props.projects,
-	      currentProject: this.props.currentProject
-	    };
+	    return this.props;
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    this.setState(newProps);
 	  },
 
 	  goToProjectSubmission: function goToProjectSubmission() {
@@ -44289,16 +43951,11 @@
 
 	  renderProjects: function renderProjects() {
 	    var self = this;
-	    var currentProject = this.props.currentProject;
+	    var activeProject = this.props.activeProject;
 
 	    if (this.props.projects) {
 	      return this.props.projects.map(function (project, idx) {
-	        var isActive = false;
-	        project.idx = idx;
-
-	        if (currentProject === project) {
-	          isActive = true;
-	        }
+	        var isActive = activeProject === project ? true : false;
 
 	        return React.createElement(CustomerSideNavItem, {
 	          project: project,
@@ -44351,7 +44008,7 @@
 	module.exports = AdminSideNav;
 
 /***/ },
-/* 427 */
+/* 425 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44407,137 +44064,14 @@
 	module.exports = ProjectIndexItem;
 
 /***/ },
-/* 428 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var DevSideNav = __webpack_require__(429);
-	var ProjectIndex = __webpack_require__(419);
-	var Footer = __webpack_require__(222);
-
-	var Dev = React.createClass({
-	  displayName: 'Dev',
-
-	  getInitialState: function getInitialState() {
-	    var session = this.props.session;
-
-	    var dev = session.user ? session.user : null;
-	    var projects = session.projects ? session.projects : [];
-
-	    return {
-	      dev: dev,
-	      projects: projects
-	    };
-	  },
-
-	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    var session = newProps.session;
-
-	    var dev = session.user ? session.user : null;
-	    var projects = session.projects ? session.projects : [];
-
-	    this.setState({
-	      dev: dev,
-	      projects: projects
-	    });
-	  },
-
-	  render: function render() {
-	    var dev = this.state.dev;
-	    var projects = this.state.projects;
-
-	    return React.createElement(
-	      'div',
-	      { id: 'dev' },
-	      React.createElement(DevSideNav, null),
-	      React.createElement(
-	        'div',
-	        { id: 'page-wrapper', className: 'gray-bg sidebar-content' },
-	        React.createElement(
-	          'div',
-	          { className: 'row' },
-	          React.createElement(
-	            'div',
-	            { className: 'col-lg-12' },
-	            React.createElement(
-	              'div',
-	              { className: 'wrapper wrapper-content animated fadeInUp' },
-	              React.createElement(
-	                'div',
-	                { className: 'ibox' },
-	                React.createElement(ProjectIndex, {
-	                  dev: dev,
-	                  projects: projects })
-	              )
-	            )
-	          )
-	        )
-	      ),
-	      React.createElement(Footer, null)
-	    );
-	  }
-	});
-
-	module.exports = Dev;
-
-/***/ },
-/* 429 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	var React = __webpack_require__(1);
-
-	var DevSideNav = React.createClass({
-	    displayName: "DevSideNav",
-
-	    render: function render() {
-	        return React.createElement(
-	            "nav",
-	            { className: "navbar-default navbar-static-side sidebar-content", role: "navigation" },
-	            React.createElement(
-	                "div",
-	                { className: "sidebar-collapse" },
-	                React.createElement(
-	                    "ul",
-	                    { className: "nav metismenu", id: "side-menu" },
-	                    React.createElement(
-	                        "li",
-	                        { className: "nav-header" },
-	                        React.createElement(
-	                            "div",
-	                            { className: "logo-element" },
-	                            "mL"
-	                        )
-	                    ),
-	                    React.createElement(
-	                        "li",
-	                        null,
-	                        React.createElement(
-	                            "span",
-	                            { className: "nav-label" },
-	                            "Filter"
-	                        )
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-
-	module.exports = DevSideNav;
-
-/***/ },
-/* 430 */
+/* 426 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(228);
-	var KanbanColumn = __webpack_require__(431);
+	var KanbanColumn = __webpack_require__(427);
 
 	var projectShow = React.createClass({
 	    displayName: 'projectShow',
@@ -44545,21 +44079,33 @@
 	    contextTypes: { router: React.PropTypes.object.isRequired },
 
 	    getInitialState: function getInitialState() {
-	        return {};
+	        var user = this.props.user;
+	        var project = this.props.project ? this.props.project : {};
+	        var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
+
+	        return {
+	            user: user,
+	            project: project,
+	            todo: tasks.todo,
+	            completed: tasks.completed,
+	            inprogress: tasks.inprogress
+	        };
 	    },
 
 	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	        var projects = newProps.session.projects;
-	        var user = newProps.session.user;
+	        var project = newProps.project ? newProps.project : {};
+	        var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
 
-	        // just take first project for now.
-	        var project = projects ? projects[0] : {};
+	        this.setState({
+	            user: newProps.user,
+	            project: project,
+	            todo: tasks.todo,
+	            completed: tasks.completed,
+	            inprogress: tasks.inprogress
+	        });
+	    },
 
-	        // This is important for 0(1) update.
-	        project.idx = 0;
-
-	        var self = this;
-	        var tasks = project.tasks ? project.tasks : [];
+	    sortTasks: function sortTasks(tasks) {
 	        var todo = [];
 	        var inprogress = [];
 	        var completed = [];
@@ -44578,13 +44124,11 @@
 	            }
 	        });
 
-	        this.setState({
-	            user: user,
+	        return {
 	            todo: todo,
-	            project: project,
 	            completed: completed,
 	            inprogress: inprogress
-	        });
+	        };
 	    },
 
 	    addTask: function addTask(e) {
@@ -44601,7 +44145,10 @@
 	    },
 
 	    render: function render() {
-	        var projectIdx = this.state.project ? this.state.project.idx : null;
+	        var projectIdx = this.state.project ? this.state.project.idx : null,
+	            name = this.state.project ? this.state.project.name : null,
+	            url = this.state.project ? this.state.project.url : null;
+
 	        return React.createElement(
 	            'div',
 	            null,
@@ -44677,12 +44224,12 @@
 	                                                                React.createElement(
 	                                                                    'h1',
 	                                                                    { className: 'm-b-xs' },
-	                                                                    this.state.name
+	                                                                    name
 	                                                                ),
 	                                                                React.createElement(
 	                                                                    'h3',
 	                                                                    { className: 'font-bold no-margins' },
-	                                                                    this.state.url
+	                                                                    url
 	                                                                )
 	                                                            ),
 	                                                            React.createElement(
@@ -44853,352 +44400,6 @@
 	                                                                        'Comments'
 	                                                                    )
 	                                                                )
-	                                                            ),
-	                                                            React.createElement(
-	                                                                'tbody',
-	                                                                null,
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Completed'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'Create project in webapp'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable.'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Accepted'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'Various versions'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Sent'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'There are many variations'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Reported'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'Latin words'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'Latin words, combined with a handful of model sentence structures'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Accepted'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'The generated Lorem'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Sent'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'The first line'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Reported'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'The standard chunk'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested.'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Completed'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'Lorem Ipsum is that'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable.'
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'span',
-	                                                                            { className: 'label label-primary' },
-	                                                                            React.createElement('i', { className: 'fa fa-check' }),
-	                                                                            ' Sent'
-	                                                                        )
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        'Contrary to popular'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '12.07.2014 10:10:1'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        '14.07.2014 10:16:36'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'td',
-	                                                                        null,
-	                                                                        React.createElement(
-	                                                                            'p',
-	                                                                            { className: 'small' },
-	                                                                            'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classNameical'
-	                                                                        )
-	                                                                    )
-	                                                                )
 	                                                            )
 	                                                        )
 	                                                    )
@@ -45219,13 +44420,13 @@
 	module.exports = projectShow;
 
 /***/ },
-/* 431 */
+/* 427 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var KanbanItem = __webpack_require__(432);
+	var KanbanItem = __webpack_require__(428);
 	var ApiUtil = __webpack_require__(228);
 
 	var PropTypes = React.PropTypes;
@@ -45259,15 +44460,9 @@
 	  }
 	};
 
-	/**
-	 * Specifies which props to inject into your component.
-	 */
 	function collect(connect, monitor) {
 	  return {
-	    // Call this function inside render()
-	    // to let React DnD handle the drag events:
 	    connectDropTarget: connect.dropTarget(),
-	    // You can ask the monitor about the current drag state:
 	    isOver: monitor.isOver(),
 	    isOverCurrent: monitor.isOver({ shallow: true }),
 	    canDrop: monitor.canDrop(),
@@ -45279,30 +44474,15 @@
 	  displayName: 'Column',
 
 	  propTypes: {
-	    // column: PropTypes.object.isRequired,
-	    // x: PropTypes.number.isRequired,
-	    // y: PropTypes.number.isRequired,
 	    isOver: PropTypes.bool.isRequired
 	  },
+
 	  getInitialState: function getInitialState() {
-	    return {};
+	    return this.props;
 	  },
 
-	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-	    if (!this.props.isOver && nextProps.isOver) {
-	      // You can use this as enter handler
-	    }
-
-	    if (this.props.isOver && !nextProps.isOver) {
-	      // You can use this as leave handler
-	    }
-
-	    if (this.props.isOverCurrent && !nextProps.isOverCurrent) {
-	      // You can be more specific and track enter/leave
-	      // shallowly, not including nested targets
-	    }
-
-	    this.setState(nextProps);
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    this.setState(newProps);
 	  },
 
 	  renderTasks: function renderTasks() {
@@ -45317,14 +44497,11 @@
 	  },
 
 	  render: function render() {
-	    // Your component receives its own props as usual
-	    var position = this.props.position;
-
-	    // These props are injected by React DnD,
-	    // as defined by your `collect` function above:
-	    var isOver = this.props.isOver;
-	    var canDrop = this.props.canDrop;
-	    var connectDropTarget = this.props.connectDropTarget;
+	    // ReactDND vars:
+	    var position = this.props.position,
+	        isOver = this.props.isOver,
+	        canDrop = this.props.canDrop,
+	        connectDropTarget = this.props.connectDropTarget;
 
 	    return connectDropTarget(React.createElement(
 	      'ul',
@@ -45337,7 +44514,7 @@
 	module.exports = DropTarget("KanbanItem", ColumnTarget, collect)(Column);
 
 /***/ },
-/* 432 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45404,6 +44581,119 @@
 	});
 
 	module.exports = DragSource("KanbanItem", source, collect)(KanbanItem);
+
+/***/ },
+/* 429 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var DevSideNav = __webpack_require__(430);
+	var ProjectIndex = __webpack_require__(417);
+	var Footer = __webpack_require__(222);
+
+	var Dev = React.createClass({
+	  displayName: 'Dev',
+
+	  getInitialState: function getInitialState() {
+	    var dev = this.props.user;
+	    var projects = this.props.projects;
+
+	    return {
+	      dev: dev,
+	      projects: projects
+	    };
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    this.setState({ dev: newProps.user, projects: newProps.projects });
+	  },
+
+	  render: function render() {
+	    var dev = this.state.dev;
+	    var projects = this.state.projects;
+
+	    return React.createElement(
+	      'div',
+	      { id: 'dev' },
+	      React.createElement(DevSideNav, null),
+	      React.createElement(
+	        'div',
+	        { id: 'page-wrapper', className: 'gray-bg sidebar-content' },
+	        React.createElement(
+	          'div',
+	          { className: 'row' },
+	          React.createElement(
+	            'div',
+	            { className: 'col-lg-12' },
+	            React.createElement(
+	              'div',
+	              { className: 'wrapper wrapper-content animated fadeInUp' },
+	              React.createElement(
+	                'div',
+	                { className: 'ibox' },
+	                React.createElement(ProjectIndex, {
+	                  dev: this.state.dev,
+	                  projects: this.state.projects })
+	              )
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(Footer, null)
+	    );
+	  }
+	});
+
+	module.exports = Dev;
+
+/***/ },
+/* 430 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var React = __webpack_require__(1);
+
+	var DevSideNav = React.createClass({
+	    displayName: "DevSideNav",
+
+	    render: function render() {
+	        return React.createElement(
+	            "nav",
+	            { className: "navbar-default navbar-static-side sidebar-content", role: "navigation" },
+	            React.createElement(
+	                "div",
+	                { className: "sidebar-collapse" },
+	                React.createElement(
+	                    "ul",
+	                    { className: "nav metismenu", id: "side-menu" },
+	                    React.createElement(
+	                        "li",
+	                        { className: "nav-header" },
+	                        React.createElement(
+	                            "div",
+	                            { className: "logo-element" },
+	                            "mL"
+	                        )
+	                    ),
+	                    React.createElement(
+	                        "li",
+	                        null,
+	                        React.createElement(
+	                            "span",
+	                            { className: "nav-label" },
+	                            "Filter"
+	                        )
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	module.exports = DevSideNav;
 
 /***/ }
 /******/ ]);

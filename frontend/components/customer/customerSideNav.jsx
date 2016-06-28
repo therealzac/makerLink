@@ -5,10 +5,11 @@ var AdminSideNav = React.createClass({
   contextTypes: { router: React.PropTypes.object.isRequired },
 
   getInitialState: function () {
-    return {
-      projects: this.props.projects,
-      currentProject: this.props.currentProject
-    }
+    return this.props;
+  },
+
+  componentWillReceiveProps: function (newProps) {
+    this.setState(newProps);
   },
 
   goToProjectSubmission: function () {
@@ -17,14 +18,11 @@ var AdminSideNav = React.createClass({
 
   renderProjects: function () {
     var self = this;
-    var currentProject = this.props.currentProject;
+    var activeProject = this.props.activeProject;
 
     if (this.props.projects) {
       return this.props.projects.map(function(project, idx) {
-        var isActive = false;
-        project.idx = idx;
-
-        if (currentProject === project) { isActive = true }
+        var isActive = (activeProject === project ? true : false);
 
         return(
           <CustomerSideNavItem

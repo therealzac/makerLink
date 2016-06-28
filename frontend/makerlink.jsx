@@ -11,12 +11,11 @@ const React = require('react'),
       Signup = require('./components/signup'),
       SubmissionForm = require('./components/submissionForm'),
       Dashboard = require('./components/dashboard'),
-      Inbox = require('./components/inbox'),
       Settings = require('./components/settings'),
       Admin = require('./components/admin/admin'),
       Customer = require('./components/customer/customer'),
       Dev = require('./components/dev/dev'),
-      Project = require('./components/customer/projectShow.jsx'),
+      Project = require('./components/projectShow.jsx'),
 
       routes = (
         <Route path="/" component={App}>

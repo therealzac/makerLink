@@ -1,3 +1,5 @@
+require 'slack'
+
 class SessionsController < ApplicationController
   def new
     render :layout => "empty"
@@ -8,6 +10,8 @@ class SessionsController < ApplicationController
     @user = User.find_by_credentials(email, password)
 
     if @user
+      @projects = @user.projects if @user.is_customer?
+
       if @user.is_dev?
         @user.school = @user.cohort.school
         @projects = Project.all
@@ -44,6 +48,8 @@ class SessionsController < ApplicationController
   def show
     @user = current_user
     if @user
+      @projects = @user.projects if @user.is_customer?
+
       if @user.is_dev?
         @projects = Project.all
         flagged_projects = @user.flagged_projects

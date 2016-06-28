@@ -20,19 +20,10 @@ var GroupIndexItem = React.createClass({
   },
 
   render: function () {
-    var admin = this.state.admin,
-        styling = this.getStyling(),
-        projects = this.state.projects,
-        groupName = this.state.group.name,
-        setActiveGroup = this.props.handleClick;
-
     return (
-      <li className={styling} onClick={setActiveGroup}>
-          <a><span className="nav-label">{groupName}</span></a>
-          <ProjectIndex
-            admin={admin}
-            projects={projects}>
-          </ProjectIndex>
+      <li className={this.getStyling()} onClick={this.handleClick}>
+          <a><span className="nav-label">{this.state.group.name}</span></a>
+          <ProjectIndex admin={admin} projects={this.state.projects}/>
       </li>
     )
   }

@@ -29,6 +29,11 @@ gem 'pg'
 
 gem 'stripe'
 
+gem 'slack-ruby-client'
+
+gem 'eventmachine'
+gem 'faye-websocket'
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 

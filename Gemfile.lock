@@ -64,11 +64,21 @@ GEM
     domain_name (0.5.20160310)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
+    eventmachine (1.2.0.1)
     execjs (2.6.0)
+    faraday (0.9.2)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.10.0)
+      faraday (>= 0.7.4, < 0.10)
+    faye-websocket (0.9.2)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
     font-awesome-rails (4.3.0.0)
       railties (>= 3.2, < 5.0)
+    gli (2.14.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    hashie (3.4.4)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     i18n (0.7.0)
@@ -84,6 +94,7 @@ GEM
     mini_portile2 (2.0.0)
     minitest (5.8.3)
     multi_json (1.11.2)
+    multipart-post (2.0.0)
     netrc (0.11.0)
     nokogiri (1.6.7.1)
       mini_portile2 (~> 2.0.0.rc2)
@@ -132,6 +143,14 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    slack-ruby-client (0.7.4)
+      activesupport
+      faraday
+      faraday_middleware
+      gli
+      hashie
+      json
+      websocket-driver
     spring (1.6.3)
     sprockets (3.5.2)
       concurrent-ruby (~> 1.0)
@@ -161,6 +180,9 @@ GEM
       binding_of_caller (>= 0.7.2)
       railties (>= 4.0)
       sprockets-rails (>= 2.0, < 4.0)
+    websocket-driver (0.6.4)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.2)
 
 PLATFORMS
   ruby
@@ -171,12 +193,15 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass (~> 3.3.6)
   coffee-rails (~> 4.0.0)
+  eventmachine
+  faye-websocket
   font-awesome-rails (= 4.3.0.0)
   jbuilder (~> 1.2)
   pg
   rails (= 4.2.3)
   sass-rails (~> 5.0.4)
   sdoc
+  slack-ruby-client
   spring
   sqlite3
   stripe

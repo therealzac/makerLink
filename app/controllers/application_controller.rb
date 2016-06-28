@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   Stripe.api_key = "sk_test_9NWrmNu1xmzxjKAkzVGFB6GM"
 
+  
+
   def current_user
     return nil unless session[:session_token]
     @current_user ||= User.includes(:flags, :projects, :cohorts).find_by_session_token(session[:session_token])

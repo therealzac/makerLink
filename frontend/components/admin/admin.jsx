@@ -9,46 +9,46 @@ var React = require('react'),
 
 var Admin = React.createClass({
   getInitialState: function() {
-    return { cohortForm: "hidden", groupForm: "hidden", cohortShow: "hidden" }
+    return {
+      cohorts: this.props.cohorts,
+      activeCohort: this.props.cohorts[0],
+      cohortShow: this.props.cohorts[0] ? "ibox-content" : "hidden",
+      cohortForm: "hidden",
+      groupForm: "hidden",
+      message: this.props.message,
+      user: this.props.user,
+      projects: this.props.projects
+    };
   },
 
   componentWillReceiveProps: function (newProps) {
-    var user = newProps.session.user,
-        projects = newProps.session.projects,
-        message = newProps.session.message,
-        newCohorts = newProps.session.cohorts,
-        oldCohort = this.state.activeCohort,
-        activeCohort;
+    var activeCohort = this.state.activeCohort,
+        cohortShow = this.state.cohortShow;
 
-    if (oldCohort) {
-      newCohorts.forEach(function (cohort) {
-        if (cohort.id === oldCohort.id) { activeCohort = cohort }
+    if (this.state.activeCohort) {
+      newProps.cohorts.forEach(function (cohort) {
+        if (cohort.id === activeCohort.id) { activeCohort = cohort };
       });
-
-    } else if (newCohorts) {
-      activeCohort = newCohorts[0];
+    } else {
+      if (newProps.cohorts[0]) { activeCohort = newProps.cohorts[0] };
+      cohortShow = "ibox-content";
     }
 
-    var cohortShow = activeCohort ? "ibox-content" : "hidden";
-    var school_id = user ? user.school_id : null;
-
     this.setState({
-      cohorts: newCohorts,
+      cohorts: newProps.cohorts,
       activeCohort: activeCohort,
-      school_id: school_id,
       cohortForm: "hidden",
-      groupForm: "hidden",
       cohortShow: cohortShow,
-      message: message,
-      user: user,
-      projects: projects
+      groupForm: "hidden",
+      message: newProps.message,
+      user: newProps.user,
+      projects: newProps.projects
     });
   },
 
-  showCohortFormCallback: function () {
+  showCohortForm: function () {
     this.setState({
       activeCohort: null,
-      cohort_id: null,
       cohortShow: "hidden",
       cohortForm: "ibox-content",
       groupForm: "hidden"
@@ -63,21 +63,17 @@ var Admin = React.createClass({
     });
   },
 
-  setActiveCohortCallback: function(cohort) {
+  setActiveCohort: function(cohort) {
     this.setState({
       activeCohort: cohort,
-      cohort_id:  cohort.id,
       cohortForm: "hidden",
       cohortShow: "ibox-content",
       groupForm: "hidden"
     });
   },
 
-  setActiveGroupCallback: function (group) {
-    this.setState({
-      activeGroup: group,
-      group_id: group.id
-    });
+  setActiveGroup: function (group) {
+    this.setState({ activeGroup: group });
   },
 
   renderNewGroupButton: function () {
@@ -96,27 +92,21 @@ var Admin = React.createClass({
   },
 
   render: function () {
-    var user = this.state.user;
-    var projects = this.state.projects;
-    var activeCohort = this.state.activeCohort;
-    var activeGroup = this.state.activeGroup;
-    var cohorts = this.state.cohorts;
-    var school_id = this.state.school_id;
-    var message = this.state.message;
+    var activeCohort = this.state.activeCohort,
 
-    var devs = activeCohort ? activeCohort.devs : [];
-    var soloDevs = activeCohort ? activeCohort.solo_devs : [];
-    var cohort_id = activeCohort ? activeCohort.id : null;
-    var groups = activeCohort ? activeCohort.groups : [];
-    var activeCohortName = activeCohort ? activeCohort.name : "";
+        activeCohortDevs = activeCohort ? activeCohort.devs : [],
+        soloDevs = activeCohort ? activeCohort.solo_devs : [],
+        cohort_id = activeCohort ? activeCohort.id : null,
+        groups = activeCohort ? activeCohort.groups : [],
+        activeCohortName = activeCohort ? activeCohort.name : "";
 
     return(
       <div id="admin">
         <AdminSideNav
-          cohorts={cohorts}
+          cohorts={this.state.cohorts}
           activeCohort={activeCohort}
-          showCohortFormCallback={this.showCohortFormCallback}
-          setActiveCohortCallback={this.setActiveCohortCallback}>
+          showCohortFormCallback={this.showCohortForm}
+          setActiveCohortCallback={this.setActiveCohort}>
         </AdminSideNav>
 
         <div id="page-wrapper" className="gray-bg sidebar-content">
@@ -127,15 +117,15 @@ var Admin = React.createClass({
 
                   <div className={this.state.cohortForm}>
                     <CohortForm
-                      message={message}
-                      school_id={school_id}
-                      setActiveCohortCallback={this.setActiveCohortCallback}>
+                      message={this.state.message}
+                      school_id={this.state.user.school_id}
+                      setActiveCohortCallback={this.setActiveCohort}>
                     </CohortForm>
                   </div>
 
                   <div className={this.state.groupForm}>
                     <GroupForm
-                      message={message}
+                      message={this.state.message}
                       soloDevs={soloDevs}
                       cohort_id={cohort_id}>
                     </GroupForm>
@@ -145,11 +135,11 @@ var Admin = React.createClass({
                     <h3>{activeCohortName}</h3>
                     <h3>COHORT CODE: {cohort_id}</h3>
                     <GroupIndex
-                      admin={user}
-                      projects={projects}
+                      admin={this.state.user}
+                      projects={this.state.projects}
                       groups={groups}
-                      activeGroup={activeGroup}
-                      setActiveGroupCallback={this.setActiveGroupCallback}>
+                      activeGroup={this.state.activeGroup}
+                      setActiveGroupCallback={this.setActiveGroup}>
                     </GroupIndex>
 
                     <a>
@@ -157,7 +147,7 @@ var Admin = React.createClass({
                     </a>
 
                     <h3>DEVS:</h3>
-                    <DevIndex devs={devs}/>
+                    <DevIndex devs={activeCohortDevs}/>
                   </div>
 
                 </div>

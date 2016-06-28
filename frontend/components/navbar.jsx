@@ -123,7 +123,7 @@ var NavBar = React.createClass({
                                 <img alt="image" className="img-circle"/>
                             </a>
                             <div>
-                                <strong>{newsItem.subject}</strong><br/>
+                                <strong>{newsItem.body}</strong><br/>
                             </div>
                         </div>
                       </li>

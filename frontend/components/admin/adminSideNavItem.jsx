@@ -1,21 +1,18 @@
 var React = require('react');
 
-var CohortIndexItem = React.createClass({
+var AdminSideNavItem = React.createClass({
   getInitialState: function () {
-    if (this.props.isActive) {
-      return { className: "active" }
-    } else {
-      return { className: "" }
-    }
+    var cohort = this.props.cohort ? this.props.cohort : {};
+    var isActive = this.props.isActive;
 
+    return { isActive: isActive, cohort: cohort };
   },
 
   componentWillReceiveProps: function (newProps) {
-    if (newProps.isActive) {
-      this.setState( {className: "active"} );
-    } else {
-      this.setState( {className: ""} );
-    }
+    var isActive = newProps.isActive;
+    var cohort = newProps.cohort;
+
+    return { isActive: isActive, cohort: cohort };
   },
 
   handleClick: function (e) {
@@ -25,11 +22,11 @@ var CohortIndexItem = React.createClass({
 
   render: function () {
     return (
-      <li className={this.state.className} onClick={this.handleClick}>
-          <a> <i className="fa fa-th-large"></i> <span className="nav-label">{this.props.cohort.name}</span></a>
+      <li className={this.state.isActive} onClick={this.handleClick}>
+          <a> <i className="fa fa-th-large"></i> <span className="nav-label">{this.state.cohort.name}</span></a>
       </li>
     )
   }
 })
 
-module.exports = CohortIndexItem;
+module.exports = AdminSideNavItem;

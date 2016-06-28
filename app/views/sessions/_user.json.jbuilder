@@ -10,7 +10,6 @@ json.extract!(
         :pic_url,
         :type,
         :group_id,
-        :projects,
         :news,
         :school
 )

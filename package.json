@@ -27,6 +27,7 @@
     "react-router": "^2.0.0",
     "react-stripe-checkout": "^1.8.0",
     "redux": "^3.3.1",
+    "slack": "^7.4.1",
     "stripe": "^4.7.0",
     "webpack": "^1.12.14"
   },

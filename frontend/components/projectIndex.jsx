@@ -17,9 +17,7 @@ var ProjectIndex = React.createClass({
 
     var columnSize = Math.ceil(projects.length / 3);
     var columns = [];
-
-    // Index projects while rendering them for O(1) update.
-    var projectIdx = 0;
+    var key = 0;
 
     for (var i = 0; i < 3; i++) {
       columns.push(projects.slice(i * columnSize, (i + 1) * columnSize));
@@ -29,15 +27,13 @@ var ProjectIndex = React.createClass({
       return (
         <div className="col-md-3" key={colIdx}>
           {
-            column.map(function(project, rowIdx) {
-              project.projectIdx = projectIdx;
-              projectIdx++;
-
+            column.map(function(project) {
+              key++;
               return (
                 <ProjectIndexItem
                   dev={dev}
                   admin={admin}
-                  key={projectIdx}
+                  key={key}
                   project={project}>
                 </ProjectIndexItem>
               )

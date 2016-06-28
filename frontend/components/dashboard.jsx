@@ -1,15 +1,15 @@
 var React = require('react');
-var Inbox = require('./inbox.jsx');
-var SessionStore = require('../stores/session.js');
-var MessageStore = require('../stores/message.js');
-var apiUtil = require('../util/apiUtil.js');
 
 var Dashboard = React.createClass({
   contextTypes: { router: React.PropTypes.object.isRequired },
 
   getInitialState: function () {
     var session = this.props.session;
-    return { session: session }
+    var user = session.user ? session.user : {};
+    var projects = session.projects ? this.indexObjects(session.projects) : [];
+    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
+
+    return { user: user, projects: projects, cohorts: cohorts }
   },
 
   componentDidMount: function () {
@@ -17,12 +17,29 @@ var Dashboard = React.createClass({
   },
 
   componentWillReceiveProps: function (newProps) {
-    this.setState({session: newProps.session});
+    var session = newProps.session;
+    var user = session.user ? session.user : {};
+    var projects = session.projects ? this.indexObjects(session.projects) : [];
+    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
+    if (!user) { this.context.router.push('/login') }
+
+    this.setState({ user: user, projects: projects, cohorts: cohorts });
   },
 
-  renderChildrenWithProps: function () {
+  indexObjects: function (objects) {
+    objects.forEach(function (object, idx) { object.idx = idx });
+
+    return objects;
+  },
+
+  renderChildrenWithProps: function (user, projects, cohorts) {
+    var user = this.state.user;
+    var projects = this.state.projects;
+    var cohorts = this.state.cohorts;;
     var childrenWithProps = React.Children.map(this.props.children,
-      (child) => React.cloneElement(child, {session: this.state.session}));
+      (child) => React.cloneElement(
+        child, {user: user, projects: projects, cohorts: cohorts})
+      );
 
     return childrenWithProps;
   },

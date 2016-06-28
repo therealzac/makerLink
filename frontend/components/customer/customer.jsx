@@ -1,43 +1,37 @@
 var React = require('react');
 var CustomerSideNav = require('./customerSideNav.jsx');
+var ProjectShow = require('../projectShow.jsx');
 var Footer = require('../footer.jsx');
 
 var Customer = React.createClass({
   getInitialState: function() {
-    var customer = this.props.session.user;
-
-    if (customer) {
-      customer.currentProject = customer.projects[0];
-      return customer;
+    return {
+      user: this.props.user,
+      projects: this.props.projects,
+      activeProject: this.props.projects[0]
     }
-
-    return { projects: [], currentProject: null }
   },
 
   componentWillReceiveProps: function (newProps) {
-    var customer = this.props.session.user;
+    var activeProject = this.state.activeProject;
 
-    if (customer) {
-      customer.currentProject = customer.projects[0];
-      this.setState(customer);
+    if (activeProject) {
+      newProps.projects.forEach(function (project) {
+        if (project.id === activeProject.id) { activeProject = project };
+      });
+    } else {
+      if (newProps.projects[0]) { activeProject = newProps.projects[0] };
     }
 
-    return { projects: [], currentProject: null }
-  },
-
-  projectShow: function () {
-    if (this.state.currentProject) {
-      return (
-        <div className="ibox-content">
-          <h1>{this.state.currentProject.name}</h1>
-        </div>
-      )
-    }
+    this.setState({
+      user: newProps.user,
+      projects: newProps.projects,
+      activeProject: activeProject
+    });
   },
 
   setActiveProjectCallback: function (project) {
-
-    this.setState({currentProject: project});
+    this.setState({activeProject: project});
   },
 
   render: function () {
@@ -45,7 +39,7 @@ var Customer = React.createClass({
       <div id='customer'>
         <CustomerSideNav
           projects={this.state.projects}
-          currentProject={this.state.currentProject}
+          activeProject={this.state.activeProject}
           setActiveProjectCallback={this.setActiveProjectCallback}>
         </CustomerSideNav>
 
@@ -54,7 +48,12 @@ var Customer = React.createClass({
             <div className="col-lg-12">
               <div className="wrapper wrapper-content animated fadeInUp">
                 <div className="ibox">
-                  { this.projectShow() }
+
+                  <ProjectShow
+                    user={this.state.user}
+                    project={this.state.activeProject}>
+                  </ProjectShow>
+
                 </div>
               </div>
             </div>

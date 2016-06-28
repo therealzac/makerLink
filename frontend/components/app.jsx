@@ -6,6 +6,7 @@ var HTML5Backend = require('react-dnd-html5-backend');
 var DragDropContext = require('react-dnd').DragDropContext;
 var SessionStore = require('../stores/session.js');
 
+
 var App = React.createClass({
   contextTypes: { router: React.PropTypes.object.isRequired },
 
@@ -60,7 +61,6 @@ var App = React.createClass({
           break;
 
         case "dev":
-        // We're gonna wanna change this back to /dev.
           this.context.router.push('/dev');
           break;
 
