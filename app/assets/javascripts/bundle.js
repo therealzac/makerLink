@@ -26535,13 +26535,13 @@
 	    });
 	  },
 
-	  flagProject: function flagProject(flag, projectIdx) {
+	  flagProject: function flagProject(project) {
 	    $.ajax({
 	      url: "api/flags",
-	      data: { flag: flag },
+	      data: { flag: project.flag },
 	      method: "POST",
 	      success: function success(flag) {
-	        ApiActions.receiveFlag(flag, projectIdx);
+	        ApiActions.receiveFlag(flag, project.idx);
 	      },
 	      error: function error(_error8) {
 	        ApiActions.invalidEntry(_error8);
@@ -26549,16 +26549,36 @@
 	    });
 	  },
 
-	  approveProject: function approveProject(flag, projectIdx) {
+	  approveProject: function approveProject(project) {
+	    var flag = project.flag;
+	    flag.instructor_approved = true;
+
 	    $.ajax({
 	      url: "api/flags/" + flag.id,
 	      data: { flag: flag },
 	      method: "PATCH",
 	      success: function success(flag) {
-	        ApiActions.receiveFlag(flag, projectIdx);
+	        ApiActions.receiveFlag(flag, project.idx);
 	      },
 	      error: function error(_error9) {
 	        ApiActions.invalidEntry(_error9);
+	      }
+	    });
+	  },
+
+	  payForProject: function payForProject(project) {
+	    var flag = project.flag;
+	    flag.customer_paid = true;
+
+	    $.ajax({
+	      url: "api/flags/" + project.flag.id,
+	      data: { flag: project.flag },
+	      method: "PATCH",
+	      success: function success(flag) {
+	        ApiActions.receiveFlag(flag, project.idx);
+	      },
+	      error: function error(_error10) {
+	        ApiActions.invalidEntry(_error10);
 	      }
 	    });
 	  },
@@ -26571,8 +26591,8 @@
 	      success: function success(project) {
 	        ApiActions.receiveProject(project);
 	      },
-	      error: function error(_error10) {
-	        ApiActions.invalidEntry(_error10);
+	      error: function error(_error11) {
+	        ApiActions.invalidEntry(_error11);
 	      }
 	    });
 	  },
@@ -26586,8 +26606,8 @@
 	        project.idx = projectIdx;
 	        ApiActions.receiveProjectWithNewTask(project);
 	      },
-	      error: function error(_error11) {
-	        ApiActions.invalidEntry(_error11);
+	      error: function error(_error12) {
+	        ApiActions.invalidEntry(_error12);
 	      }
 	    });
 	  },
@@ -26603,17 +26623,6 @@
 	      success: function success(project) {
 	        project.idx = projectIdx;
 	        ApiActions.receiveProjectWithNewTask(project);
-	      }
-	    });
-	  },
-
-	  hitSlack: function hitSlack(text) {
-	    $.ajax({
-	      url: 'api/slack',
-	      data: 'payload=' + JSON.stringify({ "text": text }),
-	      method: "POST",
-	      success: function success() {
-	        console.log("done");
 	      }
 	    });
 	  }
@@ -43063,7 +43072,8 @@
 	                  React.createElement(GroupForm, {
 	                    message: this.state.message,
 	                    soloDevs: soloDevs,
-	                    cohort_id: cohort_id })
+	                    cohort_id: cohort_id,
+	                    setActiveGroupCallback: this.setActiveGroup })
 	                ),
 	                React.createElement(
 	                  'div',
@@ -43442,26 +43452,20 @@
 	  },
 
 	  flagProject: function flagProject() {
-	    var project = this.state.project,
-	        dev = this.state.dev;
-
+	    var project = this.state.project;
 	    var flag = {
-	      dev_id: dev.id,
+	      dev_id: this.state.dev.id,
 	      project_id: project.id,
-	      group_id: dev.group_id,
-	      school_id: dev.school_id
+	      group_id: this.state.dev.group_id,
+	      school_id: this.state.dev.school_id
 	    };
 
-	    ApiUtil.flagProject(flag, project.projectIdx);
+	    project.flag = flag;
+	    ApiUtil.flagProject(project);
 	  },
 
 	  approveProject: function approveProject() {
-	    var project = this.state.project,
-	        flag = project.flag;
-
-	    flag.instructor_approved = true;
-
-	    ApiUtil.approveProject(flag, project.projectIdx);
+	    ApiUtil.approveProject(this.state.project);
 	  },
 
 	  renderActionButton: function renderActionButton() {
@@ -43897,23 +43901,6 @@
 	    this.setState({ activeProject: project });
 	  },
 
-	  slackButton: function slackButton() {
-	    return React.createElement(
-	      'p',
-	      null,
-	      React.createElement(
-	        'a',
-	        { className: 'btn btn-lg btn-primary', onClick: this.slackIt, role: 'button' },
-	        'Slack!'
-	      )
-	    );
-	  },
-
-	  slackIt: function slackIt(e) {
-	    e.preventDefault();
-	    ApiUtil.hitSlack();
-	  },
-
 	  render: function render() {
 	    return React.createElement(
 	      'div',
@@ -43939,8 +43926,7 @@
 	                { className: 'ibox' },
 	                React.createElement(ProjectShow, {
 	                  user: this.state.user,
-	                  project: this.state.activeProject }),
-	                this.slackButton()
+	                  project: this.state.activeProject })
 	              )
 	            )
 	          )
@@ -44104,347 +44090,341 @@
 	var KanbanColumn = __webpack_require__(427);
 
 	var projectShow = React.createClass({
-	    displayName: 'projectShow',
+	  displayName: 'projectShow',
 
-	    contextTypes: { router: React.PropTypes.object.isRequired },
+	  contextTypes: { router: React.PropTypes.object.isRequired },
 
-	    getInitialState: function getInitialState() {
-	        var user = this.props.user;
-	        var project = this.props.project ? this.props.project : {};
-	        var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
+	  getInitialState: function getInitialState() {
+	    var user = this.props.user;
+	    var project = this.props.project ? this.props.project : {};
+	    var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
 
-	        return {
-	            user: user,
-	            project: project,
-	            todo: tasks.todo,
-	            completed: tasks.completed,
-	            inprogress: tasks.inprogress
-	        };
-	    },
+	    return {
+	      user: user,
+	      project: project,
+	      todo: tasks.todo,
+	      completed: tasks.completed,
+	      inprogress: tasks.inprogress
+	    };
+	  },
 
-	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	        var project = newProps.project ? newProps.project : {};
-	        var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    var project = newProps.project ? newProps.project : {};
+	    var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
 
-	        this.setState({
-	            user: newProps.user,
-	            project: project,
-	            todo: tasks.todo,
-	            completed: tasks.completed,
-	            inprogress: tasks.inprogress
-	        });
-	    },
+	    this.setState({
+	      user: newProps.user,
+	      project: project,
+	      todo: tasks.todo,
+	      completed: tasks.completed,
+	      inprogress: tasks.inprogress
+	    });
+	  },
 
-	    sortTasks: function sortTasks(tasks) {
-	        var todo = [];
-	        var inprogress = [];
-	        var completed = [];
+	  sortTasks: function sortTasks(tasks) {
+	    var todo = [];
+	    var inprogress = [];
+	    var completed = [];
 
-	        tasks.forEach(function (task) {
-	            switch (task.status) {
-	                case 0:
-	                    todo.push(task);
-	                    break;
-	                case 1:
-	                    inprogress.push(task);
-	                    break;
-	                case 2:
-	                    completed.push(task);
-	                    break;
-	            }
-	        });
+	    tasks.forEach(function (task) {
+	      switch (task.status) {
+	        case 0:
+	          todo.push(task);
+	          break;
+	        case 1:
+	          inprogress.push(task);
+	          break;
+	        case 2:
+	          completed.push(task);
+	          break;
+	      }
+	    });
 
-	        return {
-	            todo: todo,
-	            completed: completed,
-	            inprogress: inprogress
-	        };
-	    },
+	    return {
+	      todo: todo,
+	      completed: completed,
+	      inprogress: inprogress
+	    };
+	  },
 
-	    addTask: function addTask(e) {
-	        e.preventDefault();
-	        var body = $('#new-task').val();
+	  addTask: function addTask(e) {
+	    e.preventDefault();
+	    var body = $('#new-task').val();
 
-	        var task = {
-	            author_id: this.state.user.id,
-	            project_id: this.state.project.id,
-	            body: body
-	        };
+	    var task = {
+	      author_id: this.state.user.id,
+	      project_id: this.state.project.id,
+	      body: body
+	    };
 
-	        ApiUtil.createTask(task, this.state.project.idx);
-	    },
+	    ApiUtil.createTask(task, this.state.project.idx);
+	  },
 
-	    render: function render() {
-	        var projectIdx = this.state.project ? this.state.project.idx : null,
-	            name = this.state.project ? this.state.project.name : null,
-	            url = this.state.project ? this.state.project.url : null;
+	  payForProject: function payForProject() {
+	    ApiUtil.payForProject(this.state.project);
+	  },
 
-	        return React.createElement(
+	  renderPaymentButton: function renderPaymentButton() {
+	    var flag = this.state.project.flag;
+
+	    if (flag && !flag.customer_paid) {
+	      return React.createElement(
+	        'p',
+	        null,
+	        React.createElement(
+	          'a',
+	          {
+	            className: 'btn btn-lg btn-primary',
+	            onClick: this.payForProject,
+	            role: 'button' },
+	          'Pay for that ish'
+	        )
+	      );
+	    }
+	  },
+
+	  render: function render() {
+	    var projectIdx = this.state.project ? this.state.project.idx : null,
+	        name = this.state.project ? this.state.project.name : null,
+	        url = this.state.project ? this.state.project.url : null;
+
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-lg-12' },
+	          React.createElement(
 	            'div',
-	            null,
+	            { className: 'wrapper wrapper-content animated fadeInUp' },
 	            React.createElement(
+	              'div',
+	              { className: 'ibox' },
+	              React.createElement(
 	                'div',
-	                { className: 'row' },
+	                { className: 'ibox-content' },
 	                React.createElement(
+	                  'div',
+	                  { className: 'row m-t-sm' },
+	                  React.createElement(
 	                    'div',
 	                    { className: 'col-lg-12' },
 	                    React.createElement(
+	                      'div',
+	                      { className: 'panel blank-panel' },
+	                      React.createElement(
 	                        'div',
-	                        { className: 'wrapper wrapper-content animated fadeInUp' },
+	                        { className: 'panel-heading' },
 	                        React.createElement(
-	                            'div',
-	                            { className: 'ibox' },
+	                          'div',
+	                          { className: 'panel-options' },
+	                          React.createElement(
+	                            'ul',
+	                            { className: 'nav nav-tabs' },
 	                            React.createElement(
-	                                'div',
-	                                { className: 'ibox-content' },
-	                                React.createElement(
-	                                    'div',
-	                                    { className: 'row m-t-sm' },
-	                                    React.createElement(
-	                                        'div',
-	                                        { className: 'col-lg-12' },
-	                                        React.createElement(
-	                                            'div',
-	                                            { className: 'panel blank-panel' },
-	                                            React.createElement(
-	                                                'div',
-	                                                { className: 'panel-heading' },
-	                                                React.createElement(
-	                                                    'div',
-	                                                    { className: 'panel-options' },
-	                                                    React.createElement(
-	                                                        'ul',
-	                                                        { className: 'nav nav-tabs' },
-	                                                        React.createElement(
-	                                                            'li',
-	                                                            { className: 'active' },
-	                                                            React.createElement(
-	                                                                'a',
-	                                                                { href: '#tab-1', 'data-toggle': 'tab' },
-	                                                                'Dashboard'
-	                                                            )
-	                                                        ),
-	                                                        React.createElement(
-	                                                            'li',
-	                                                            { className: '' },
-	                                                            React.createElement(
-	                                                                'a',
-	                                                                { href: '#tab-2', 'data-toggle': 'tab' },
-	                                                                'Planner Thing'
-	                                                            )
-	                                                        )
-	                                                    )
-	                                                )
-	                                            ),
-	                                            React.createElement(
-	                                                'div',
-	                                                { className: 'panel-body' },
-	                                                React.createElement(
-	                                                    'div',
-	                                                    { className: 'tab-content' },
-	                                                    React.createElement(
-	                                                        'div',
-	                                                        { className: 'tab-pane active', id: 'tab-1' },
-	                                                        React.createElement(
-	                                                            'div',
-	                                                            { className: 'ibox-content' },
-	                                                            React.createElement(
-	                                                                'div',
-	                                                                null,
-	                                                                React.createElement(
-	                                                                    'h1',
-	                                                                    { className: 'm-b-xs' },
-	                                                                    name
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'h3',
-	                                                                    { className: 'font-bold no-margins' },
-	                                                                    url
-	                                                                )
-	                                                            ),
-	                                                            React.createElement(
-	                                                                'div',
-	                                                                null,
-	                                                                React.createElement('canvas', { id: 'lineChart', height: '70' })
-	                                                            ),
-	                                                            React.createElement(
-	                                                                'div',
-	                                                                { className: 'm-t-md' },
-	                                                                React.createElement(
-	                                                                    'small',
-	                                                                    { className: 'pull-right' },
-	                                                                    React.createElement(
-	                                                                        'i',
-	                                                                        { className: 'fa fa-clock-o' },
-	                                                                        ' '
-	                                                                    ),
-	                                                                    'Update on 02.24.2016'
-	                                                                ),
-	                                                                React.createElement('small', null)
-	                                                            )
-	                                                        ),
-	                                                        React.createElement(
-	                                                            'div',
-	                                                            { className: 'agile-custom  animated fadeInRight' },
-	                                                            React.createElement(
-	                                                                'div',
-	                                                                { className: 'row' },
-	                                                                React.createElement(
-	                                                                    'div',
-	                                                                    { className: 'col-lg-4' },
-	                                                                    React.createElement(
-	                                                                        'div',
-	                                                                        { className: 'ibox' },
-	                                                                        React.createElement(
-	                                                                            'div',
-	                                                                            { className: 'ibox-content' },
-	                                                                            React.createElement(
-	                                                                                'h3',
-	                                                                                null,
-	                                                                                'To-do'
-	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                'p',
-	                                                                                { className: 'small' },
-	                                                                                React.createElement('i', { className: 'fa fa-hand-o-up' }),
-	                                                                                ' Drag task between list'
-	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                'div',
-	                                                                                { className: 'input-group' },
-	                                                                                React.createElement('input', { id: 'new-task', type: 'text', placeholder: 'Add new task. ', className: 'input input-sm form-control' }),
-	                                                                                React.createElement(
-	                                                                                    'span',
-	                                                                                    { className: 'input-group-btn' },
-	                                                                                    React.createElement(
-	                                                                                        'button',
-	                                                                                        { onClick: this.addTask, type: 'button', className: 'btn btn-sm btn-white' },
-	                                                                                        ' ',
-	                                                                                        React.createElement('i', { className: 'fa fa-plus' }),
-	                                                                                        ' Add task'
-	                                                                                    )
-	                                                                                )
-	                                                                            ),
-	                                                                            React.createElement(KanbanColumn, {
-	                                                                                projectIdx: projectIdx,
-	                                                                                statusCode: 0,
-	                                                                                statusWord: "todo",
-	                                                                                tasks: this.state.todo })
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'div',
-	                                                                    { className: 'col-lg-4' },
-	                                                                    React.createElement(
-	                                                                        'div',
-	                                                                        { className: 'ibox' },
-	                                                                        React.createElement(
-	                                                                            'div',
-	                                                                            { className: 'ibox-content' },
-	                                                                            React.createElement(
-	                                                                                'h3',
-	                                                                                null,
-	                                                                                'In Progress'
-	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                'p',
-	                                                                                { className: 'small' },
-	                                                                                React.createElement('i', { className: 'fa fa-hand-o-up' }),
-	                                                                                ' Drag task between list'
-	                                                                            ),
-	                                                                            React.createElement(KanbanColumn, {
-	                                                                                projectIdx: projectIdx,
-	                                                                                statusCode: 1,
-	                                                                                statusWord: "inprogress",
-	                                                                                tasks: this.state.inprogress })
-	                                                                        )
-	                                                                    )
-	                                                                ),
-	                                                                React.createElement(
-	                                                                    'div',
-	                                                                    { className: 'col-lg-4' },
-	                                                                    React.createElement(
-	                                                                        'div',
-	                                                                        { className: 'ibox' },
-	                                                                        React.createElement(
-	                                                                            'div',
-	                                                                            { className: 'ibox-content' },
-	                                                                            React.createElement(
-	                                                                                'h3',
-	                                                                                null,
-	                                                                                'Completed'
-	                                                                            ),
-	                                                                            React.createElement(
-	                                                                                'p',
-	                                                                                { className: 'small' },
-	                                                                                React.createElement('i', { className: 'fa fa-hand-o-up' }),
-	                                                                                ' Drag task between list'
-	                                                                            ),
-	                                                                            React.createElement(KanbanColumn, {
-	                                                                                projectIdx: projectIdx,
-	                                                                                statusCode: 2,
-	                                                                                statusWord: "completed",
-	                                                                                tasks: this.state.completed })
-	                                                                        )
-	                                                                    )
-	                                                                )
-	                                                            )
-	                                                        )
-	                                                    ),
-	                                                    React.createElement(
-	                                                        'div',
-	                                                        { className: 'tab-pane', id: 'tab-2' },
-	                                                        React.createElement(
-	                                                            'table',
-	                                                            { className: 'table table-striped' },
-	                                                            React.createElement(
-	                                                                'thead',
-	                                                                null,
-	                                                                React.createElement(
-	                                                                    'tr',
-	                                                                    null,
-	                                                                    React.createElement(
-	                                                                        'th',
-	                                                                        null,
-	                                                                        'Status'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'th',
-	                                                                        null,
-	                                                                        'Title'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'th',
-	                                                                        null,
-	                                                                        'Start Time'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'th',
-	                                                                        null,
-	                                                                        'End Time'
-	                                                                    ),
-	                                                                    React.createElement(
-	                                                                        'th',
-	                                                                        null,
-	                                                                        'Comments'
-	                                                                    )
-	                                                                )
-	                                                            )
-	                                                        )
-	                                                    )
-	                                                )
-	                                            )
-	                                        )
-	                                    )
-	                                )
+	                              'li',
+	                              { className: 'active' },
+	                              React.createElement(
+	                                'a',
+	                                { href: '#tab-1', 'data-toggle': 'tab' },
+	                                'Agile Board'
+	                              )
+	                            ),
+	                            React.createElement(
+	                              'li',
+	                              { className: '' },
+	                              React.createElement(
+	                                'a',
+	                                { href: '#tab-2', 'data-toggle': 'tab' },
+	                                'Slack'
+	                              )
+	                            ),
+	                            React.createElement(
+	                              'li',
+	                              { className: '' },
+	                              React.createElement(
+	                                'a',
+	                                { href: '#tab-2', 'data-toggle': 'tab' },
+	                                'Project Calendar'
+	                              )
 	                            )
+	                          )
 	                        )
+	                      ),
+	                      React.createElement(
+	                        'div',
+	                        { className: 'panel-body' },
+	                        React.createElement(
+	                          'div',
+	                          { className: 'tab-content' },
+	                          React.createElement(
+	                            'div',
+	                            { className: 'tab-pane active', id: 'tab-1' },
+	                            React.createElement(
+	                              'div',
+	                              { className: 'ibox-content' },
+	                              React.createElement(
+	                                'div',
+	                                null,
+	                                React.createElement(
+	                                  'h1',
+	                                  { className: 'm-b-xs' },
+	                                  name
+	                                ),
+	                                this.renderPaymentButton(),
+	                                React.createElement(
+	                                  'h3',
+	                                  { className: 'font-bold no-margins' },
+	                                  url
+	                                )
+	                              ),
+	                              React.createElement(
+	                                'div',
+	                                null,
+	                                React.createElement('canvas', { id: 'lineChart', height: '70' })
+	                              ),
+	                              React.createElement(
+	                                'div',
+	                                { className: 'm-t-md' },
+	                                React.createElement(
+	                                  'small',
+	                                  { className: 'pull-right' },
+	                                  React.createElement(
+	                                    'i',
+	                                    { className: 'fa fa-clock-o' },
+	                                    ' '
+	                                  ),
+	                                  'Update on 02.24.2016'
+	                                ),
+	                                React.createElement('small', null)
+	                              )
+	                            ),
+	                            React.createElement(
+	                              'div',
+	                              { className: 'agile-custom  animated fadeInRight' },
+	                              React.createElement(
+	                                'div',
+	                                { className: 'row' },
+	                                React.createElement(
+	                                  'div',
+	                                  { className: 'col-lg-4' },
+	                                  React.createElement(
+	                                    'div',
+	                                    { className: 'ibox' },
+	                                    React.createElement(
+	                                      'div',
+	                                      { className: 'ibox-content' },
+	                                      React.createElement(
+	                                        'h3',
+	                                        null,
+	                                        'To-do'
+	                                      ),
+	                                      React.createElement(
+	                                        'p',
+	                                        { className: 'small' },
+	                                        React.createElement('i', { className: 'fa fa-hand-o-up' }),
+	                                        ' Drag task between list'
+	                                      ),
+	                                      React.createElement(
+	                                        'div',
+	                                        { className: 'input-group' },
+	                                        React.createElement('input', { id: 'new-task', type: 'text', placeholder: 'Add new task. ', className: 'input input-sm form-control' }),
+	                                        React.createElement(
+	                                          'span',
+	                                          { className: 'input-group-btn' },
+	                                          React.createElement(
+	                                            'button',
+	                                            { onClick: this.addTask, type: 'button', className: 'btn btn-sm btn-white' },
+	                                            ' ',
+	                                            React.createElement('i', { className: 'fa fa-plus' }),
+	                                            ' Add task'
+	                                          )
+	                                        )
+	                                      ),
+	                                      React.createElement(KanbanColumn, {
+	                                        projectIdx: projectIdx,
+	                                        statusCode: 0,
+	                                        statusWord: "todo",
+	                                        tasks: this.state.todo })
+	                                    )
+	                                  )
+	                                ),
+	                                React.createElement(
+	                                  'div',
+	                                  { className: 'col-lg-4' },
+	                                  React.createElement(
+	                                    'div',
+	                                    { className: 'ibox' },
+	                                    React.createElement(
+	                                      'div',
+	                                      { className: 'ibox-content' },
+	                                      React.createElement(
+	                                        'h3',
+	                                        null,
+	                                        'In Progress'
+	                                      ),
+	                                      React.createElement(
+	                                        'p',
+	                                        { className: 'small' },
+	                                        React.createElement('i', { className: 'fa fa-hand-o-up' }),
+	                                        ' Drag task between list'
+	                                      ),
+	                                      React.createElement(KanbanColumn, {
+	                                        projectIdx: projectIdx,
+	                                        statusCode: 1,
+	                                        statusWord: "inprogress",
+	                                        tasks: this.state.inprogress })
+	                                    )
+	                                  )
+	                                ),
+	                                React.createElement(
+	                                  'div',
+	                                  { className: 'col-lg-4' },
+	                                  React.createElement(
+	                                    'div',
+	                                    { className: 'ibox' },
+	                                    React.createElement(
+	                                      'div',
+	                                      { className: 'ibox-content' },
+	                                      React.createElement(
+	                                        'h3',
+	                                        null,
+	                                        'Completed'
+	                                      ),
+	                                      React.createElement(
+	                                        'p',
+	                                        { className: 'small' },
+	                                        React.createElement('i', { className: 'fa fa-hand-o-up' }),
+	                                        ' Drag task between list'
+	                                      ),
+	                                      React.createElement(KanbanColumn, {
+	                                        projectIdx: projectIdx,
+	                                        statusCode: 2,
+	                                        statusWord: "completed",
+	                                        tasks: this.state.completed })
+	                                    )
+	                                  )
+	                                )
+	                              )
+	                            )
+	                          ),
+	                          React.createElement('div', { className: 'tab-pane', id: 'tab-2' }),
+	                          React.createElement('div', { className: 'tab-pane', id: 'tab-3' })
+	                        )
+	                      )
 	                    )
+	                  )
 	                )
+	              )
 	            )
-	        );
-	    }
+	          )
+	        )
+	      )
+	    );
+	  }
 	});
 
 	module.exports = projectShow;

@@ -72,6 +72,27 @@ var projectShow = React.createClass({
     ApiUtil.createTask(task, this.state.project.idx);
   },
 
+  payForProject: function () {
+    ApiUtil.payForProject(this.state.project);
+  },
+
+  renderPaymentButton: function () {
+    var flag = this.state.project.flag;
+
+    if (flag && !flag.customer_paid) {
+      return (
+        <p>
+          <a
+            className="btn btn-lg btn-primary"
+            onClick={this.payForProject}
+            role="button">
+            Pay for that ish
+          </a>
+        </p>
+      )
+    }
+  },
+
   render: function () {
     var projectIdx = this.state.project ? this.state.project.idx : null,
         name = this.state.project ? this.state.project.name : null,
@@ -90,8 +111,9 @@ var projectShow = React.createClass({
                               <div className="panel-heading">
                                   <div className="panel-options">
                                       <ul className="nav nav-tabs">
-                                          <li className="active"><a href="#tab-1" data-toggle="tab">Dashboard</a></li>
-                                          <li className=""><a href="#tab-2" data-toggle="tab">Planner Thing</a></li>
+                                          <li className="active"><a href="#tab-1" data-toggle="tab">Agile Board</a></li>
+                                          <li className=""><a href="#tab-2" data-toggle="tab">Slack</a></li>
+                                          <li className=""><a href="#tab-2" data-toggle="tab">Project Calendar</a></li>
                                       </ul>
                                   </div>
                               </div>
@@ -103,6 +125,9 @@ var projectShow = React.createClass({
                             <div className="ibox-content">
                                   <div>
                                       <h1 className="m-b-xs">{name}</h1>
+
+                                      { this.renderPaymentButton() }
+
                                       <h3 className="font-bold no-margins">
                                           {url}
                                       </h3>
@@ -184,24 +209,14 @@ var projectShow = React.createClass({
 
                   </div>
                   </div>
-
-                              </div>
+                </div>
 
                               <div className="tab-pane" id="tab-2">
 
-                                  <table className="table table-striped">
-                                      <thead>
-                                      <tr>
-                                          <th>Status</th>
-                                          <th>Title</th>
-                                          <th>Start Time</th>
-                                          <th>End Time</th>
-                                          <th>Comments</th>
-                                      </tr>
-                                      </thead>
-                                  </table>
-
                               </div>
+                              <div className="tab-pane" id="tab-3">
+                              </div>
+
                               </div>
 
                               </div>

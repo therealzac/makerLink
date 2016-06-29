@@ -7,7 +7,7 @@ class Api::FlagsController < ApplicationController
       group = @flag.group
       school = @flag.school
       @project = @flag.project
-      client = @project.author
+      customer = @project.author
 
       # Flag project for front end update.
       @project.flagged = true
@@ -21,7 +21,7 @@ class Api::FlagsController < ApplicationController
         adminNews = group.name + " has flagged " + @project.name + "! " +
           "Click here for details."
 
-        clientNews = "A group from " + school.name + " wants to work on " +
+        customerNews = "A group from " + school.name + " wants to work on " +
           @project.name + "!"
 
         devNews = "Everyone's on board for " + @project.name + "!"
@@ -53,12 +53,12 @@ class Api::FlagsController < ApplicationController
         @message = message if returnToUserWithNews
       end
 
-      # Notify client with current message.
-      clientNews = dev.full_name + " likes " + @project.name + "!" unless clientNews
+      # Notify customer with current message.
+      customerNews = dev.full_name + " likes " + @project.name + "!" unless customerNews
       message = Message.create(
         author_id: dev.id,
-        recipient_id: client.id,
-        body: clientNews
+        recipient_id: customer.id,
+        body: customerNews
       )
 
       @flag.save
@@ -76,17 +76,19 @@ class Api::FlagsController < ApplicationController
       @project = @flag.project
       @project.flag = @flag
 
-      if params[:flag][:instructor_approved]
+      if params[:flag][:instructor_approved] == "true" &&
+         params[:flag][:customer_paid] != "true"
+
         dev = @flag.dev
         group = @flag.group
         school = @flag.school
-        client = @project.author
+        customer = @project.author
 
-        clientNews = "You've received a bid for " + @project.name + "! " +
+        customerNews = "You've received a bid for " + @project.name + "! " +
           "Click here for more details."
 
         devNews = "Your instructors have approved " + @project.name + "! " +
-          "The client has been notified."
+          "The customer has been notified."
 
         devRecipients = group.devs
         devRecipients.each do |recipient|
@@ -98,10 +100,60 @@ class Api::FlagsController < ApplicationController
         end
 
         Message.create(
-        recipient_id: client.id,
+        recipient_id: customer.id,
           author_id: dev.id,
-          body: clientNews
+          body: customerNews
         )
+
+      elsif params[:flag][:customer_paid] == "true"
+        p "Creating slack channel for " + @project.name
+        client = Slack::Web::Client.new
+        client.channels_create({name: @project.name})
+
+        dev = @flag.dev
+        group = @flag.group
+        school = @flag.school
+        customer = @project.author
+
+        group.update({project_id: @project.id})
+
+        customerNews = "We've received payment for " + @project.name + "! " +
+          "Your developers will be contacting you shortly."
+
+        devNews = "Congratulations on being selected to work on " +
+          @project.name + "!"
+
+        adminNews = group.name + " has been selected to work on " +
+          @project.name + "!"
+
+        # Message devs and set their current_project.
+        devs = group.devs
+        devs.each do |this_dev|
+          this_dev.update({current_project_id: @project.id})
+
+          message = Message.create(
+            recipient_id: this_dev.id,
+            author_id: dev.id,
+            body: devNews
+          )
+        end
+
+        # Message customer.
+        message = Message.create(
+          author_id: dev.id,
+          recipient_id: customer.id,
+          body: customerNews
+        )
+
+        # Message admins.
+        adminRecipients = school.admins
+        adminRecipients.each do |recipient|
+          message = Message.create(
+            recipient_id: recipient.id,
+            author_id: dev.id,
+            body: adminNews
+          )
+        end
       end
 
       render :show

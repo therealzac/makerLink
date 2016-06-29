@@ -100,13 +100,13 @@ var ApiUtil = {
    });
   },
 
-  flagProject: function(flag, projectIdx) {
+  flagProject: function(project) {
     $.ajax({
       url: "api/flags",
-      data: {flag: flag},
+      data: {flag: project.flag},
       method: "POST",
       success: function(flag){
-        ApiActions.receiveFlag(flag, projectIdx);
+        ApiActions.receiveFlag(flag, project.idx);
       },
       error: function(error) {
         ApiActions.invalidEntry(error);
@@ -114,13 +114,33 @@ var ApiUtil = {
     });
   },
 
-  approveProject: function (flag, projectIdx) {
+  approveProject: function (project) {
+    var flag = project.flag;
+    flag.instructor_approved = true;
+
     $.ajax({
       url: "api/flags/" + flag.id,
       data: {flag: flag},
       method: "PATCH",
       success: function (flag) {
-        ApiActions.receiveFlag(flag, projectIdx);
+        ApiActions.receiveFlag(flag, project.idx);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
+      }
+    });
+  },
+
+  payForProject: function (project) {
+    var flag = project.flag;
+    flag.customer_paid = true;
+    
+    $.ajax({
+      url: "api/flags/" + project.flag.id,
+      data: {flag: project.flag},
+      method: "PATCH",
+      success: function (flag) {
+        ApiActions.receiveFlag(flag, project.idx);
       },
       error: function (error) {
         ApiActions.invalidEntry(error);
@@ -170,18 +190,7 @@ var ApiUtil = {
         ApiActions.receiveProjectWithNewTask(project);
       },
     });
-  },
-
-  hitSlack: function (text) {
-    $.ajax({
-      url: 'api/slack',
-      data: 'payload=' + JSON.stringify({ "text": text }),
-      method: "POST",
-      success: function () {
-        console.log("done");
-      }
-    });
-  },
+  }
 }
 
 module.exports = ApiUtil;

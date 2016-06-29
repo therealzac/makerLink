@@ -35,17 +35,6 @@ var Customer = React.createClass({
     this.setState({activeProject: project});
   },
 
-  slackButton: function () {
-    return (
-      <p><a className="btn btn-lg btn-primary" onClick={this.slackIt} role="button">Slack!</a></p>
-    )
-  },
-
-  slackIt: function (e) {
-    e.preventDefault();
-    ApiUtil.hitSlack();
-  },
-
   render: function () {
     return(
       <div id='customer'>
@@ -65,8 +54,6 @@ var Customer = React.createClass({
                     user={this.state.user}
                     project={this.state.activeProject}>
                   </ProjectShow>
-
-                  { this.slackButton() }
 
                 </div>
               </div>

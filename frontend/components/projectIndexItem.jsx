@@ -11,26 +11,20 @@ var ProjectIndexItem = React.createClass({
   },
 
   flagProject: function() {
-    var project = this.state.project,
-        dev = this.state.dev;
-
+    var project = this.state.project;
     var flag = {
-      dev_id: dev.id,
+      dev_id: this.state.dev.id,
       project_id: project.id,
-      group_id: dev.group_id,
-      school_id: dev.school_id
+      group_id: this.state.dev.group_id,
+      school_id: this.state.dev.school_id
     }
 
-    ApiUtil.flagProject(flag, project.projectIdx);
+    project.flag = flag;
+    ApiUtil.flagProject(project);
   },
 
   approveProject: function () {
-    var project = this.state.project,
-        flag = project.flag;
-
-    flag.instructor_approved = true;
-
-    ApiUtil.approveProject(flag, project.projectIdx);
+    ApiUtil.approveProject(this.state.project);
   },
 
   renderActionButton: function () {

@@ -10,7 +10,6 @@ Myapp::Application.routes.draw do
     resources :cohorts, only: [:create, :update, :destroy]
     resources :groups, only: [:create, :update, :destroy]
     resources :tasks, only: [:create, :update, :destroy]
-    resources :slack, only: [:create]
   end
 
 resource :session, only: [:show, :create, :destroy, :update]

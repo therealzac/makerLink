@@ -10,7 +10,13 @@ class SessionsController < ApplicationController
     @user = User.find_by_credentials(email, password)
 
     if @user
-      @projects = @user.projects if @user.is_customer?
+      if @user.is_customer?
+        @projects = @user.projects
+        @projects.each do |project|
+          project.flag = Flag.where("project_id = #{project.id} AND
+            instructor_approved = true").first
+        end
+      end
 
       if @user.is_dev?
         @user.school = @user.cohort.school
@@ -48,7 +54,13 @@ class SessionsController < ApplicationController
   def show
     @user = current_user
     if @user
-      @projects = @user.projects if @user.is_customer?
+      if @user.is_customer?
+        @projects = @user.projects
+        @projects.each do |project|
+          project.flag = Flag.where("project_id = #{project.id} AND
+            instructor_approved = true").first
+        end
+      end
 
       if @user.is_dev?
         @projects = Project.all
