@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   # TODO: find prevent forgery solution.
 
   helper_method :current_user
-  Stripe.api_key = "sk_test_9NWrmNu1xmzxjKAkzVGFB6GM"
+  Stripe.api_key = ""
 
   Slack.configure do |config|
     config.token = ''
