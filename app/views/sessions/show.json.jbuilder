@@ -17,3 +17,5 @@ if @cohorts
     end
   end
 end
+
+json.channel(@channel)

@@ -1,36 +1,44 @@
 const React = require('react');
+const ApiUtil = require('../util/apiUtil.js');
+const ChannelStore = require('../stores/slackChannel.js');
 
 const Inbox = React.createClass({
+  getInitialState: function () {
+    return this.props;
+  },
+
+  componentWillMount: function () {
+    this.channelListener = ChannelStore.addListener(this._onChange);
+  },
+
+  componentWillUnmount: function () {
+    this.channelListener.remove();
+  },
+
   componentDidMount: function () {
+    if (this.state.project.group) {
+      var channel = "#" + project.name.toLowerCase();
+      ApiUtil.fetchChannel(channel);
+    }
     $('.i-checks').iCheck({
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
     });
   },
 
+  _onChange: function () {
+    this.setState({channel: ChannelStore.getChannel() });
+  },
+
+  componentWillReceiveProps: function (newProps) {
+    this.setState(newProps);
+  },
+
   render: function () {
     return(
         <div className="wrapper wrapper-content">
         <div className="row">
-            <div className="col-lg-3">
-                <div className="ibox float-e-margins">
-                    <div className="ibox-content mailbox-content">
-                        <div className="file-manager">
-                            <a className="btn btn-block btn-primary compose-mail">Compose Mail</a>
-                            <div className="space-25"></div>
-                            <h5>Folders</h5>
-                            <ul className="folder-list m-b-md" style={{padding: "0"}}>
-                                <li><a> <i className="fa fa-inbox "></i> Inbox <span className="label label-warning pull-right">{this.props.messages.unreadMessages.length}</span> </a></li>
-                                <li><a> <i className="fa fa-envelope-o"></i> Send Mail</a></li>
-                                <li><a> <i className="fa fa-file-text-o"></i> Drafts <span className="label label-danger pull-right">{this.props.messages.drafts.length}</span></a></li>
-                                <li><a> <i className="fa fa-trash-o"></i> Trash</a></li>
-                            </ul>
-                            <div className="clearfix"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="col-lg-9 animated fadeInRight">
+            <div className="col-lg-12 animated fadeInRight">
             <div className="mail-box-header">
 
                 <form method="get" action="index.html" className="pull-right mail-search">
@@ -44,7 +52,7 @@ const Inbox = React.createClass({
                     </div>
                 </form>
                 <h2>
-                    Inbox ({this.props.messages.unreadMessages.length})
+                  {this.state.project.name}
                 </h2>
                 <div className="mail-tools tooltip-demo m-t-md">
 
@@ -63,32 +71,7 @@ const Inbox = React.createClass({
 
                 <table className="table table-hover table-mail">
                 <tbody>
-                  {
-                    this.props.messages.unreadMessages.forEach(function(message){
-                      return (<tr className="unread">
-                          <td className="check-mail">
-                              <input type="checkbox" className="i-checks"/>
-                          </td>
-                          <td className="mail-ontact"><a>{message.author}</a></td>
-                          <td className="mail-subject"><a>{message.body}</a></td>
-                          <td className=""><i className="fa fa-paperclip"></i></td>
-                          <td className="text-right mail-date">6.10 AM</td>
-                        </tr>)
-                      })
-                }
-                {
-                  this.props.messages.unreadMessages.forEach(function(message){
-                    return (<tr className="read">
-                        <td className="check-mail">
-                            <input type="checkbox" className="i-checks"/>
-                        </td>
-                        <td className="mail-ontact"><a>{message.author}</a> </td>
-                        <td className="mail-subject"><a>{message.body}</a></td>
-                        <td className=""></td>
-                        <td className="text-right mail-date">Jan 16</td>
-                    </tr>)
-                    })
-                }
+
                 </tbody>
                 </table>
 
@@ -100,5 +83,51 @@ const Inbox = React.createClass({
     );
   }
 });
+// <div className="col-lg-3">
+//     <div className="ibox float-e-margins">
+//         <div className="ibox-content mailbox-content">
+//             <div className="file-manager">
+//                 <a className="btn btn-block btn-primary compose-mail">Compose Mail</a>
+//                 <div className="space-25"></div>
+//                 <h5>Folders</h5>
+//                 <ul className="folder-list m-b-md" style={{padding: "0"}}>
+//                     <li><a> <i className="fa fa-inbox "></i> Inbox <span className="label label-warning pull-right">{}</span> </a></li>
+//                     <li><a> <i className="fa fa-envelope-o"></i> Send Mail</a></li>
+//                     <li><a> <i className="fa fa-file-text-o"></i> Drafts <span className="label label-danger pull-right">{}</span></a></li>
+//                     <li><a> <i className="fa fa-trash-o"></i> Trash</a></li>
+//                 </ul>
+//                 <div className="clearfix"></div>
+//             </div>
+//         </div>
+//     </div>
+// </div>
 
+
+
+//   {
+//     this.props.messages.unreadMessages.forEach(function(message){
+//       return (<tr className="unread">
+//           <td className="check-mail">
+//               <input type="checkbox" className="i-checks"/>
+//           </td>
+//           <td className="mail-ontact"><a>{message.author}</a></td>
+//           <td className="mail-subject"><a>{message.body}</a></td>
+//           <td className=""><i className="fa fa-paperclip"></i></td>
+//           <td className="text-right mail-date">6.10 AM</td>
+//         </tr>)
+//       })
+// }
+// {
+//   this.props.messages.unreadMessages.forEach(function(message){
+//     return (<tr className="read">
+//         <td className="check-mail">
+//             <input type="checkbox" className="i-checks"/>
+//         </td>
+//         <td className="mail-ontact"><a>{message.author}</a> </td>
+//         <td className="mail-subject"><a>{message.body}</a></td>
+//         <td className=""></td>
+//         <td className="text-right mail-date">Jan 16</td>
+//     </tr>)
+//     })
+// }
 module.exports = Inbox;

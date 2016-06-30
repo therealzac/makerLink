@@ -2,6 +2,7 @@ var ApiActions = require('../actions/apiActions.js');
 
 var ApiUtil = {
   createUser: function (newUser, card) {
+    console.log(newUser);
     var apiUtil = this;
     $.ajax({
       url: "api/users",
@@ -133,14 +134,16 @@ var ApiUtil = {
 
   payForProject: function (project) {
     var flag = project.flag;
+    var channel = "#" + project.name.toLowerCase();
     flag.customer_paid = true;
-    
+
     $.ajax({
       url: "api/flags/" + project.flag.id,
       data: {flag: project.flag},
       method: "PATCH",
       success: function (flag) {
         ApiActions.receiveFlag(flag, project.idx);
+        ApiUtil.fetchChannel(channel);
       },
       error: function (error) {
         ApiActions.invalidEntry(error);
@@ -190,6 +193,17 @@ var ApiUtil = {
         ApiActions.receiveProjectWithNewTask(project);
       },
     });
+  },
+
+  fetchChannel: function (channel) {
+    $.ajax({
+      url: 'api/slack/',
+      data: {channel: channel, unreads: true},
+      method: "GET",
+      success: function (channel) {
+        ApiActions.receiveChannel(channel);
+      }
+    })
   }
 }
 

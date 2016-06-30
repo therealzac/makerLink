@@ -9,11 +9,16 @@ class Api::FlagsController < ApplicationController
       @project = @flag.project
       customer = @project.author
 
+      adminRecipients = school.admins
+      devRecipients = group.devs
+
+      soloDev = devRecipients.length == 1 ? true : false
+
       # Flag project for front end update.
       @project.flagged = true
 
       # Set messages if everyone in the group has flagged this project.
-      if group.everyone_else_is_down?(@project, dev)
+      if soloDev || group.everyone_else_is_down?(@project, dev)
         @flag.pending_approval = true
 
         returnToUserWithNews = true
@@ -26,7 +31,7 @@ class Api::FlagsController < ApplicationController
 
         devNews = "Everyone's on board for " + @project.name + "!"
 
-        adminRecipients = school.admins
+        # Notify admins of group consensus.
         adminRecipients.each do |recipient|
           message = Message.create(
             recipient_id: recipient.id,
@@ -36,9 +41,10 @@ class Api::FlagsController < ApplicationController
         end
       end
 
-      # Notify devs with current message.
+      # Notify appropriate devs with current message.
       devRecipients = group.devs
-      unless devNews
+
+      if !devNews || soloDev
         devNews = dev.first_name + " has flagged " + @project.name + "!"
         devRecipients -= [dev]
       end
@@ -54,7 +60,7 @@ class Api::FlagsController < ApplicationController
       end
 
       # Notify customer with current message.
-      customerNews = dev.full_name + " likes " + @project.name + "!" unless customerNews
+      customerNews = customerNews || dev.full_name + " likes " + @project.name + "!"
       message = Message.create(
         author_id: dev.id,
         recipient_id: customer.id,
@@ -106,7 +112,7 @@ class Api::FlagsController < ApplicationController
         )
 
       elsif params[:flag][:customer_paid] == "true"
-        p "Creating slack channel for " + @project.name
+        # Create slack channel for project.
         client = Slack::Web::Client.new
         client.channels_create({name: @project.name})
 
@@ -115,6 +121,7 @@ class Api::FlagsController < ApplicationController
         school = @flag.school
         customer = @project.author
 
+        @project.update({group_id: group.id})
         group.update({project_id: @project.id})
 
         customerNews = "We've received payment for " + @project.name + "! " +

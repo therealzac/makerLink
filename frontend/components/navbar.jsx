@@ -13,8 +13,22 @@ var NavBar = React.createClass({
       logOut: "none",
       dashboardClass: 'none',
       notifications: 'none',
-      news: []
+      news: [],
+      logo: this.getRandomLogo()
     }
+  },
+
+  getRandomLogo: function () {
+    return "makerlink-logo-white";
+  //   return [
+  //   "makerlink-logo-red",
+  //   "makerlink-logo-white",
+  //   "makerlink-logo-blue",
+  //   "makerlink-logo-green",
+  //   "makerlink-logo-purple",
+  //   "makerlink-logo-yellow",
+  //   "makerlink-logo-brown"
+  // ][Math.floor(Math.random() * 7)];
   },
 
   componentWillReceiveProps: function (newProps) {
@@ -169,7 +183,10 @@ var NavBar = React.createClass({
                         <li style={{display: this.state.logOut}}><a className="page-scroll" onClick={this.logOut}><i className="fa fa-gear"></i></a></li>
                       </ul>
                       <ul className="nav navbar-nav navbar-left">
-                        <li><a className="page-scroll" onClick={this.goToLanding} >MAKERLINK</a></li>
+                        <li>
+                          <div className={this.state.logo} onClick={this.goToLanding}>
+                          </div>
+                        </li>
                       </ul>
 
                   </div>

@@ -36,7 +36,9 @@ var Signup = React.createClass({
       last_name: this.state.last_name,
       email: this.state.email,
       password: this.state.password,
-      mobile: this.state.mobile
+      mobile: this.state.mobile,
+      school_id: this.state.school_id,
+      cohort_id: this.state.cohort_id
     }
 
     var card = {
@@ -53,7 +55,7 @@ var Signup = React.createClass({
     return (
       <div className="signup-middle-box text-center loginscreen  animated fadeInDown">
           <div className="makerlink-signup">
-            <h3>Let's get started!</h3>
+            <h3>Lets get started!</h3>
             <p style={{color: "red"}}>{this.state.message}</p>
 
             <form className="m-t" role="form">

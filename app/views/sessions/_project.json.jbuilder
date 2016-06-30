@@ -1,7 +1,7 @@
 json.extract!(
   project, :id,
         :author_id,
-        :dev_id,
+        :group,
         :name,
         :pitch,
         :description,

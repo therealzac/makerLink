@@ -12,7 +12,7 @@ class Api::UsersController < ApplicationController
       customer = Stripe::Customer.create(
         source: token.id,
         email: @user.email,
-        description: @user.name
+        description: @user.full_name
       )
 
       @user.stripe_id = customer.id

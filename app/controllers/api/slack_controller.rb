@@ -1,6 +1,11 @@
 class Api::SlackController < ApplicationController
-  def create
+  def index
     client = Slack::Web::Client.new
-    client.chat_postMessage(channel: '#general', text: 'Slack it bitch', as_user: true)
+    @channel = client.channels_history(slack_params)
+  end
+
+  private
+  def slack_params
+    params.permit(:channel, :unreads)
   end
 end

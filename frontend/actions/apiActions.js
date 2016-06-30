@@ -1,6 +1,6 @@
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 var SessionConstants = require('../constants/sessionConstants.js');
-var MessageConstants = require('../constants/messageConstants.js');
+var ChannelConstants = require('../constants/channelConstants.js');
 
 var ApiActions = {
 
@@ -57,6 +57,13 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: SessionConstants.UPDATED_PROJECT_RECEIVED,
       project: project
+    })
+  },
+
+  receiveChannel: function (channel) {
+    AppDispatcher.dispatch({
+      actionType: ChannelConstants.CHANNEL_RECEIVED,
+      channel: channel
     })
   }
 }

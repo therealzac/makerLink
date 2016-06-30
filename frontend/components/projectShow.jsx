@@ -1,6 +1,7 @@
 var React = require('react')
 var ApiUtil = require('../util/apiUtil.js');
 var KanbanColumn = require('./KanbanColumn.jsx');
+var Inbox = require('./inbox.jsx');
 
 
 var projectShow = React.createClass({
@@ -16,7 +17,8 @@ var projectShow = React.createClass({
       project: project,
       todo: tasks.todo,
       completed: tasks.completed,
-      inprogress: tasks.inprogress
+      inprogress: tasks.inprogress,
+      slack: this.props.slack
     };
   },
 
@@ -29,7 +31,8 @@ var projectShow = React.createClass({
       project: project,
       todo: tasks.todo,
       completed: tasks.completed,
-      inprogress: tasks.inprogress
+      inprogress: tasks.inprogress,
+      slack: newProps.slack
     });
   },
 
@@ -211,9 +214,14 @@ var projectShow = React.createClass({
                   </div>
                 </div>
 
-                              <div className="tab-pane" id="tab-2">
+                            <div className="tab-pane" id="tab-2">
 
-                              </div>
+                                <Inbox
+                                  messages={this.state.slack}
+                                  project={this.state.project}>
+                                </Inbox>
+
+                            </div>
                               <div className="tab-pane" id="tab-3">
                               </div>
 

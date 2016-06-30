@@ -26172,8 +26172,22 @@
 	      logOut: "none",
 	      dashboardClass: 'none',
 	      notifications: 'none',
-	      news: []
+	      news: [],
+	      logo: this.getRandomLogo()
 	    };
+	  },
+
+	  getRandomLogo: function getRandomLogo() {
+	    return "makerlink-logo-white";
+	    //   return [
+	    //   "makerlink-logo-red",
+	    //   "makerlink-logo-white",
+	    //   "makerlink-logo-blue",
+	    //   "makerlink-logo-green",
+	    //   "makerlink-logo-purple",
+	    //   "makerlink-logo-yellow",
+	    //   "makerlink-logo-brown"
+	    // ][Math.floor(Math.random() * 7)];
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
@@ -26409,11 +26423,7 @@
 	              React.createElement(
 	                'li',
 	                null,
-	                React.createElement(
-	                  'a',
-	                  { className: 'page-scroll', onClick: this.goToLanding },
-	                  'MAKERLINK'
-	                )
+	                React.createElement('div', { className: this.state.logo, onClick: this.goToLanding })
 	              )
 	            )
 	          )
@@ -26435,6 +26445,7 @@
 
 	var ApiUtil = {
 	  createUser: function createUser(newUser, card) {
+	    console.log(newUser);
 	    var apiUtil = this;
 	    $.ajax({
 	      url: "api/users",
@@ -26568,6 +26579,7 @@
 
 	  payForProject: function payForProject(project) {
 	    var flag = project.flag;
+	    var channel = "#" + project.name.toLowerCase();
 	    flag.customer_paid = true;
 
 	    $.ajax({
@@ -26576,6 +26588,7 @@
 	      method: "PATCH",
 	      success: function success(flag) {
 	        ApiActions.receiveFlag(flag, project.idx);
+	        ApiUtil.fetchChannel(channel);
 	      },
 	      error: function error(_error10) {
 	        ApiActions.invalidEntry(_error10);
@@ -26625,6 +26638,17 @@
 	        ApiActions.receiveProjectWithNewTask(project);
 	      }
 	    });
+	  },
+
+	  fetchChannel: function fetchChannel(channel) {
+	    $.ajax({
+	      url: 'api/slack/',
+	      data: { channel: channel, unreads: true },
+	      method: "GET",
+	      success: function success(channel) {
+	        ApiActions.receiveChannel(channel);
+	      }
+	    });
 	  }
 	};
 
@@ -26638,7 +26662,7 @@
 
 	var AppDispatcher = __webpack_require__(230);
 	var SessionConstants = __webpack_require__(234);
-	var MessageConstants = __webpack_require__(235);
+	var ChannelConstants = __webpack_require__(433);
 
 	var ApiActions = {
 
@@ -26695,6 +26719,13 @@
 	    AppDispatcher.dispatch({
 	      actionType: SessionConstants.UPDATED_PROJECT_RECEIVED,
 	      project: project
+	    });
+	  },
+
+	  receiveChannel: function receiveChannel(channel) {
+	    AppDispatcher.dispatch({
+	      actionType: ChannelConstants.CHANNEL_RECEIVED,
+	      channel: channel
 	    });
 	  }
 	};
@@ -27037,16 +27068,7 @@
 	};
 
 /***/ },
-/* 235 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = {
-	  MESSAGES_RECEIVED: "MESSAGES_RECEIVED"
-	};
-
-/***/ },
+/* 235 */,
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -41757,7 +41779,9 @@
 	      last_name: this.state.last_name,
 	      email: this.state.email,
 	      password: this.state.password,
-	      mobile: this.state.mobile
+	      mobile: this.state.mobile,
+	      school_id: this.state.school_id,
+	      cohort_id: this.state.cohort_id
 	    };
 
 	    var card = {
@@ -41780,7 +41804,7 @@
 	        React.createElement(
 	          'h3',
 	          null,
-	          'Let\'s get started!'
+	          'Lets get started!'
 	        ),
 	        React.createElement(
 	          'p',
@@ -42473,8 +42497,9 @@
 	    var user = session.user ? session.user : {};
 	    var projects = session.projects ? this.indexObjects(session.projects) : [];
 	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
+	    var slack = session.slack ? session.slack : {};
 
-	    return { user: user, projects: projects, cohorts: cohorts };
+	    return { user: user, projects: projects, cohorts: cohorts, slack: slack };
 	  },
 
 	  componentDidMount: function componentDidMount() {
@@ -42486,6 +42511,7 @@
 	    var user = session.user ? session.user : {};
 	    var projects = session.projects ? this.indexObjects(session.projects) : [];
 	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
+	    var slack = session.slack ? session.slack : {};
 	    if (!user) {
 	      this.context.router.push('/login');
 	    }
@@ -42504,9 +42530,11 @@
 	  renderChildrenWithProps: function renderChildrenWithProps(user, projects, cohorts) {
 	    var user = this.state.user;
 	    var projects = this.state.projects;
-	    var cohorts = this.state.cohorts;;
+	    var cohorts = this.state.cohorts;
+	    var slack = this.state.slack;
+
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
-	      return React.cloneElement(child, { user: user, projects: projects, cohorts: cohorts });
+	      return React.cloneElement(child, { user: user, projects: projects, cohorts: cohorts, slack: slack });
 	    });
 
 	    return childrenWithProps;
@@ -43926,7 +43954,8 @@
 	                { className: 'ibox' },
 	                React.createElement(ProjectShow, {
 	                  user: this.state.user,
-	                  project: this.state.activeProject })
+	                  project: this.state.activeProject,
+	                  slack: this.state.slack })
 	              )
 	            )
 	          )
@@ -44088,6 +44117,7 @@
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(228);
 	var KanbanColumn = __webpack_require__(427);
+	var Inbox = __webpack_require__(431);
 
 	var projectShow = React.createClass({
 	  displayName: 'projectShow',
@@ -44104,7 +44134,8 @@
 	      project: project,
 	      todo: tasks.todo,
 	      completed: tasks.completed,
-	      inprogress: tasks.inprogress
+	      inprogress: tasks.inprogress,
+	      slack: this.props.slack
 	    };
 	  },
 
@@ -44117,7 +44148,8 @@
 	      project: project,
 	      todo: tasks.todo,
 	      completed: tasks.completed,
-	      inprogress: tasks.inprogress
+	      inprogress: tasks.inprogress,
+	      slack: newProps.slack
 	    });
 	  },
 
@@ -44411,7 +44443,13 @@
 	                              )
 	                            )
 	                          ),
-	                          React.createElement('div', { className: 'tab-pane', id: 'tab-2' }),
+	                          React.createElement(
+	                            'div',
+	                            { className: 'tab-pane', id: 'tab-2' },
+	                            React.createElement(Inbox, {
+	                              messages: this.state.slack,
+	                              project: this.state.project })
+	                          ),
 	                          React.createElement('div', { className: 'tab-pane', id: 'tab-3' })
 	                        )
 	                      )
@@ -44704,6 +44742,238 @@
 	});
 
 	module.exports = DevSideNav;
+
+/***/ },
+/* 431 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var ApiUtil = __webpack_require__(228);
+	var ChannelStore = __webpack_require__(432);
+
+	var Inbox = React.createClass({
+	    displayName: 'Inbox',
+
+	    getInitialState: function getInitialState() {
+	        return this.props;
+	    },
+
+	    componentWillMount: function componentWillMount() {
+	        this.channelListener = ChannelStore.addListener(this._onChange);
+	    },
+
+	    componentWillUnmount: function componentWillUnmount() {
+	        this.channelListener.remove();
+	    },
+
+	    componentDidMount: function componentDidMount() {
+	        if (this.state.project.group) {
+	            var channel = "#" + project.name.toLowerCase();
+	            ApiUtil.fetchChannel(channel);
+	        }
+	        $('.i-checks').iCheck({
+	            checkboxClass: 'icheckbox_square-green',
+	            radioClass: 'iradio_square-green'
+	        });
+	    },
+
+	    _onChange: function _onChange() {
+	        this.setState({ channel: ChannelStore.getChannel() });
+	    },
+
+	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	        this.setState(newProps);
+	    },
+
+	    render: function render() {
+	        return React.createElement(
+	            'div',
+	            { className: 'wrapper wrapper-content' },
+	            React.createElement(
+	                'div',
+	                { className: 'row' },
+	                React.createElement(
+	                    'div',
+	                    { className: 'col-lg-12 animated fadeInRight' },
+	                    React.createElement(
+	                        'div',
+	                        { className: 'mail-box-header' },
+	                        React.createElement(
+	                            'form',
+	                            { method: 'get', action: 'index.html', className: 'pull-right mail-search' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'input-group' },
+	                                React.createElement('input', { type: 'text', className: 'form-control input-sm', name: 'search', placeholder: 'Search email' }),
+	                                React.createElement(
+	                                    'div',
+	                                    { className: 'input-group-btn' },
+	                                    React.createElement(
+	                                        'button',
+	                                        { type: 'submit', className: 'btn btn-sm btn-primary' },
+	                                        'Search'
+	                                    )
+	                                )
+	                            )
+	                        ),
+	                        React.createElement(
+	                            'h2',
+	                            null,
+	                            this.state.project.name
+	                        ),
+	                        React.createElement(
+	                            'div',
+	                            { className: 'mail-tools tooltip-demo m-t-md' },
+	                            React.createElement(
+	                                'div',
+	                                { className: 'btn-group pull-right' },
+	                                React.createElement(
+	                                    'button',
+	                                    { className: 'btn btn-white btn-sm' },
+	                                    React.createElement('i', { className: 'fa fa-arrow-left' })
+	                                ),
+	                                React.createElement(
+	                                    'button',
+	                                    { className: 'btn btn-white btn-sm' },
+	                                    React.createElement('i', { className: 'fa fa-arrow-right' })
+	                                )
+	                            ),
+	                            React.createElement(
+	                                'button',
+	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'left', title: 'Refresh inbox' },
+	                                React.createElement('i', { className: 'fa fa-refresh' }),
+	                                ' Refresh'
+	                            ),
+	                            React.createElement(
+	                                'button',
+	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Mark as read' },
+	                                React.createElement('i', { className: 'fa fa-eye' }),
+	                                ' '
+	                            ),
+	                            React.createElement(
+	                                'button',
+	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Mark as important' },
+	                                React.createElement('i', { className: 'fa fa-exclamation' }),
+	                                ' '
+	                            ),
+	                            React.createElement(
+	                                'button',
+	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Move to trash' },
+	                                React.createElement('i', { className: 'fa fa-trash-o' }),
+	                                ' '
+	                            )
+	                        )
+	                    ),
+	                    React.createElement(
+	                        'div',
+	                        { className: 'mail-box' },
+	                        React.createElement(
+	                            'table',
+	                            { className: 'table table-hover table-mail' },
+	                            React.createElement('tbody', null)
+	                        )
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+	// <div className="col-lg-3">
+	//     <div className="ibox float-e-margins">
+	//         <div className="ibox-content mailbox-content">
+	//             <div className="file-manager">
+	//                 <a className="btn btn-block btn-primary compose-mail">Compose Mail</a>
+	//                 <div className="space-25"></div>
+	//                 <h5>Folders</h5>
+	//                 <ul className="folder-list m-b-md" style={{padding: "0"}}>
+	//                     <li><a> <i className="fa fa-inbox "></i> Inbox <span className="label label-warning pull-right">{}</span> </a></li>
+	//                     <li><a> <i className="fa fa-envelope-o"></i> Send Mail</a></li>
+	//                     <li><a> <i className="fa fa-file-text-o"></i> Drafts <span className="label label-danger pull-right">{}</span></a></li>
+	//                     <li><a> <i className="fa fa-trash-o"></i> Trash</a></li>
+	//                 </ul>
+	//                 <div className="clearfix"></div>
+	//             </div>
+	//         </div>
+	//     </div>
+	// </div>
+
+	//   {
+	//     this.props.messages.unreadMessages.forEach(function(message){
+	//       return (<tr className="unread">
+	//           <td className="check-mail">
+	//               <input type="checkbox" className="i-checks"/>
+	//           </td>
+	//           <td className="mail-ontact"><a>{message.author}</a></td>
+	//           <td className="mail-subject"><a>{message.body}</a></td>
+	//           <td className=""><i className="fa fa-paperclip"></i></td>
+	//           <td className="text-right mail-date">6.10 AM</td>
+	//         </tr>)
+	//       })
+	// }
+	// {
+	//   this.props.messages.unreadMessages.forEach(function(message){
+	//     return (<tr className="read">
+	//         <td className="check-mail">
+	//             <input type="checkbox" className="i-checks"/>
+	//         </td>
+	//         <td className="mail-ontact"><a>{message.author}</a> </td>
+	//         <td className="mail-subject"><a>{message.body}</a></td>
+	//         <td className=""></td>
+	//         <td className="text-right mail-date">Jan 16</td>
+	//     </tr>)
+	//     })
+	// }
+	module.exports = Inbox;
+
+/***/ },
+/* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(230);
+	var ChannelConstants = __webpack_require__(433);
+	var ApiUtil = __webpack_require__(228);
+
+	var ChannelStore = new Store(AppDispatcher);
+
+	var _channel = {};
+
+	ChannelStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case ChannelConstants.CHANNEL_RECEIVED:
+	      setChannel(payload.channel);
+	      ChannelStore.__emitChange();
+	      break;
+	  }
+	};
+
+	var setChannel = function setChannel(channel) {
+	  _channel = channel;
+	};
+
+	var clearChannel = function clearChannel() {
+	  _channel = {};
+	};
+
+	ChannelStore.getChannel = function () {
+	  return _channel;
+	};
+
+	module.exports = ChannelStore;
+
+/***/ },
+/* 433 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  CHANNEL_RECEIVED: "CHANNEL_RECEIVED"
+	};
 
 /***/ }
 /******/ ]);

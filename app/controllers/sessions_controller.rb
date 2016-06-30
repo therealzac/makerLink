@@ -8,13 +8,13 @@ class SessionsController < ApplicationController
   def create
     email, password = params[:user][:email], params[:user][:password]
     @user = User.find_by_credentials(email, password)
-
     if @user
       if @user.is_customer?
         @projects = @user.projects
         @projects.each do |project|
+          # This can't handle cases of multiple groups
           project.flag = Flag.where("project_id = #{project.id} AND
-            instructor_approved = true").first
+            instructor_approved = true")[0]
         end
       end
 
@@ -57,8 +57,9 @@ class SessionsController < ApplicationController
       if @user.is_customer?
         @projects = @user.projects
         @projects.each do |project|
+          # This can't handle cases of multiple groups
           project.flag = Flag.where("project_id = #{project.id} AND
-            instructor_approved = true").first
+            instructor_approved = true")[0]
         end
       end
 
