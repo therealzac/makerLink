@@ -1,6 +1,7 @@
 var React = require('react')
 var ApiUtil = require('../util/apiUtil.js');
 var KanbanColumn = require('./KanbanColumn.jsx');
+var ChannelStore = require('../stores/slackChannel.js');
 var Inbox = require('./inbox.jsx');
 
 
@@ -17,22 +18,37 @@ var projectShow = React.createClass({
       project: project,
       todo: tasks.todo,
       completed: tasks.completed,
-      inprogress: tasks.inprogress,
-      slack: this.props.slack
+      inprogress: tasks.inprogress
     };
+  },
+
+  componentWillMount: function () {
+    this.channelListener = ChannelStore.addListener(this._onChange);
+  },
+
+  componentWillUnmount: function () {
+    this.channelListener.remove();
+  },
+
+  _onChange: function () {
+    this.setState({ channel: ChannelStore.getChannel() });
   },
 
   componentWillReceiveProps: function (newProps) {
     var project = newProps.project ? newProps.project : {};
     var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
 
+    if (project.slack_id && !this.state.channel) {
+      var channel = "#" + project.name.toLowerCase();
+      ApiUtil.fetchChannel(channel);
+    }
+
     this.setState({
       user: newProps.user,
       project: project,
       todo: tasks.todo,
       completed: tasks.completed,
-      inprogress: tasks.inprogress,
-      slack: newProps.slack
+      inprogress: tasks.inprogress
     });
   },
 
@@ -96,6 +112,40 @@ var projectShow = React.createClass({
     }
   },
 
+  renderSlack: function () {
+    if (this.state.project.group) {
+      return (
+        <div className="tab-pane" id="tab-2">
+
+          <Inbox
+            user={this.state.user}
+            project={this.state.project}
+            channel={this.state.channel}>
+          </Inbox>
+
+        </div>
+      )
+    }
+  },
+
+  renderTabs: function () {
+    if (this.state.project.group) {
+      return (
+        <ul className="nav nav-tabs">
+          <li className="active"><a href="#tab-1" data-toggle="tab">Agile Board</a></li>
+          <li className=""><a href="#tab-2" data-toggle="tab">Messenger</a></li>
+          <li className=""><a href="#tab-3" data-toggle="tab">Project Calendar</a></li>
+        </ul>
+      )
+    } else {
+      return (
+        <ul className="nav nav-tabs">
+          <li className="active"><a href="#tab-1" data-toggle="tab">{this.state.project.name}</a></li>
+        </ul>
+      )
+    }
+  },
+
   render: function () {
     var projectIdx = this.state.project ? this.state.project.idx : null,
         name = this.state.project ? this.state.project.name : null,
@@ -113,11 +163,7 @@ var projectShow = React.createClass({
                               <div className="panel blank-panel">
                               <div className="panel-heading">
                                   <div className="panel-options">
-                                      <ul className="nav nav-tabs">
-                                          <li className="active"><a href="#tab-1" data-toggle="tab">Agile Board</a></li>
-                                          <li className=""><a href="#tab-2" data-toggle="tab">Slack</a></li>
-                                          <li className=""><a href="#tab-2" data-toggle="tab">Project Calendar</a></li>
-                                      </ul>
+                                    { this.renderTabs() }
                                   </div>
                               </div>
 
@@ -214,15 +260,9 @@ var projectShow = React.createClass({
                   </div>
                 </div>
 
-                            <div className="tab-pane" id="tab-2">
+                      { this.renderSlack() }
 
-                                <Inbox
-                                  messages={this.state.slack}
-                                  project={this.state.project}>
-                                </Inbox>
-
-                            </div>
-                              <div className="tab-pane" id="tab-3">
+                              <div className="tab-pane" id="tab-2">
                               </div>
 
                               </div>

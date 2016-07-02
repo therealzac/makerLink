@@ -1,5 +1,3 @@
-require 'slack'
-
 class SessionsController < ApplicationController
   def new
     render :layout => "empty"

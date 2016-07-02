@@ -9,15 +9,28 @@ var _channel = {};
 
 ChannelStore.__onDispatch = function (payload) {
   switch (payload.actionType) {
-    case ChannelConstants.CHANNEL_RECEIVED:
-      setChannel(payload.channel);
+    case ChannelConstants.SLACK_RECEIVED:
+      setChannel(payload.slack);
+      ChannelStore.__emitChange();
+      break;
+
+    case ChannelConstants.SLACK_MESSAGE_RECEIVED:
+      addMessage(payload.message);
       ChannelStore.__emitChange();
       break;
   }
 }
 
-var setChannel = function (channel) {
-  _channel = channel;
+var setChannel = function (slack) {
+  _channel = slack.channel;
+}
+
+var addMessage = function (message) {
+  if (_channel.messages.length === 6 ) {
+    _channel.messages.pop();
+  }
+  
+  _channel.messages.unshift(message);
 }
 
 var clearChannel = function () {

@@ -61,7 +61,7 @@
 	    Settings = __webpack_require__(411),
 	    Admin = __webpack_require__(412),
 	    Customer = __webpack_require__(423),
-	    Dev = __webpack_require__(429),
+	    Dev = __webpack_require__(430),
 	    Project = __webpack_require__(426),
 	    routes = React.createElement(
 	  Route,
@@ -26531,13 +26531,13 @@
 	    });
 	  },
 
-	  createCohort: function createCohort(cohort, success_callback) {
+	  createCohort: function createCohort(cohort, successCallback) {
 	    $.ajax({
 	      url: "api/cohorts",
 	      data: { cohort: cohort },
 	      method: "POST",
 	      success: function success(cohort) {
-	        success_callback(cohort);
+	        successCallback(cohort);
 	        ApiActions.receiveCohort(cohort);
 	      },
 	      error: function error(_error7) {
@@ -26643,10 +26643,28 @@
 	  fetchChannel: function fetchChannel(channel) {
 	    $.ajax({
 	      url: 'api/slack/',
-	      data: { channel: channel, unreads: true },
+	      data: { channel: channel, count: 6 },
 	      method: "GET",
-	      success: function success(channel) {
-	        ApiActions.receiveChannel(channel);
+	      success: function success(slack) {
+	        ApiActions.receiveSlack(slack);
+	      },
+	      error: function error(_error13) {
+	        ApiActions.invalidEntry(_error13);
+	      }
+	    });
+	  },
+
+	  postMessageToChannel: function postMessageToChannel(text, username, channel, successCallback) {
+	    $.ajax({
+	      url: 'api/slack/',
+	      method: "POST",
+	      data: { text: text, channel: channel, username: username },
+	      success: function success(slack) {
+	        successCallback();
+	        ApiActions.receiveSlackMessage(slack.channel.message);
+	      },
+	      error: function error(_error14) {
+	        ApiActions.invalidEntry(_error14);
 	      }
 	    });
 	  }
@@ -26662,7 +26680,7 @@
 
 	var AppDispatcher = __webpack_require__(230);
 	var SessionConstants = __webpack_require__(234);
-	var ChannelConstants = __webpack_require__(433);
+	var ChannelConstants = __webpack_require__(235);
 
 	var ApiActions = {
 
@@ -26722,10 +26740,17 @@
 	    });
 	  },
 
-	  receiveChannel: function receiveChannel(channel) {
+	  receiveSlack: function receiveSlack(slack) {
 	    AppDispatcher.dispatch({
-	      actionType: ChannelConstants.CHANNEL_RECEIVED,
-	      channel: channel
+	      actionType: ChannelConstants.SLACK_RECEIVED,
+	      slack: slack
+	    });
+	  },
+
+	  receiveSlackMessage: function receiveSlackMessage(message) {
+	    AppDispatcher.dispatch({
+	      actionType: ChannelConstants.SLACK_MESSAGE_RECEIVED,
+	      message: message
 	    });
 	  }
 	};
@@ -27068,7 +27093,17 @@
 	};
 
 /***/ },
-/* 235 */,
+/* 235 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  SLACK_RECEIVED: "SLACK_RECEIVED",
+	  SLACK_MESSAGE_RECEIVED: "SLACK_MESSAGE_RECEIVED"
+	};
+
+/***/ },
 /* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -42497,9 +42532,9 @@
 	    var user = session.user ? session.user : {};
 	    var projects = session.projects ? this.indexObjects(session.projects) : [];
 	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-	    var slack = session.slack ? session.slack : {};
+	    var channel = session.channel ? session.channel : {};
 
-	    return { user: user, projects: projects, cohorts: cohorts, slack: slack };
+	    return { user: user, projects: projects, cohorts: cohorts };
 	  },
 
 	  componentDidMount: function componentDidMount() {
@@ -42511,7 +42546,6 @@
 	    var user = session.user ? session.user : {};
 	    var projects = session.projects ? this.indexObjects(session.projects) : [];
 	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-	    var slack = session.slack ? session.slack : {};
 	    if (!user) {
 	      this.context.router.push('/login');
 	    }
@@ -42531,10 +42565,9 @@
 	    var user = this.state.user;
 	    var projects = this.state.projects;
 	    var cohorts = this.state.cohorts;
-	    var slack = this.state.slack;
 
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
-	      return React.cloneElement(child, { user: user, projects: projects, cohorts: cohorts, slack: slack });
+	      return React.cloneElement(child, { user: user, projects: projects, cohorts: cohorts });
 	    });
 
 	    return childrenWithProps;
@@ -43954,8 +43987,7 @@
 	                { className: 'ibox' },
 	                React.createElement(ProjectShow, {
 	                  user: this.state.user,
-	                  project: this.state.activeProject,
-	                  slack: this.state.slack })
+	                  project: this.state.activeProject })
 	              )
 	            )
 	          )
@@ -44117,7 +44149,8 @@
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(228);
 	var KanbanColumn = __webpack_require__(427);
-	var Inbox = __webpack_require__(431);
+	var ChannelStore = __webpack_require__(432);
+	var Inbox = __webpack_require__(429);
 
 	var projectShow = React.createClass({
 	  displayName: 'projectShow',
@@ -44134,22 +44167,37 @@
 	      project: project,
 	      todo: tasks.todo,
 	      completed: tasks.completed,
-	      inprogress: tasks.inprogress,
-	      slack: this.props.slack
+	      inprogress: tasks.inprogress
 	    };
+	  },
+
+	  componentWillMount: function componentWillMount() {
+	    this.channelListener = ChannelStore.addListener(this._onChange);
+	  },
+
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.channelListener.remove();
+	  },
+
+	  _onChange: function _onChange() {
+	    this.setState({ channel: ChannelStore.getChannel() });
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
 	    var project = newProps.project ? newProps.project : {};
 	    var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
 
+	    if (project.slack_id && !this.state.channel) {
+	      var channel = "#" + project.name.toLowerCase();
+	      ApiUtil.fetchChannel(channel);
+	    }
+
 	    this.setState({
 	      user: newProps.user,
 	      project: project,
 	      todo: tasks.todo,
 	      completed: tasks.completed,
-	      inprogress: tasks.inprogress,
-	      slack: newProps.slack
+	      inprogress: tasks.inprogress
 	    });
 	  },
 
@@ -44215,6 +44263,69 @@
 	    }
 	  },
 
+	  renderSlack: function renderSlack() {
+	    if (this.state.project.group) {
+	      return React.createElement(
+	        'div',
+	        { className: 'tab-pane', id: 'tab-2' },
+	        React.createElement(Inbox, {
+	          user: this.state.user,
+	          project: this.state.project,
+	          channel: this.state.channel })
+	      );
+	    }
+	  },
+
+	  renderTabs: function renderTabs() {
+	    if (this.state.project.group) {
+	      return React.createElement(
+	        'ul',
+	        { className: 'nav nav-tabs' },
+	        React.createElement(
+	          'li',
+	          { className: 'active' },
+	          React.createElement(
+	            'a',
+	            { href: '#tab-1', 'data-toggle': 'tab' },
+	            'Agile Board'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { className: '' },
+	          React.createElement(
+	            'a',
+	            { href: '#tab-2', 'data-toggle': 'tab' },
+	            'Messenger'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { className: '' },
+	          React.createElement(
+	            'a',
+	            { href: '#tab-3', 'data-toggle': 'tab' },
+	            'Project Calendar'
+	          )
+	        )
+	      );
+	    } else {
+	      return React.createElement(
+	        'ul',
+	        { className: 'nav nav-tabs' },
+	        React.createElement(
+	          'li',
+	          { className: 'active' },
+	          React.createElement(
+	            'a',
+	            { href: '#tab-1', 'data-toggle': 'tab' },
+	            this.state.project.name
+	          )
+	        )
+	      );
+	    }
+	  },
+
 	  render: function render() {
 	    var projectIdx = this.state.project ? this.state.project.idx : null,
 	        name = this.state.project ? this.state.project.name : null,
@@ -44253,37 +44364,7 @@
 	                        React.createElement(
 	                          'div',
 	                          { className: 'panel-options' },
-	                          React.createElement(
-	                            'ul',
-	                            { className: 'nav nav-tabs' },
-	                            React.createElement(
-	                              'li',
-	                              { className: 'active' },
-	                              React.createElement(
-	                                'a',
-	                                { href: '#tab-1', 'data-toggle': 'tab' },
-	                                'Agile Board'
-	                              )
-	                            ),
-	                            React.createElement(
-	                              'li',
-	                              { className: '' },
-	                              React.createElement(
-	                                'a',
-	                                { href: '#tab-2', 'data-toggle': 'tab' },
-	                                'Slack'
-	                              )
-	                            ),
-	                            React.createElement(
-	                              'li',
-	                              { className: '' },
-	                              React.createElement(
-	                                'a',
-	                                { href: '#tab-2', 'data-toggle': 'tab' },
-	                                'Project Calendar'
-	                              )
-	                            )
-	                          )
+	                          this.renderTabs()
 	                        )
 	                      ),
 	                      React.createElement(
@@ -44443,14 +44524,8 @@
 	                              )
 	                            )
 	                          ),
-	                          React.createElement(
-	                            'div',
-	                            { className: 'tab-pane', id: 'tab-2' },
-	                            React.createElement(Inbox, {
-	                              messages: this.state.slack,
-	                              project: this.state.project })
-	                          ),
-	                          React.createElement('div', { className: 'tab-pane', id: 'tab-3' })
+	                          this.renderSlack(),
+	                          React.createElement('div', { className: 'tab-pane', id: 'tab-2' })
 	                        )
 	                      )
 	                    )
@@ -44637,7 +44712,189 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var DevSideNav = __webpack_require__(430);
+	var ApiUtil = __webpack_require__(228);
+	var LinkedStateMixin = __webpack_require__(223);
+
+	var Inbox = React.createClass({
+	  displayName: 'Inbox',
+
+	  mixins: [LinkedStateMixin],
+
+	  getInitialState: function getInitialState() {
+	    return this.props;
+	  },
+
+	  componentDidMount: function componentDidMount() {
+	    $('.i-checks').iCheck({
+	      checkboxClass: 'icheckbox_square-green',
+	      radioClass: 'iradio_square-green'
+	    });
+	  },
+
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    this.setState(newProps);
+	  },
+
+	  updateMessage: function updateMessage(e) {
+	    e.preventDefault();
+
+	    this.setState({ message: e.currentTarget });
+	  },
+
+	  sendMessage: function sendMessage() {
+	    var text = this.state.message.value;
+	    var username = this.state.user.first_name;
+	    var channel = this.state.project.slack_id;
+
+	    ApiUtil.postMessageToChannel(text, username, channel, this.resetEntry);
+	  },
+
+	  resetEntry: function resetEntry() {
+	    this.setState({ message: {} });
+	  },
+
+	  parseDate: function parseDate(timestamp) {
+	    var created = new Date(parseInt(timestamp) * 1000);
+
+	    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+	    var date = [monthNames[created.getMonth()], created.getDate() + ",", created.getFullYear() + ","].join(" ");
+
+	    var time = [created.getHours() % 12, created.getMinutes() < 10 ? "0" + created.getMinutes() : created.getMinutes()].join(":");
+
+	    var timeSuffix = created.getHours() < 12 ? "AM" : "PM";
+
+	    return [date, time, timeSuffix].join(" ");
+	  },
+
+	  renderMessages: function renderMessages() {
+	    if (!this.state.channel || !this.state.channel.messages) {
+	      return;
+	    }
+
+	    var self = this;
+	    var messages = this.state.channel.messages.slice(0);
+	    messages.reverse();
+
+	    return messages.map(function (message, idx) {
+
+	      return React.createElement(
+	        'tr',
+	        { className: 'read', key: idx },
+	        React.createElement(
+	          'td',
+	          { className: 'mail-ontact' },
+	          React.createElement(
+	            'a',
+	            null,
+	            message.username
+	          )
+	        ),
+	        React.createElement(
+	          'td',
+	          { className: 'mail-subject' },
+	          React.createElement(
+	            'a',
+	            null,
+	            message.text
+	          )
+	        ),
+	        React.createElement(
+	          'td',
+	          { className: 'text-right mail-date' },
+	          self.parseDate(message.ts)
+	        )
+	      );
+	    });
+	  },
+
+	  render: function render() {
+	    var messageEntry = this.state.message ? this.state.message.value : "";
+	    return React.createElement(
+	      'div',
+	      { className: 'wrapper wrapper-content' },
+	      React.createElement(
+	        'div',
+	        { className: 'row' },
+	        React.createElement(
+	          'div',
+	          { className: 'col-lg-12 animated fadeInRight' },
+	          React.createElement(
+	            'div',
+	            { className: 'mail-box-header' },
+	            React.createElement(
+	              'h2',
+	              null,
+	              this.state.project.name
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'mail-tools tooltip-demo m-t-md' },
+	              React.createElement(
+	                'div',
+	                { className: 'btn-group pull-right' },
+	                React.createElement(
+	                  'button',
+	                  { className: 'btn btn-white btn-sm' },
+	                  React.createElement('i', { className: 'fa fa-arrow-left' })
+	                ),
+	                React.createElement(
+	                  'button',
+	                  { className: 'btn btn-white btn-sm' },
+	                  React.createElement('i', { className: 'fa fa-arrow-right' })
+	                )
+	              ),
+	              React.createElement(
+	                'button',
+	                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'left', title: 'Refresh inbox' },
+	                React.createElement('i', { className: 'fa fa-refresh' }),
+	                ' Refresh'
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'mail-box' },
+	            React.createElement(
+	              'table',
+	              { className: 'table table-hover table-mail' },
+	              React.createElement(
+	                'tbody',
+	                null,
+	                this.renderMessages()
+	              )
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'input-group' },
+	              React.createElement('input', { type: 'text', className: 'form-control input-sm', value: messageEntry, onChange: this.updateMessage }),
+	              React.createElement(
+	                'div',
+	                { className: 'input-group-btn' },
+	                React.createElement(
+	                  'button',
+	                  { type: 'send', className: 'btn btn-sm btn-primary', onClick: this.sendMessage },
+	                  'Send'
+	                )
+	              )
+	            )
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Inbox;
+
+/***/ },
+/* 430 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var DevSideNav = __webpack_require__(431);
 	var ProjectIndex = __webpack_require__(417);
 	var Footer = __webpack_require__(222);
 
@@ -44697,7 +44954,7 @@
 	module.exports = Dev;
 
 /***/ },
-/* 430 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44744,190 +45001,6 @@
 	module.exports = DevSideNav;
 
 /***/ },
-/* 431 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var ApiUtil = __webpack_require__(228);
-	var ChannelStore = __webpack_require__(432);
-
-	var Inbox = React.createClass({
-	    displayName: 'Inbox',
-
-	    getInitialState: function getInitialState() {
-	        return this.props;
-	    },
-
-	    componentWillMount: function componentWillMount() {
-	        this.channelListener = ChannelStore.addListener(this._onChange);
-	    },
-
-	    componentWillUnmount: function componentWillUnmount() {
-	        this.channelListener.remove();
-	    },
-
-	    componentDidMount: function componentDidMount() {
-	        if (this.state.project.group) {
-	            var channel = "#" + project.name.toLowerCase();
-	            ApiUtil.fetchChannel(channel);
-	        }
-	        $('.i-checks').iCheck({
-	            checkboxClass: 'icheckbox_square-green',
-	            radioClass: 'iradio_square-green'
-	        });
-	    },
-
-	    _onChange: function _onChange() {
-	        this.setState({ channel: ChannelStore.getChannel() });
-	    },
-
-	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	        this.setState(newProps);
-	    },
-
-	    render: function render() {
-	        return React.createElement(
-	            'div',
-	            { className: 'wrapper wrapper-content' },
-	            React.createElement(
-	                'div',
-	                { className: 'row' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'col-lg-12 animated fadeInRight' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'mail-box-header' },
-	                        React.createElement(
-	                            'form',
-	                            { method: 'get', action: 'index.html', className: 'pull-right mail-search' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'input-group' },
-	                                React.createElement('input', { type: 'text', className: 'form-control input-sm', name: 'search', placeholder: 'Search email' }),
-	                                React.createElement(
-	                                    'div',
-	                                    { className: 'input-group-btn' },
-	                                    React.createElement(
-	                                        'button',
-	                                        { type: 'submit', className: 'btn btn-sm btn-primary' },
-	                                        'Search'
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'h2',
-	                            null,
-	                            this.state.project.name
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'mail-tools tooltip-demo m-t-md' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'btn-group pull-right' },
-	                                React.createElement(
-	                                    'button',
-	                                    { className: 'btn btn-white btn-sm' },
-	                                    React.createElement('i', { className: 'fa fa-arrow-left' })
-	                                ),
-	                                React.createElement(
-	                                    'button',
-	                                    { className: 'btn btn-white btn-sm' },
-	                                    React.createElement('i', { className: 'fa fa-arrow-right' })
-	                                )
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'left', title: 'Refresh inbox' },
-	                                React.createElement('i', { className: 'fa fa-refresh' }),
-	                                ' Refresh'
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Mark as read' },
-	                                React.createElement('i', { className: 'fa fa-eye' }),
-	                                ' '
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Mark as important' },
-	                                React.createElement('i', { className: 'fa fa-exclamation' }),
-	                                ' '
-	                            ),
-	                            React.createElement(
-	                                'button',
-	                                { className: 'btn btn-white btn-sm', 'data-toggle': 'tooltip', 'data-placement': 'top', title: 'Move to trash' },
-	                                React.createElement('i', { className: 'fa fa-trash-o' }),
-	                                ' '
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'mail-box' },
-	                        React.createElement(
-	                            'table',
-	                            { className: 'table table-hover table-mail' },
-	                            React.createElement('tbody', null)
-	                        )
-	                    )
-	                )
-	            )
-	        );
-	    }
-	});
-	// <div className="col-lg-3">
-	//     <div className="ibox float-e-margins">
-	//         <div className="ibox-content mailbox-content">
-	//             <div className="file-manager">
-	//                 <a className="btn btn-block btn-primary compose-mail">Compose Mail</a>
-	//                 <div className="space-25"></div>
-	//                 <h5>Folders</h5>
-	//                 <ul className="folder-list m-b-md" style={{padding: "0"}}>
-	//                     <li><a> <i className="fa fa-inbox "></i> Inbox <span className="label label-warning pull-right">{}</span> </a></li>
-	//                     <li><a> <i className="fa fa-envelope-o"></i> Send Mail</a></li>
-	//                     <li><a> <i className="fa fa-file-text-o"></i> Drafts <span className="label label-danger pull-right">{}</span></a></li>
-	//                     <li><a> <i className="fa fa-trash-o"></i> Trash</a></li>
-	//                 </ul>
-	//                 <div className="clearfix"></div>
-	//             </div>
-	//         </div>
-	//     </div>
-	// </div>
-
-	//   {
-	//     this.props.messages.unreadMessages.forEach(function(message){
-	//       return (<tr className="unread">
-	//           <td className="check-mail">
-	//               <input type="checkbox" className="i-checks"/>
-	//           </td>
-	//           <td className="mail-ontact"><a>{message.author}</a></td>
-	//           <td className="mail-subject"><a>{message.body}</a></td>
-	//           <td className=""><i className="fa fa-paperclip"></i></td>
-	//           <td className="text-right mail-date">6.10 AM</td>
-	//         </tr>)
-	//       })
-	// }
-	// {
-	//   this.props.messages.unreadMessages.forEach(function(message){
-	//     return (<tr className="read">
-	//         <td className="check-mail">
-	//             <input type="checkbox" className="i-checks"/>
-	//         </td>
-	//         <td className="mail-ontact"><a>{message.author}</a> </td>
-	//         <td className="mail-subject"><a>{message.body}</a></td>
-	//         <td className=""></td>
-	//         <td className="text-right mail-date">Jan 16</td>
-	//     </tr>)
-	//     })
-	// }
-	module.exports = Inbox;
-
-/***/ },
 /* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -44935,7 +45008,7 @@
 
 	var Store = __webpack_require__(237).Store;
 	var AppDispatcher = __webpack_require__(230);
-	var ChannelConstants = __webpack_require__(433);
+	var ChannelConstants = __webpack_require__(235);
 	var ApiUtil = __webpack_require__(228);
 
 	var ChannelStore = new Store(AppDispatcher);
@@ -44944,15 +45017,28 @@
 
 	ChannelStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
-	    case ChannelConstants.CHANNEL_RECEIVED:
-	      setChannel(payload.channel);
+	    case ChannelConstants.SLACK_RECEIVED:
+	      setChannel(payload.slack);
+	      ChannelStore.__emitChange();
+	      break;
+
+	    case ChannelConstants.SLACK_MESSAGE_RECEIVED:
+	      addMessage(payload.message);
 	      ChannelStore.__emitChange();
 	      break;
 	  }
 	};
 
-	var setChannel = function setChannel(channel) {
-	  _channel = channel;
+	var setChannel = function setChannel(slack) {
+	  _channel = slack.channel;
+	};
+
+	var addMessage = function addMessage(message) {
+	  if (_channel.messages.length === 6) {
+	    _channel.messages.pop();
+	  }
+
+	  _channel.messages.unshift(message);
 	};
 
 	var clearChannel = function clearChannel() {
@@ -44964,16 +45050,6 @@
 	};
 
 	module.exports = ChannelStore;
-
-/***/ },
-/* 433 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = {
-	  CHANNEL_RECEIVED: "CHANNEL_RECEIVED"
-	};
 
 /***/ }
 /******/ ]);

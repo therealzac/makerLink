@@ -114,14 +114,14 @@ class Api::FlagsController < ApplicationController
       elsif params[:flag][:customer_paid] == "true"
         # Create slack channel for project.
         client = Slack::Web::Client.new
-        client.channels_create({name: @project.name})
+        slack = client.channels_create({name: @project.name})
 
         dev = @flag.dev
         group = @flag.group
         school = @flag.school
         customer = @project.author
 
-        @project.update({group_id: group.id})
+        @project.update({group_id: group.id, slack_id: slack.channel.id})
         group.update({project_id: @project.id})
 
         customerNews = "We've received payment for " + @project.name + "! " +

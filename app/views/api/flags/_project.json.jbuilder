@@ -11,5 +11,6 @@ json.extract!(
         :expiration_date,
         :flagged,
         :flag,
-        :tasks
+        :tasks,
+        :slack_id
 )

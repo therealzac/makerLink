@@ -8,9 +8,9 @@ var Dashboard = React.createClass({
     var user = session.user ? session.user : {};
     var projects = session.projects ? this.indexObjects(session.projects) : [];
     var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-    var slack = session.slack ? session.slack : {};
+    var channel = session.channel ? session.channel : {};
 
-    return { user: user, projects: projects, cohorts: cohorts, slack: slack }
+    return { user: user, projects: projects, cohorts: cohorts }
   },
 
   componentDidMount: function () {
@@ -22,7 +22,6 @@ var Dashboard = React.createClass({
     var user = session.user ? session.user : {};
     var projects = session.projects ? this.indexObjects(session.projects) : [];
     var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-    var slack = session.slack ? session.slack : {};
     if (!user) { this.context.router.push('/login') }
 
     this.setState({ user: user, projects: projects, cohorts: cohorts });
@@ -38,11 +37,10 @@ var Dashboard = React.createClass({
     var user = this.state.user;
     var projects = this.state.projects;
     var cohorts = this.state.cohorts;
-    var slack = this.state.slack;
-    
+
     var childrenWithProps = React.Children.map(this.props.children,
       (child) => React.cloneElement(
-        child, {user: user, projects: projects, cohorts: cohorts, slack: slack})
+        child, {user: user, projects: projects, cohorts: cohorts})
       );
 
     return childrenWithProps;

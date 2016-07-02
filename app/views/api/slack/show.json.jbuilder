@@ -1,0 +1,1 @@
+json.slack(@slack)

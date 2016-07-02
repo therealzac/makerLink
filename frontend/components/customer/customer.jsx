@@ -52,8 +52,7 @@ var Customer = React.createClass({
 
                   <ProjectShow
                     user={this.state.user}
-                    project={this.state.activeProject}
-                    slack={this.state.slack}>
+                    project={this.state.activeProject}>
                   </ProjectShow>
 
                 </div>

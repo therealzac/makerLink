@@ -60,10 +60,17 @@ var ApiActions = {
     })
   },
 
-  receiveChannel: function (channel) {
+  receiveSlack: function (slack) {
     AppDispatcher.dispatch({
-      actionType: ChannelConstants.CHANNEL_RECEIVED,
-      channel: channel
+      actionType: ChannelConstants.SLACK_RECEIVED,
+      slack: slack
+    })
+  },
+
+  receiveSlackMessage: function (message) {
+    AppDispatcher.dispatch({
+      actionType: ChannelConstants.SLACK_MESSAGE_RECEIVED,
+      message: message
     })
   }
 }

@@ -86,13 +86,13 @@ var ApiUtil = {
     });
   },
 
-  createCohort: function(cohort, success_callback) {
+  createCohort: function(cohort, successCallback) {
    $.ajax({
       url: "api/cohorts",
       data: {cohort: cohort},
       method: "POST",
       success: function(cohort) {
-        success_callback(cohort);
+        successCallback(cohort);
         ApiActions.receiveCohort(cohort);
       },
       error: function(error){
@@ -198,10 +198,28 @@ var ApiUtil = {
   fetchChannel: function (channel) {
     $.ajax({
       url: 'api/slack/',
-      data: {channel: channel, unreads: true},
+      data: {channel: channel, count: 6},
       method: "GET",
-      success: function (channel) {
-        ApiActions.receiveChannel(channel);
+      success: function (slack) {
+        ApiActions.receiveSlack(slack);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
+      }
+    })
+  },
+
+  postMessageToChannel: function (text, username, channel, successCallback) {
+    $.ajax({
+      url: 'api/slack/',
+      method: "POST",
+      data: {text: text, channel: channel, username: username},
+      success: function (slack) {
+        successCallback();
+        ApiActions.receiveSlackMessage(slack.channel.message);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
       }
     })
   }
