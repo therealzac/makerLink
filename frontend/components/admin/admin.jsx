@@ -127,8 +127,9 @@ var Admin = React.createClass({
                     <GroupForm
                       message={this.state.message}
                       soloDevs={soloDevs}
-                      cohort_id={cohort_id}
-                      setActiveGroupCallback={this.setActiveGroup}>
+                      cohort={activeCohort}
+                      setActiveGroupCallback={this.setActiveGroup}
+                      setActiveCohortCallback={this.setActiveCohort}>
                     </GroupForm>
                   </div>
 

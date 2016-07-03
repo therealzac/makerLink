@@ -26,11 +26,8 @@ var setChannel = function (slack) {
 }
 
 var addMessage = function (message) {
-  if (_channel.messages.length === 6 ) {
-    _channel.messages.pop();
-  }
-  
   _channel.messages.unshift(message);
+  if (_channel.messages.length > 6 ) { _channel.messages.pop() };
 }
 
 var clearChannel = function () {

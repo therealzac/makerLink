@@ -3,9 +3,7 @@ var Footer = require('./footer.jsx');
 var LinkedStateMixin = require('react-addons-linked-state-mixin');
 
 var Landing = React.createClass({
-  contextTypes: {
-    router: React.PropTypes.object.isRequired
-  },
+  contextTypes: { router: React.PropTypes.object.isRequired },
 
   componentDidMount: function () {
     this.props.changeBackground("WHITE");

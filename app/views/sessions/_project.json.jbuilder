@@ -1,5 +1,6 @@
 json.extract!(
-  project, :id,
+  project,
+        :id,
         :author_id,
         :group,
         :name,

@@ -61,7 +61,7 @@
 	    Settings = __webpack_require__(411),
 	    Admin = __webpack_require__(412),
 	    Customer = __webpack_require__(423),
-	    Dev = __webpack_require__(430),
+	    Dev = __webpack_require__(431),
 	    Project = __webpack_require__(426),
 	    routes = React.createElement(
 	  Route,
@@ -25305,6 +25305,8 @@
 	          this.context.router.push('/admin');
 	          break;
 	      }
+	    } else {
+	      this.context.router.push('/');
 	    }
 	  },
 
@@ -25346,9 +25348,7 @@
 	var Landing = React.createClass({
 	    displayName: 'Landing',
 
-	    contextTypes: {
-	        router: React.PropTypes.object.isRequired
-	    },
+	    contextTypes: { router: React.PropTypes.object.isRequired },
 
 	    componentDidMount: function componentDidMount() {
 	        this.props.changeBackground("WHITE");
@@ -26306,11 +26306,7 @@
 	            React.createElement(
 	              'div',
 	              { className: 'dropdown-messages-box' },
-	              React.createElement(
-	                'a',
-	                { className: 'pull-left' },
-	                React.createElement('img', { alt: 'image', className: 'img-circle' })
-	              ),
+	              React.createElement('a', { className: 'pull-left' }),
 	              React.createElement(
 	                'div',
 	                null,
@@ -26445,7 +26441,6 @@
 
 	var ApiUtil = {
 	  createUser: function createUser(newUser, card) {
-	    console.log(newUser);
 	    var apiUtil = this;
 	    $.ajax({
 	      url: "api/users",
@@ -26466,9 +26461,6 @@
 	      url: "session",
 	      method: "GET",
 	      success: function success(session) {
-	        if (!session.user) {
-	          return;
-	        }
 	        ApiActions.receiveSession(session);
 	      },
 	      error: function error(_error2) {
@@ -26517,12 +26509,15 @@
 	    });
 	  },
 
-	  createGroup: function createGroup(group, members) {
+	  createGroup: function createGroup(group, members, successCallback) {
 	    $.ajax({
 	      url: "api/groups",
 	      data: { group: group, members: members },
 	      method: "POST",
 	      success: function success(cohort) {
+	        successCallback();
+
+	        cohort.idx = group.cohort_idx;
 	        ApiActions.updateCohort(cohort);
 	      },
 	      error: function error(_error6) {
@@ -26588,7 +26583,6 @@
 	      method: "PATCH",
 	      success: function success(flag) {
 	        ApiActions.receiveFlag(flag, project.idx);
-	        ApiUtil.fetchChannel(channel);
 	      },
 	      error: function error(_error10) {
 	        ApiActions.invalidEntry(_error10);
@@ -26610,12 +26604,14 @@
 	    });
 	  },
 
-	  createTask: function createTask(task, projectIdx) {
+	  createTask: function createTask(task, projectIdx, successCallback) {
 	    $.ajax({
 	      url: "api/tasks",
 	      data: { task: task },
 	      method: "POST",
 	      success: function success(project) {
+	        successCallback();
+
 	        project.idx = projectIdx;
 	        ApiActions.receiveProjectWithNewTask(project);
 	      },
@@ -26654,11 +26650,11 @@
 	    });
 	  },
 
-	  postMessageToChannel: function postMessageToChannel(text, username, channel, successCallback) {
+	  postMessageToChannel: function postMessageToChannel(message, successCallback) {
 	    $.ajax({
 	      url: 'api/slack/',
 	      method: "POST",
-	      data: { text: text, channel: channel, username: username },
+	      data: message,
 	      success: function success(slack) {
 	        successCallback();
 	        ApiActions.receiveSlackMessage(slack.channel.message);
@@ -42518,21 +42514,21 @@
 /* 410 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var React = __webpack_require__(1);
 
 	var Dashboard = React.createClass({
-	  displayName: 'Dashboard',
+	  displayName: "Dashboard",
 
 	  contextTypes: { router: React.PropTypes.object.isRequired },
 
 	  getInitialState: function getInitialState() {
-	    var session = this.props.session;
-	    var user = session.user ? session.user : {};
-	    var projects = session.projects ? this.indexObjects(session.projects) : [];
-	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-	    var channel = session.channel ? session.channel : {};
+	    var session = this.props.session,
+	        user = session.user ? session.user : {},
+	        projects = session.projects ? this.indexObjects(session.projects) : [],
+	        cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [],
+	        channel = session.channel ? session.channel : {};
 
 	    return { user: user, projects: projects, cohorts: cohorts };
 	  },
@@ -42542,13 +42538,10 @@
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
-	    var session = newProps.session;
-	    var user = session.user ? session.user : {};
-	    var projects = session.projects ? this.indexObjects(session.projects) : [];
-	    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-	    if (!user) {
-	      this.context.router.push('/login');
-	    }
+	    var session = newProps.session,
+	        user = session.user ? session.user : {},
+	        projects = session.projects ? this.indexObjects(session.projects) : [],
+	        cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
 
 	    this.setState({ user: user, projects: projects, cohorts: cohorts });
 	  },
@@ -42562,9 +42555,9 @@
 	  },
 
 	  renderChildrenWithProps: function renderChildrenWithProps(user, projects, cohorts) {
-	    var user = this.state.user;
-	    var projects = this.state.projects;
-	    var cohorts = this.state.cohorts;
+	    var user = this.state.user,
+	        projects = this.state.projects,
+	        cohorts = this.state.cohorts;
 
 	    var childrenWithProps = React.Children.map(this.props.children, function (child) {
 	      return React.cloneElement(child, { user: user, projects: projects, cohorts: cohorts });
@@ -42575,8 +42568,8 @@
 
 	  render: function render() {
 	    return React.createElement(
-	      'div',
-	      { id: 'wrapper' },
+	      "div",
+	      { id: "wrapper" },
 	      this.renderChildrenWithProps()
 	    );
 	  }
@@ -43133,8 +43126,9 @@
 	                  React.createElement(GroupForm, {
 	                    message: this.state.message,
 	                    soloDevs: soloDevs,
-	                    cohort_id: cohort_id,
-	                    setActiveGroupCallback: this.setActiveGroup })
+	                    cohort: activeCohort,
+	                    setActiveGroupCallback: this.setActiveGroup,
+	                    setActiveCohortCallback: this.setActiveCohort })
 	                ),
 	                React.createElement(
 	                  'div',
@@ -43831,7 +43825,16 @@
 	  },
 
 	  resetStateCallback: function resetStateCallback() {
+	    var group = {
+	      name: this.state.name,
+	      cohort_id: this.state.cohort.id,
+	      cohort_idx: this.state.cohort.idx
+	    };
+
 	    this.setState({ name: "" });
+
+	    this.state.setActiveCohortCallback(this.state.cohort);
+	    this.state.setActiveGroupCallback(group);
 	  },
 
 	  toggleMembership: function toggleMembership(dev) {
@@ -43841,7 +43844,7 @@
 	    var newMemberIndex = updatedNewMembers.indexOf(dev);
 	    var soloDevIndex = updatedSoloDevs.indexOf(dev);
 
-	    if (soloDevIndex >= 0) {
+	    if (soloDevIndex !== -1) {
 	      updatedSoloDevs.splice(soloDevIndex, 1);
 	      updatedNewMembers.push(dev);
 	    } else {
@@ -43860,7 +43863,7 @@
 
 	    var newGroup = {
 	      name: this.state.name,
-	      cohort_id: this.state.cohort_id
+	      cohort_id: this.state.cohort.id
 	    };
 
 	    ApiUtil.createGroup(newGroup, this.state.members, this.resetStateCallback);
@@ -44149,8 +44152,8 @@
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(228);
 	var KanbanColumn = __webpack_require__(427);
-	var ChannelStore = __webpack_require__(432);
-	var Inbox = __webpack_require__(429);
+	var ChannelStore = __webpack_require__(429);
+	var Inbox = __webpack_require__(430);
 
 	var projectShow = React.createClass({
 	  displayName: 'projectShow',
@@ -44184,17 +44187,19 @@
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    var oldProject = this.state.project;
 	    var project = newProps.project ? newProps.project : {};
 	    var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
+	    var channel = oldProject.id === project.id ? this.state.channel : null;
 
-	    if (project.slack_id && !this.state.channel) {
-	      var channel = "#" + project.name.toLowerCase();
-	      ApiUtil.fetchChannel(channel);
+	    if (project.slack_id && !channel) {
+	      ApiUtil.fetchChannel(project.slack_id);
 	    }
 
 	    this.setState({
 	      user: newProps.user,
 	      project: project,
+	      channel: channel,
 	      todo: tasks.todo,
 	      completed: tasks.completed,
 	      inprogress: tasks.inprogress
@@ -44237,7 +44242,11 @@
 	      body: body
 	    };
 
-	    ApiUtil.createTask(task, this.state.project.idx);
+	    ApiUtil.createTask(task, this.state.project.idx, this.resetEntry);
+	  },
+
+	  resetEntry: function resetEntry() {
+	    $('#new-task').val("");
 	  },
 
 	  payForProject: function payForProject() {
@@ -44444,7 +44453,10 @@
 	                                      React.createElement(
 	                                        'div',
 	                                        { className: 'input-group' },
-	                                        React.createElement('input', { id: 'new-task', type: 'text', placeholder: 'Add new task. ', className: 'input input-sm form-control' }),
+	                                        React.createElement('input', {
+	                                          id: 'new-task',
+	                                          type: 'text',
+	                                          className: 'input input-sm form-control' }),
 	                                        React.createElement(
 	                                          'span',
 	                                          { className: 'input-group-btn' },
@@ -44711,6 +44723,56 @@
 
 	'use strict';
 
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(230);
+	var ChannelConstants = __webpack_require__(235);
+	var ApiUtil = __webpack_require__(228);
+
+	var ChannelStore = new Store(AppDispatcher);
+
+	var _channel = {};
+
+	ChannelStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case ChannelConstants.SLACK_RECEIVED:
+	      setChannel(payload.slack);
+	      ChannelStore.__emitChange();
+	      break;
+
+	    case ChannelConstants.SLACK_MESSAGE_RECEIVED:
+	      addMessage(payload.message);
+	      ChannelStore.__emitChange();
+	      break;
+	  }
+	};
+
+	var setChannel = function setChannel(slack) {
+	  _channel = slack.channel;
+	};
+
+	var addMessage = function addMessage(message) {
+	  _channel.messages.unshift(message);
+	  if (_channel.messages.length > 6) {
+	    _channel.messages.pop();
+	  };
+	};
+
+	var clearChannel = function clearChannel() {
+	  _channel = {};
+	};
+
+	ChannelStore.getChannel = function () {
+	  return _channel;
+	};
+
+	module.exports = ChannelStore;
+
+/***/ },
+/* 430 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(228);
 	var LinkedStateMixin = __webpack_require__(223);
@@ -44735,22 +44797,24 @@
 	    this.setState(newProps);
 	  },
 
-	  updateMessage: function updateMessage(e) {
+	  updateChatText: function updateChatText(e) {
 	    e.preventDefault();
 
-	    this.setState({ message: e.currentTarget });
+	    this.setState({ chatText: e.currentTarget });
 	  },
 
 	  sendMessage: function sendMessage() {
-	    var text = this.state.message.value;
-	    var username = this.state.user.first_name;
-	    var channel = this.state.project.slack_id;
+	    var message = {
+	      text: this.state.chatText.value,
+	      username: this.state.user.first_name + "_" + this.state.user.last_name,
+	      channel: this.state.project.slack_id
+	    };
 
-	    ApiUtil.postMessageToChannel(text, username, channel, this.resetEntry);
+	    ApiUtil.postMessageToChannel(message, this.resetEntry);
 	  },
 
 	  resetEntry: function resetEntry() {
-	    this.setState({ message: {} });
+	    this.setState({ chatText: {} });
 	  },
 
 	  parseDate: function parseDate(timestamp) {
@@ -44809,7 +44873,7 @@
 	  },
 
 	  render: function render() {
-	    var messageEntry = this.state.message ? this.state.message.value : "";
+	    var messageEntry = this.state.chatText ? this.state.chatText.value : "";
 	    return React.createElement(
 	      'div',
 	      { className: 'wrapper wrapper-content' },
@@ -44867,7 +44931,11 @@
 	            React.createElement(
 	              'div',
 	              { className: 'input-group' },
-	              React.createElement('input', { type: 'text', className: 'form-control input-sm', value: messageEntry, onChange: this.updateMessage }),
+	              React.createElement('input', {
+	                type: 'text',
+	                className: 'form-control input-sm',
+	                value: messageEntry,
+	                onChange: this.updateChatText }),
 	              React.createElement(
 	                'div',
 	                { className: 'input-group-btn' },
@@ -44888,13 +44956,13 @@
 	module.exports = Inbox;
 
 /***/ },
-/* 430 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var DevSideNav = __webpack_require__(431);
+	var DevSideNav = __webpack_require__(432);
 	var ProjectIndex = __webpack_require__(417);
 	var Footer = __webpack_require__(222);
 
@@ -44954,7 +45022,7 @@
 	module.exports = Dev;
 
 /***/ },
-/* 431 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -44999,57 +45067,6 @@
 	});
 
 	module.exports = DevSideNav;
-
-/***/ },
-/* 432 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Store = __webpack_require__(237).Store;
-	var AppDispatcher = __webpack_require__(230);
-	var ChannelConstants = __webpack_require__(235);
-	var ApiUtil = __webpack_require__(228);
-
-	var ChannelStore = new Store(AppDispatcher);
-
-	var _channel = {};
-
-	ChannelStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case ChannelConstants.SLACK_RECEIVED:
-	      setChannel(payload.slack);
-	      ChannelStore.__emitChange();
-	      break;
-
-	    case ChannelConstants.SLACK_MESSAGE_RECEIVED:
-	      addMessage(payload.message);
-	      ChannelStore.__emitChange();
-	      break;
-	  }
-	};
-
-	var setChannel = function setChannel(slack) {
-	  _channel = slack.channel;
-	};
-
-	var addMessage = function addMessage(message) {
-	  if (_channel.messages.length === 6) {
-	    _channel.messages.pop();
-	  }
-
-	  _channel.messages.unshift(message);
-	};
-
-	var clearChannel = function clearChannel() {
-	  _channel = {};
-	};
-
-	ChannelStore.getChannel = function () {
-	  return _channel;
-	};
-
-	module.exports = ChannelStore;
 
 /***/ }
 /******/ ]);

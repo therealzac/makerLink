@@ -35,17 +35,19 @@ var projectShow = React.createClass({
   },
 
   componentWillReceiveProps: function (newProps) {
+    var oldProject = this.state.project;
     var project = newProps.project ? newProps.project : {};
     var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
+    var channel = oldProject.id === project.id ? this.state.channel : null;
 
-    if (project.slack_id && !this.state.channel) {
-      var channel = "#" + project.name.toLowerCase();
-      ApiUtil.fetchChannel(channel);
+    if (project.slack_id && !channel) {
+      ApiUtil.fetchChannel(project.slack_id);
     }
 
     this.setState({
       user: newProps.user,
       project: project,
+      channel: channel,
       todo: tasks.todo,
       completed: tasks.completed,
       inprogress: tasks.inprogress
@@ -88,7 +90,11 @@ var projectShow = React.createClass({
       body: body
     }
 
-    ApiUtil.createTask(task, this.state.project.idx);
+    ApiUtil.createTask(task, this.state.project.idx, this.resetEntry);
+  },
+
+  resetEntry: function () {
+    $('#new-task').val("");
   },
 
   payForProject: function () {
@@ -151,6 +157,7 @@ var projectShow = React.createClass({
         name = this.state.project ? this.state.project.name : null,
         url = this.state.project ? this.state.project.url : null;
 
+
     return(
       <div>
       <div className="row">
@@ -206,7 +213,13 @@ var projectShow = React.createClass({
                                   <p className="small"><i className="fa fa-hand-o-up"></i> Drag task between list</p>
 
                                   <div className="input-group">
-                                      <input id="new-task" type="text" placeholder="Add new task. " className="input input-sm form-control"/>
+
+                                      <input
+                                        id="new-task"
+                                        type="text"
+                                        className="input input-sm form-control">
+                                      </input>
+
                                       <span className="input-group-btn">
                                               <button onClick={this.addTask} type="button" className="btn btn-sm btn-white"> <i className="fa fa-plus"></i> Add task</button>
                                       </span>

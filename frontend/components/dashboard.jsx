@@ -4,11 +4,11 @@ var Dashboard = React.createClass({
   contextTypes: { router: React.PropTypes.object.isRequired },
 
   getInitialState: function () {
-    var session = this.props.session;
-    var user = session.user ? session.user : {};
-    var projects = session.projects ? this.indexObjects(session.projects) : [];
-    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-    var channel = session.channel ? session.channel : {};
+    var session = this.props.session,
+        user = session.user ? session.user : {},
+        projects = session.projects ? this.indexObjects(session.projects) : [],
+        cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [],
+        channel = session.channel ? session.channel : {};
 
     return { user: user, projects: projects, cohorts: cohorts }
   },
@@ -18,11 +18,10 @@ var Dashboard = React.createClass({
   },
 
   componentWillReceiveProps: function (newProps) {
-    var session = newProps.session;
-    var user = session.user ? session.user : {};
-    var projects = session.projects ? this.indexObjects(session.projects) : [];
-    var cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
-    if (!user) { this.context.router.push('/login') }
+    var session = newProps.session,
+        user = session.user ? session.user : {},
+        projects = session.projects ? this.indexObjects(session.projects) : [],
+        cohorts = session.cohorts ? this.indexObjects(session.cohorts) : [];
 
     this.setState({ user: user, projects: projects, cohorts: cohorts });
   },
@@ -34,9 +33,9 @@ var Dashboard = React.createClass({
   },
 
   renderChildrenWithProps: function (user, projects, cohorts) {
-    var user = this.state.user;
-    var projects = this.state.projects;
-    var cohorts = this.state.cohorts;
+    var user = this.state.user,
+        projects = this.state.projects,
+        cohorts = this.state.cohorts;
 
     var childrenWithProps = React.Children.map(this.props.children,
       (child) => React.cloneElement(

@@ -21,7 +21,16 @@ var GroupForm = React.createClass({
   },
 
   resetStateCallback: function () {
+    var group = {
+      name: this.state.name,
+      cohort_id: this.state.cohort.id,
+      cohort_idx: this.state.cohort.idx
+    }
+
     this.setState({name: ""});
+
+    this.state.setActiveCohortCallback(this.state.cohort);
+    this.state.setActiveGroupCallback(group);
   },
 
   toggleMembership: function (dev) {
@@ -31,7 +40,7 @@ var GroupForm = React.createClass({
     var newMemberIndex = updatedNewMembers.indexOf(dev);
     var soloDevIndex = updatedSoloDevs.indexOf(dev);
 
-    if (soloDevIndex >= 0) {
+    if (soloDevIndex !== -1) {
       updatedSoloDevs.splice(soloDevIndex, 1);
       updatedNewMembers.push(dev);
     } else {
@@ -50,7 +59,7 @@ var GroupForm = React.createClass({
 
     var newGroup = {
       name: this.state.name,
-      cohort_id: this.state.cohort_id
+      cohort_id: this.state.cohort.id
     };
 
     ApiUtil.createGroup(newGroup, this.state.members, this.resetStateCallback);

@@ -134,7 +134,6 @@ var NavBar = React.createClass({
                       <li key={idx}>
                         <div className="dropdown-messages-box">
                             <a className="pull-left">
-                                <img alt="image" className="img-circle"/>
                             </a>
                             <div>
                                 <strong>{newsItem.body}</strong><br/>

@@ -20,22 +20,24 @@ const Inbox = React.createClass({
     this.setState(newProps);
   },
 
-  updateMessage: function (e) {
+  updateChatText: function (e) {
     e.preventDefault();
 
-    this.setState({message: e.currentTarget});
+    this.setState({chatText: e.currentTarget});
   },
 
   sendMessage: function () {
-    var text = this.state.message.value;
-    var username = this.state.user.first_name;
-    var channel = this.state.project.slack_id;
+    var message = {
+      text: this.state.chatText.value,
+      username: this.state.user.first_name + "_" + this.state.user.last_name,
+      channel: this.state.project.slack_id
+    }
 
-    ApiUtil.postMessageToChannel(text, username, channel, this.resetEntry);
+    ApiUtil.postMessageToChannel(message, this.resetEntry);
   },
 
   resetEntry: function () {
-    this.setState({message: {}});
+    this.setState({chatText: {}});
   },
 
   parseDate: function (timestamp) {
@@ -94,7 +96,7 @@ const Inbox = React.createClass({
   },
 
   render: function () {
-    var messageEntry = this.state.message ? this.state.message.value : "";
+    var messageEntry = this.state.chatText ? this.state.chatText.value : "";
     return(
         <div className="wrapper wrapper-content">
         <div className="row">
@@ -123,12 +125,19 @@ const Inbox = React.createClass({
                   </tbody>
                 </table>
                 <div className="input-group">
-                    <input type="text" className="form-control input-sm" value={messageEntry} onChange={this.updateMessage}/>
-                      <div className="input-group-btn">
-                          <button type="send" className="btn btn-sm btn-primary" onClick={this.sendMessage}>
-                              Send
-                          </button>
-                      </div>
+
+                    <input
+                      type="text"
+                      className="form-control input-sm"
+                      value={messageEntry}
+                      onChange={this.updateChatText}>
+                    </input>
+
+                    <div className="input-group-btn">
+                        <button type="send" className="btn btn-sm btn-primary" onClick={this.sendMessage}>
+                            Send
+                        </button>
+                    </div>
                 </div>
               </div>
           </div>

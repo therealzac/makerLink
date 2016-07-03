@@ -2,7 +2,6 @@ var ApiActions = require('../actions/apiActions.js');
 
 var ApiUtil = {
   createUser: function (newUser, card) {
-    console.log(newUser);
     var apiUtil = this;
     $.ajax({
       url: "api/users",
@@ -23,7 +22,6 @@ var ApiUtil = {
       url: "session",
       method: "GET",
       success: function (session) {
-        if (!session.user) { return }
         ApiActions.receiveSession(session);
       },
       error: function (error) {
@@ -72,12 +70,15 @@ var ApiUtil = {
     });
   },
 
-  createGroup: function(group, members) {
+  createGroup: function(group, members, successCallback) {
     $.ajax({
         url: "api/groups",
         data: {group: group, members: members},
         method: "POST",
         success: function(cohort) {
+          successCallback();
+
+          cohort.idx = group.cohort_idx;
           ApiActions.updateCohort(cohort);
         },
         error: function(error) {
@@ -143,7 +144,6 @@ var ApiUtil = {
       method: "PATCH",
       success: function (flag) {
         ApiActions.receiveFlag(flag, project.idx);
-        ApiUtil.fetchChannel(channel);
       },
       error: function (error) {
         ApiActions.invalidEntry(error);
@@ -165,12 +165,14 @@ var ApiUtil = {
     });
   },
 
-  createTask: function (task, projectIdx) {
+  createTask: function (task, projectIdx, successCallback) {
     $.ajax({
       url: "api/tasks",
       data: {task: task},
       method: "POST",
       success: function (project) {
+        successCallback();
+        
         project.idx = projectIdx;
         ApiActions.receiveProjectWithNewTask(project);
       },
@@ -209,11 +211,11 @@ var ApiUtil = {
     })
   },
 
-  postMessageToChannel: function (text, username, channel, successCallback) {
+  postMessageToChannel: function (message, successCallback) {
     $.ajax({
       url: 'api/slack/',
       method: "POST",
-      data: {text: text, channel: channel, username: username},
+      data: message,
       success: function (slack) {
         successCallback();
         ApiActions.receiveSlackMessage(slack.channel.message);

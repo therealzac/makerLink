@@ -5,11 +5,12 @@ class ApplicationController < ActionController::Base
   # TODO: find prevent forgery solution.
 
   helper_method :current_user
+  
   # TODO: Get new stripe key
-  Stripe.api_key = ""
+  Stripe.api_key = "sk_test_9NWrmNu1xmzxjKAkzVGFB6GM"
 
   Slack.configure do |config|
-    config.token = ''
+    config.token = 'xoxp-54439358022-54398440627-55262325364-109616d224'
     fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
   end
 

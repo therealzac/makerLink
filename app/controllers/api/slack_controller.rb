@@ -6,7 +6,6 @@ class Api::SlackController < ApplicationController
 
   def create
     client = Slack::Web::Client.new
-
     @channel = client.chat_postMessage(slack_params)
 
     render :index
