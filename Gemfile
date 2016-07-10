@@ -31,8 +31,13 @@ gem 'stripe'
 
 gem 'slack-ruby-client'
 
+gem 'google-api-client'
+
 gem 'eventmachine'
 gem 'faye-websocket'
+
+gem 'fullcalendar-rails'
+gem 'momentjs-rails'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'

@@ -11,6 +11,7 @@ Myapp::Application.routes.draw do
     resources :groups, only: [:create, :update, :destroy]
     resources :tasks, only: [:create, :update, :destroy]
     resources :slack, only: [:index, :create]
+    resources :calendars, only: [:index, :create, :update, :destroy]
   end
 
 resource :session, only: [:show, :create, :destroy, :update]

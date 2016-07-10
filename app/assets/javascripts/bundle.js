@@ -26663,6 +26663,35 @@
 	        ApiActions.invalidEntry(_error14);
 	      }
 	    });
+	  },
+
+	  scheduleMeeting: function scheduleMeeting(newEvent, successCallback) {
+	    $.ajax({
+	      url: 'api/calendars/',
+	      method: "POST",
+	      data: newEvent,
+	      success: function success(calendar) {
+	        successCallback(calendar);
+	        ApiActions.receiveEvent(calendar);
+	      },
+	      error: function error(_error15) {
+	        ApiActions.invalidEntry(_error15);
+	      }
+	    });
+	  },
+
+	  fetchEvents: function fetchEvents(calendar_id) {
+	    $.ajax({
+	      url: 'api/calendars/',
+	      method: "GET",
+	      data: { calendar_id: calendar_id },
+	      success: function success(calendar) {
+	        ApiActions.receiveEvents(calendar);
+	      },
+	      error: function error(_error16) {
+	        ApiActions.invalidEntry(_error16);
+	      }
+	    });
 	  }
 	};
 
@@ -26677,6 +26706,7 @@
 	var AppDispatcher = __webpack_require__(230);
 	var SessionConstants = __webpack_require__(234);
 	var ChannelConstants = __webpack_require__(235);
+	var EventConstants = __webpack_require__(435);
 
 	var ApiActions = {
 
@@ -26747,6 +26777,20 @@
 	    AppDispatcher.dispatch({
 	      actionType: ChannelConstants.SLACK_MESSAGE_RECEIVED,
 	      message: message
+	    });
+	  },
+
+	  receiveEvent: function receiveEvent(calendar) {
+	    AppDispatcher.dispatch({
+	      actionType: EventConstants.EVENT_RECEIVED,
+	      calendar: calendar
+	    });
+	  },
+
+	  receiveEvents: function receiveEvents(calendar) {
+	    AppDispatcher.dispatch({
+	      actionType: EventConstants.EVENTS_RECEIVED,
+	      calendar: calendar
 	    });
 	  }
 	};
@@ -41719,12 +41763,23 @@
 	            React.createElement(
 	              'div',
 	              { className: 'form-group' },
-	              React.createElement('input', { type: 'email', name: 'user[email]', className: 'form-control', placeholder: 'Email', required: '', valueLink: this.linkState("email") })
+	              React.createElement('input', { type: 'email',
+	                name: 'user[email]',
+	                className: 'form-control',
+	                placeholder: 'Email',
+	                required: '',
+	                valueLink: this.linkState("email") })
 	            ),
 	            React.createElement(
 	              'div',
 	              { className: 'form-group' },
-	              React.createElement('input', { type: 'password', name: 'user[password]', className: 'form-control', placeholder: 'Password', required: '', valueLink: this.linkState("password") })
+	              React.createElement('input', {
+	                type: 'password',
+	                name: 'user[password]',
+	                className: 'form-control',
+	                placeholder: 'Password',
+	                required: '',
+	                valueLink: this.linkState("password") })
 	            ),
 	            React.createElement(
 	              'button',
@@ -44153,6 +44208,7 @@
 	var ApiUtil = __webpack_require__(228);
 	var KanbanColumn = __webpack_require__(427);
 	var ChannelStore = __webpack_require__(429);
+	var EventStore = __webpack_require__(434);
 	var Inbox = __webpack_require__(430);
 
 	var projectShow = React.createClass({
@@ -44176,14 +44232,22 @@
 
 	  componentWillMount: function componentWillMount() {
 	    this.channelListener = ChannelStore.addListener(this._onChange);
+	    this.eventsListener = EventStore.addListener(this._onChange);
 	  },
 
 	  componentWillUnmount: function componentWillUnmount() {
 	    this.channelListener.remove();
+	    this.eventsListener.remove();
 	  },
 
 	  _onChange: function _onChange() {
-	    this.setState({ channel: ChannelStore.getChannel() });
+	    $('#calendar').fullCalendar('removeEvents');
+	    $('#calendar').fullCalendar('addEventSource', EventStore.getEvents());
+
+	    this.setState({
+	      channel: ChannelStore.getChannel(),
+	      events: EventStore.getEvents()
+	    });
 	  },
 
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
@@ -44191,15 +44255,22 @@
 	    var project = newProps.project ? newProps.project : {};
 	    var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
 	    var channel = oldProject.id === project.id ? this.state.channel : null;
+	    var events = oldProject.id === project.id ? this.state.events : null;
 
 	    if (project.slack_id && !channel) {
 	      ApiUtil.fetchChannel(project.slack_id);
+	    }
+	    if (project.calendar_id && !events) {
+	      $('#calendar').fullCalendar('removeEvents');
+	      EventStore.clearEvents();
+	      ApiUtil.fetchEvents(project.calendar_id);
 	    }
 
 	    this.setState({
 	      user: newProps.user,
 	      project: project,
 	      channel: channel,
+	      events: events,
 	      todo: tasks.todo,
 	      completed: tasks.completed,
 	      inprogress: tasks.inprogress
@@ -44225,11 +44296,7 @@
 	      }
 	    });
 
-	    return {
-	      todo: todo,
-	      completed: completed,
-	      inprogress: inprogress
-	    };
+	    return { todo: todo, completed: completed, inprogress: inprogress };
 	  },
 
 	  addTask: function addTask(e) {
@@ -44285,6 +44352,55 @@
 	    }
 	  },
 
+	  renderCalendar: function renderCalendar() {
+	    // Render Slack and render calendar might be joinable.
+	    if (this.state.project.group) {
+	      return React.createElement(
+	        'div',
+	        { className: 'tab-pane', id: 'tab-3' },
+	        React.createElement('div', { id: 'calendar' })
+	      );
+	    }
+	  },
+
+	  handleDayClick: function handleDayClick(startDate) {
+	    var endDate = moment(startDate.format());
+	    endDate.add(30, 'minutes');
+
+	    // var attendees =
+	    var newEvent = {
+	      title: this.state.project.name,
+	      calendar_id: this.state.project.calendar_id,
+	      start: startDate.format(),
+	      end: endDate.format()
+	    };
+
+	    ApiUtil.scheduleMeeting(newEvent, this.addEvent);
+	  },
+
+	  addEvent: function addEvent(calendar) {
+	    var newEvent = calendar.event;
+	    newEvent.title = newEvent.summary;
+
+	    $('#calendar').fullCalendar('renderEvent', newEvent);
+	  },
+
+	  fillCalendar: function fillCalendar() {
+	    var self = this;
+
+	    $('#calendar').fullCalendar({
+	      googleCalendarApiKey: '',
+	      dayClick: self.handleDayClick,
+	      events: self.state.events,
+	      defaultView: "agendaWeek",
+	      minTime: "10:00:00",
+	      maxTime: "18:00:00",
+	      allDaySlot: false,
+	      editable: true,
+	      height: 380
+	    });
+	  },
+
 	  renderTabs: function renderTabs() {
 	    if (this.state.project.group) {
 	      return React.createElement(
@@ -44313,7 +44429,7 @@
 	          { className: '' },
 	          React.createElement(
 	            'a',
-	            { href: '#tab-3', 'data-toggle': 'tab' },
+	            { href: '#tab-3', 'data-toggle': 'tab', onClick: this.fillCalendar },
 	            'Project Calendar'
 	          )
 	        )
@@ -44537,7 +44653,7 @@
 	                            )
 	                          ),
 	                          this.renderSlack(),
-	                          React.createElement('div', { className: 'tab-pane', id: 'tab-2' })
+	                          this.renderCalendar()
 	                        )
 	                      )
 	                    )
@@ -45067,6 +45183,70 @@
 	});
 
 	module.exports = DevSideNav;
+
+/***/ },
+/* 433 */,
+/* 434 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Store = __webpack_require__(237).Store;
+	var AppDispatcher = __webpack_require__(230);
+	var EventConstants = __webpack_require__(435);
+
+	var EventStore = new Store(AppDispatcher);
+
+	var _events = {};
+
+	EventStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case EventConstants.EVENT_RECEIVED:
+	      addEvent(payload.calendar);
+	      EventStore.__emitChange();
+	      break;
+
+	    case EventConstants.EVENTS_RECEIVED:
+	      setEvents(payload.calendar);
+	      EventStore.__emitChange();
+	      break;
+	  }
+	};
+
+	var setEvents = function setEvents(calendar) {
+	  var events = calendar.events.items;
+
+	  events.forEach(function (event) {
+	    event.title = event.summary;
+	  });
+
+	  _events = events;
+	};
+
+	var addEvent = function addEvent(calendar) {
+	  _events.push(calendar.event);
+	};
+
+	EventStore.clearEvents = function () {
+	  _events = {};
+	};
+
+	EventStore.getEvents = function () {
+	  return _events;
+	};
+
+	module.exports = EventStore;
+
+/***/ },
+/* 435 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  EVENT_RECEIVED: "EVENT_RECEIVED",
+	  EVENTS_RECEIVED: "EVENTS_RECEIVED"
+	};
 
 /***/ }
 /******/ ]);

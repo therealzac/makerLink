@@ -1,6 +1,7 @@
 var AppDispatcher = require('../dispatcher/dispatcher.js');
 var SessionConstants = require('../constants/sessionConstants.js');
 var ChannelConstants = require('../constants/channelConstants.js');
+var EventConstants = require('../constants/eventConstants.js');
 
 var ApiActions = {
 
@@ -71,6 +72,20 @@ var ApiActions = {
     AppDispatcher.dispatch({
       actionType: ChannelConstants.SLACK_MESSAGE_RECEIVED,
       message: message
+    })
+  },
+
+  receiveEvent: function (calendar) {
+    AppDispatcher.dispatch({
+      actionType: EventConstants.EVENT_RECEIVED,
+      calendar: calendar
+    });
+  },
+
+  receiveEvents: function (calendar) {
+    AppDispatcher.dispatch({
+      actionType: EventConstants.EVENTS_RECEIVED,
+      calendar: calendar
     })
   }
 }

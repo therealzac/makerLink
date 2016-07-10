@@ -14,6 +14,7 @@
 //= require staps/jquery.steps.min.js
 //= require validate/jquery.validate.min.js
 //= require inspinia.js
+//= require moment
+//= require fullcalendar
+//= require fullcalendar/gcal
 //= require_tree .
-
-

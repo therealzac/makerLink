@@ -172,7 +172,7 @@ var ApiUtil = {
       method: "POST",
       success: function (project) {
         successCallback();
-        
+
         project.idx = projectIdx;
         ApiActions.receiveProjectWithNewTask(project);
       },
@@ -219,6 +219,35 @@ var ApiUtil = {
       success: function (slack) {
         successCallback();
         ApiActions.receiveSlackMessage(slack.channel.message);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
+      }
+    })
+  },
+
+  scheduleMeeting: function (newEvent, successCallback) {
+    $.ajax({
+      url: 'api/calendars/',
+      method: "POST",
+      data: newEvent,
+      success: function (calendar) {
+        successCallback(calendar);
+        ApiActions.receiveEvent(calendar);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
+      }
+    })
+  },
+
+  fetchEvents: function (calendar_id) {
+    $.ajax({
+      url: 'api/calendars/',
+      method: "GET",
+      data: { calendar_id: calendar_id },
+      success: function (calendar) {
+        ApiActions.receiveEvents(calendar);
       },
       error: function (error) {
         ApiActions.invalidEntry(error);

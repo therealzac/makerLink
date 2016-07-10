@@ -2,6 +2,7 @@ var React = require('react')
 var ApiUtil = require('../util/apiUtil.js');
 var KanbanColumn = require('./KanbanColumn.jsx');
 var ChannelStore = require('../stores/slackChannel.js');
+var EventStore = require('../stores/calendarEvents.js');
 var Inbox = require('./inbox.jsx');
 
 
@@ -24,14 +25,22 @@ var projectShow = React.createClass({
 
   componentWillMount: function () {
     this.channelListener = ChannelStore.addListener(this._onChange);
+    this.eventsListener = EventStore.addListener(this._onChange);
   },
 
   componentWillUnmount: function () {
     this.channelListener.remove();
+    this.eventsListener.remove();
   },
 
   _onChange: function () {
-    this.setState({ channel: ChannelStore.getChannel() });
+    $('#calendar').fullCalendar('removeEvents');
+    $('#calendar').fullCalendar('addEventSource', EventStore.getEvents());
+
+    this.setState({
+      channel: ChannelStore.getChannel(),
+      events: EventStore.getEvents()
+    });
   },
 
   componentWillReceiveProps: function (newProps) {
@@ -39,15 +48,20 @@ var projectShow = React.createClass({
     var project = newProps.project ? newProps.project : {};
     var tasks = project.tasks ? this.sortTasks(project.tasks) : {};
     var channel = oldProject.id === project.id ? this.state.channel : null;
+    var events = oldProject.id === project.id ? this.state.events : null;
 
-    if (project.slack_id && !channel) {
-      ApiUtil.fetchChannel(project.slack_id);
+    if (project.slack_id && !channel) { ApiUtil.fetchChannel(project.slack_id) }
+    if (project.calendar_id && !events) {
+      $('#calendar').fullCalendar('removeEvents');
+      EventStore.clearEvents();
+      ApiUtil.fetchEvents(project.calendar_id);
     }
 
     this.setState({
       user: newProps.user,
       project: project,
       channel: channel,
+      events: events,
       todo: tasks.todo,
       completed: tasks.completed,
       inprogress: tasks.inprogress
@@ -73,11 +87,7 @@ var projectShow = React.createClass({
       }
     });
 
-    return {
-      todo: todo,
-      completed: completed,
-      inprogress: inprogress
-    };
+    return { todo: todo, completed: completed, inprogress: inprogress };
   },
 
   addTask: function (e) {
@@ -134,13 +144,62 @@ var projectShow = React.createClass({
     }
   },
 
+  renderCalendar: function () {
+    // Render Slack and render calendar might be joinable.
+    if (this.state.project.group) {
+      return (
+        <div className="tab-pane" id="tab-3">
+          <div id="calendar"></div>
+        </div>
+      )
+    }
+  },
+
+  handleDayClick: function( startDate ) {
+    var endDate = moment(startDate.format());
+    endDate.add(30, 'minutes');
+
+    // var attendees =
+    var newEvent = {
+      title: this.state.project.name,
+      calendar_id: this.state.project.calendar_id,
+      start: startDate.format(),
+      end: endDate.format(),
+    }
+
+    ApiUtil.scheduleMeeting(newEvent, this.addEvent);
+  },
+
+  addEvent: function (calendar) {
+    var newEvent = calendar.event;
+    newEvent.title = newEvent.summary;
+
+    $('#calendar').fullCalendar('renderEvent', newEvent);
+  },
+
+  fillCalendar: function () {
+    var self = this;
+
+    $('#calendar').fullCalendar({
+        googleCalendarApiKey: '',
+        dayClick: self.handleDayClick,
+        events: self.state.events,
+        defaultView: "agendaWeek",
+        minTime: "10:00:00",
+        maxTime: "18:00:00",
+        allDaySlot: false,
+        editable: true,
+        height: 380,
+    });
+  },
+
   renderTabs: function () {
     if (this.state.project.group) {
       return (
         <ul className="nav nav-tabs">
           <li className="active"><a href="#tab-1" data-toggle="tab">Agile Board</a></li>
           <li className=""><a href="#tab-2" data-toggle="tab">Messenger</a></li>
-          <li className=""><a href="#tab-3" data-toggle="tab">Project Calendar</a></li>
+          <li className=""><a href="#tab-3" data-toggle="tab" onClick={this.fillCalendar}>Project Calendar</a></li>
         </ul>
       )
     } else {
@@ -156,7 +215,6 @@ var projectShow = React.createClass({
     var projectIdx = this.state.project ? this.state.project.idx : null,
         name = this.state.project ? this.state.project.name : null,
         url = this.state.project ? this.state.project.url : null;
-
 
     return(
       <div>
@@ -275,8 +333,7 @@ var projectShow = React.createClass({
 
                       { this.renderSlack() }
 
-                              <div className="tab-pane" id="tab-2">
-                              </div>
+                      { this.renderCalendar() }
 
                               </div>
 

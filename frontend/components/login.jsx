@@ -47,10 +47,23 @@ var Login = React.createClass({
                 <p style={{color: "red"}}>{this.state.message}</p>
                 <form className="m-t" role="form">
                     <div className="form-group">
-                        <input type="email" name="user[email]" className="form-control" placeholder="Email" required="" valueLink={this.linkState("email")}/>
+                        <input type="email"
+                          name="user[email]"
+                          className="form-control"
+                          placeholder="Email"
+                          required=""
+                          valueLink={this.linkState("email")}>
+                        </input>
                     </div>
                     <div className="form-group">
-                        <input type="password" name="user[password]" className="form-control" placeholder="Password" required="" valueLink={this.linkState("password")}/>
+                        <input
+                          type="password"
+                          name="user[password]"
+                          className="form-control"
+                          placeholder="Password"
+                          required=""
+                          valueLink={this.linkState("password")}>
+                        </input>
                     </div>
                     <button className="btn btn-primary block full-width m-b" onClick={this.login}>Login</button>
 

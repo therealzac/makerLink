@@ -1,4 +1,4 @@
 node_modules
 
 log/development.log
-app/controllers/application_controller.rb
+client_secret.json

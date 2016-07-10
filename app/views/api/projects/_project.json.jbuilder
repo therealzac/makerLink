@@ -12,5 +12,6 @@ json.extract!(
         :flagged,
         :flag,
         :tasks,
-        :slack_id
+        :slack_id,
+        :calendar_id
 )

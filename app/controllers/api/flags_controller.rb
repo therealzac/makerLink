@@ -1,3 +1,8 @@
+require 'google/apis/calendar_v3'
+require 'googleauth'
+require 'googleauth/stores/file_token_store'
+require 'fileutils'
+
 class Api::FlagsController < ApplicationController
   def create
     @flag = Flag.new(flag_params)
@@ -117,12 +122,34 @@ class Api::FlagsController < ApplicationController
         school = @flag.school
         customer = @project.author
 
-        # Create slack channel for project.
-        client = Slack::Web::Client.new
-        slack = client.channels_create({name: @project.name + "+" + group.name})
+        # Create a Google calendar for the project.
+        google_client = Google::Apis::CalendarV3::CalendarService.new
+        google_client.client_options.application_name = "MakerLink"
+        google_client.authorization = calendar_authorize
 
-        @project.update({group_id: group.id, slack_id: slack.channel.id})
-        group.update({project_id: @project.id})
+        calendar = Google::Apis::CalendarV3::Calendar.new(
+          summary: @project.name + "+" + group.name,
+          time_zone: 'America/Los_Angeles'
+        )
+
+        project_calendar = google_client.insert_calendar(calendar)
+
+        # Create slack channel for project.
+        slack_client = Slack::Web::Client.new
+        slack = slack_client.channels_create({
+          name: @project.name + "+" + group.name
+        })
+
+        # Update group and project.
+        @project.update({
+          group_id: group.id,
+          slack_id: slack.channel.id,
+          calendar_id: project_calendar.id
+        })
+
+        group.update({
+          project_id: @project.id
+        })
 
         customerNews = "We've received payment for " + @project.name + "! " +
           "Your developers will be contacting you shortly."
@@ -163,6 +190,7 @@ class Api::FlagsController < ApplicationController
         end
       end
 
+
       render :show
     else
       render @flag.errors.full_messages, status: 422
@@ -179,5 +207,33 @@ class Api::FlagsController < ApplicationController
         :customer_paid,
         :instructor_approved
       )
+    end
+
+    def calendar_authorize
+      scope = Google::Apis::CalendarV3::AUTH_CALENDAR
+      path = File.join(Dir.home, '.credentials',
+                                   "calendar-ruby-makerlink.yaml")
+
+      FileUtils.mkdir_p(File.dirname(path))
+
+      client_id = Google::Auth::ClientId.from_file('client_secret.json')
+      token_store = Google::Auth::Stores::FileTokenStore.new(file: path)
+      authorizer = Google::Auth::UserAuthorizer.new(
+        client_id, scope, token_store)
+      user_id = 'default'
+      credentials = authorizer.get_credentials(user_id)
+      # Use if auth gets fucked.
+
+      # if credentials.nil?
+      #   url = authorizer.get_authorization_url(
+      #     base_url: 'urn:ietf:wg:oauth:2.0:oob')
+      #   puts "Open the following URL in the browser and enter the " +
+      #        "resulting code after authorization"
+      #   puts url
+      #   code = gets
+      #   credentials = authorizer.get_and_store_credentials_from_code(
+      #     user_id: user_id, code: code, base_url: 'urn:ietf:wg:oauth:2.0:oob')
+      # end
+      credentials
     end
 end
