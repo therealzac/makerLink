@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160704032611) do
+ActiveRecord::Schema.define(version: 20160725020449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,21 +62,29 @@ ActiveRecord::Schema.define(version: 20160704032611) do
   add_index "messages", ["recipient_id"], name: "index_messages_on_recipient_id", using: :btree
 
   create_table "projects", force: :cascade do |t|
-    t.integer  "author_id",                   null: false
-    t.string   "name",                        null: false
-    t.string   "pitch",                       null: false
-    t.string   "description",                 null: false
+    t.integer  "author_id",         null: false
+    t.string   "name",              null: false
+    t.string   "description",       null: false
     t.string   "url"
-    t.integer  "view_count",      default: 0, null: false
-    t.date     "expiration_date",             null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.integer  "group_id"
     t.string   "slack_id"
     t.string   "calendar_id"
+    t.string   "youtube_link"
+    t.string   "inspiration_links"
+    t.integer  "involvement_level"
   end
 
   add_index "projects", ["author_id"], name: "index_projects_on_author_id", using: :btree
+
+  create_table "projects_tags", id: false, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "tag_id",     null: false
+  end
+
+  add_index "projects_tags", ["project_id"], name: "index_projects_tags_on_project_id", using: :btree
+  add_index "projects_tags", ["tag_id"], name: "index_projects_tags_on_tag_id", using: :btree
 
   create_table "schools", force: :cascade do |t|
     t.string   "name",       null: false

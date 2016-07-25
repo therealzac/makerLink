@@ -62,7 +62,6 @@ var ProjectIndexItem = React.createClass({
   render: function(){
     var project = this.state.project,
         name = project ? project.name : null,
-        pitch = project ? project.pitch : null,
         url = project ? project.url : null,
         description = project ? project.description : null;
 

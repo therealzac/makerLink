@@ -1,4 +1,4 @@
 class Tag < ActiveRecord::Base
-  belongs_to :project
+  has_and_belongs_to_many :project
   validates :value, presence: true
 end

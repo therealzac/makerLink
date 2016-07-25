@@ -2,6 +2,7 @@ class Api::ProjectsController < ApplicationController
   def create
     @project = Project.create(project_params)
     if @project.save
+      
       render :show
     else
       render json: @project.errors.full_messages, status: 422
@@ -14,14 +15,14 @@ class Api::ProjectsController < ApplicationController
 private
    def project_params
     params.require(:project).permit(
-      :author_id,
-      :dev_id,
       :name,
-      :pitch,
       :description,
+      :inspiration_links,
+      :youtube_link,
+      :tags,
+      :involvement_level,
+      :author_id,
       :url,
-      :view_count,
-      :expiration_date
     )
   end
 
