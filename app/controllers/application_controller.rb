@@ -7,10 +7,10 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   # TODO: Get new stripe key
-  Stripe.api_key = "sk_test_9NWrmNu1xmzxjKAkzVGFB6GM"
+  Stripe.api_key = "sk_test_qsINXm8QTq3fks8jmzwGbwWc"
 
   Slack.configure do |config|
-    config.token = 'xoxp-54439358022-54398440627-56444817654-f548caad13'
+    config.token = 'xoxp-54439358022-54398440627-58309337267-01ced0cee3'
     fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
   end
 

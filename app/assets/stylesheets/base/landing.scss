@@ -110,11 +110,11 @@ body.landing-page {
   .navbar-default .navbar-nav > .active > a:hover {
     background: transparent;
     color: #fff;
-    border-top: 6px solid $navy;
+    // border-top: 6px solid $navy;
   }
   .navbar-default .navbar-nav > li > a:hover,
   .navbar-default .navbar-nav > li > a:focus {
-    color: $navy;
+    // color: $navy;
     background: inherit;
   }
   .navbar-default .navbar-nav > .active > a:focus {

@@ -47,7 +47,7 @@ body.boxed-layout #wrapper {
 }
 
 a {
-  cursor: pointer;
+  // cursor: pointer;
 }
 
 a:hover, a:focus {
@@ -1339,7 +1339,20 @@ body.mini-navbar.fixed-sidebar .logo-element {
   margin-bottom: 0%;
 }
 
+.splash-background {
+  display: block;
+  background: image-url("landing/splash.jpg") 100% 0 no-repeat;
+  min-height: 1000px;
+  width: 100%;
+}
 
+.splash-header {
+  font-size: 42px;
+  color: black;
+  text-align: center;
+  margin: 300px;
+  margin-bottom: 0px;
+}
 
 .dashboard1-background {
   background: image-url("landing/dashboard.jpg")  35% 0 no-repeat;
@@ -1375,7 +1388,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
   margin-top: 7px;
   width: 35px;
   height: 35px;
-  background: image-url("landing/logo_white.png") 35% 0 no-repeat;
+  background: image-url("landing/logo_white.png") 73% no-repeat;
 }
 
 .makerlink-logo-red {
@@ -1436,4 +1449,15 @@ body.mini-navbar.fixed-sidebar .logo-element {
   opacity: 100;
   transition: all 0.5s;
   -webkit-transition: all 0.5s;
+}
+
+.mailchimp-button {
+  position: absolute;
+  top: 73px;
+  left: 325px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  background-color: $navy;
+  color: #FFFFFF;
 }

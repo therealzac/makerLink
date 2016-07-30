@@ -253,6 +253,17 @@ var ApiUtil = {
         ApiActions.invalidEntry(error);
       }
     })
+  },
+
+  saveEmail: function (email, successCallback) {
+    $.ajax({
+      url: 'http://eepurl.com/b-5RLz',
+      method: "PUT",
+      data: { "email_address": email, "status": "subscribed" },
+      success: function () {
+        console.log("Seems legit!");
+      }
+    })
   }
 }
 
