@@ -8,3 +8,4 @@ class ModifyProjects < ActiveRecord::Migration
     add_column :projects, :involvement_level, :integer
   end
 end
+l
