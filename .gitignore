@@ -3,3 +3,4 @@ node_modules
 log/development.log
 client_secret.json
 *.cache
+tmp/
