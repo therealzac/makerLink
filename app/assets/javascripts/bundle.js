@@ -25950,7 +25950,7 @@
 	                React.createElement(
 	                  'a',
 	                  { style: { fontSize: "14px", bottom: "12px" } },
-	                  'Need affordable software solutions?'
+	                  'HAVE A SOFTWARE PROJECT?'
 	                ),
 	                React.createElement(
 	                  'a',

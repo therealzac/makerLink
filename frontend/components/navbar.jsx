@@ -174,7 +174,7 @@ var NavBar = React.createClass({
                   <div id="navbar" className="navbar-collapse collapse">
                       <ul className="nav navbar-nav navbar-right">
                         <li>
-                          <a style={{fontSize: "14px", bottom: "12px"}}>Need affordable software solutions?</a>
+                          <a style={{fontSize: "14px", bottom: "12px"}}>HAVE A SOFTWARE PROJECT?</a>
                           <a style={{bottom: "50px", fontSize: "12px", fontWeight: "200"}}>Give us your email, we'll hit you up when our app's ready.</a>
 
                           <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
