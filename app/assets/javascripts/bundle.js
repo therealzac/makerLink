@@ -25441,7 +25441,6 @@
 	                    'COMING SOON.'
 	                )
 	            ),
-	            React.createElement('div', { className: 'landing-about' }),
 	            React.createElement(Footer, null)
 	        );
 	    }
