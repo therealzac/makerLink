@@ -181,7 +181,7 @@ var projectShow = React.createClass({
     var self = this;
 
     $('#calendar').fullCalendar({
-        googleCalendarApiKey: '',
+        googleCalendarApiKey: 'AIzaSyD9Cpy9fmidTbTK7sG6-oinFh9NE-yr6mg',
         dayClick: self.handleDayClick,
         events: self.state.events,
         defaultView: "agendaWeek",

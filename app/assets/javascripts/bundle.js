@@ -25521,467 +25521,11 @@
 	            { id: 'landing' },
 	            React.createElement(
 	                'div',
-	                { id: 'inSlider', className: 'carousel carousel-fade', 'data-ride': 'carousel' },
+	                { className: 'splash-background' },
 	                React.createElement(
-	                    'ol',
-	                    { className: 'carousel-indicators' },
-	                    React.createElement('li', { 'data-target': '#inSlider', 'data-slide-to': '0', className: 'active' }),
-	                    React.createElement('li', { 'data-target': '#inSlider', 'data-slide-to': '1' })
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'carousel-inner', role: 'listbox' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'item active' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'container' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'carousel-caption', style: { marginLeft: "40%" } },
-	                                React.createElement(
-	                                    'h1',
-	                                    { className: 'landing-header' },
-	                                    'Have an idea?'
-	                                ),
-	                                React.createElement(
-	                                    'p',
-	                                    { style: { marginLeft: "50px", marginTop: "50px" } },
-	                                    React.createElement(
-	                                        'a',
-	                                        { className: 'btn btn-lg btn-primary', onClick: this.goToProjectSubmission, role: 'button' },
-	                                        'Make It Happen'
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        React.createElement('div', { className: 'header-back one' })
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'item' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'container' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'carousel-caption blank' },
-	                                React.createElement(
-	                                    'h1',
-	                                    { className: 'landing-header' },
-	                                    'We link people',
-	                                    React.createElement('br', null),
-	                                    'who need websites, web apps,',
-	                                    React.createElement('br', null),
-	                                    'and user interfaces',
-	                                    React.createElement('br', null),
-	                                    'with the devs who need to build them.'
-	                                )
-	                            )
-	                        ),
-	                        React.createElement('div', { className: 'header-back two', style: { background: "image-url('landing/header_two.jpg') 50% 0 no-repeat" } })
-	                    )
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { className: 'left carousel-control', href: '#inSlider', role: 'button', 'data-slide': 'prev' },
-	                    React.createElement('span', { className: 'glyphicon glyphicon-chevron-left', 'aria-hidden': 'true' }),
-	                    React.createElement(
-	                        'span',
-	                        { className: 'sr-only' },
-	                        'Previous'
-	                    )
-	                ),
-	                React.createElement(
-	                    'a',
-	                    { className: 'right carousel-control', href: '#inSlider', role: 'button', 'data-slide': 'next' },
-	                    React.createElement('span', { className: 'glyphicon glyphicon-chevron-right', 'aria-hidden': 'true' }),
-	                    React.createElement(
-	                        'span',
-	                        { className: 'sr-only' },
-	                        'Next'
-	                    )
-	                )
-	            ),
-	            React.createElement(
-	                'section',
-	                { className: 'container' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'row' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'col-lg-12 text-center' },
-	                        React.createElement('div', { className: 'navy-line' }),
-	                        React.createElement(
-	                            'h1',
-	                            null,
-	                            'How it works',
-	                            React.createElement('br', null)
-	                        )
-	                    )
-	                ),
-	                React.createElement(
-	                    'div',
-	                    { className: 'row' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'col-lg-12 text-center wow fadeInLeft' },
-	                        React.createElement(
-	                            'div',
-	                            null,
-	                            React.createElement('i', { className: 'fa fa-plus features-icon' }),
-	                            React.createElement(
-	                                'h2',
-	                                null,
-	                                'You upload your project.'
-	                            ),
-	                            React.createElement(
-	                                'p',
-	                                null,
-	                                'Give us a detailed description of what you need acomplished. We find the best developer for your project.'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'm-t-lg' },
-	                            React.createElement('i', { className: 'fa fa-star features-icon' }),
-	                            React.createElement(
-	                                'h2',
-	                                null,
-	                                'We find you a dev.'
-	                            ),
-	                            React.createElement(
-	                                'p',
-	                                null,
-	                                'Many developers will want to work with you. We connect you with the most capable and passionate candidates, and assist you through the process of developing your project.'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'col-lg-12 text-center wow fadeInRight' },
-	                        React.createElement(
-	                            'div',
-	                            null,
-	                            React.createElement('i', { className: 'fa fa-envelope features-icon' }),
-	                            React.createElement(
-	                                'h2',
-	                                null,
-	                                'You work with your dev for 3 weeks.'
-	                            ),
-	                            React.createElement(
-	                                'p',
-	                                null,
-	                                'In order to ensure that we deliver the project you want, we keep you up-to-date with every aspect of your project through our agile remote development web suite.'
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'm-t-lg' },
-	                            React.createElement('i', { className: 'fa fa-google features-icon' }),
-	                            React.createElement(
-	                                'h2',
-	                                null,
-	                                'We maintain your site for a year.'
-	                            ),
-	                            React.createElement(
-	                                'p',
-	                                null,
-	                                'We continue to host your site after the project is finished, enabling you to use it for one year without paying for domain name fees.'
-	                            )
-	                        )
-	                    )
-	                )
-	            ),
-	            React.createElement(
-	                'section',
-	                { id: 'team', className: 'gray-section team' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'container' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row m-b-lg' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-lg-12 text-center' },
-	                            React.createElement('div', { className: 'navy-line' }),
-	                            React.createElement(
-	                                'h1',
-	                                null,
-	                                'Our Team'
-	                            ),
-	                            React.createElement(
-	                                'p',
-	                                null,
-	                                'We still need to add Lena'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-sm-4 wow fadeInLeft' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'team-member' },
-	                                React.createElement('img', { src: 'http://res.cloudinary.com/makerlink/image/upload/v1459110906/Amaar_e27jhg.png', className: 'img-responsive img-circle img-small', alt: '' }),
-	                                React.createElement(
-	                                    'h4',
-	                                    null,
-	                                    React.createElement(
-	                                        'span',
-	                                        { className: 'navy' },
-	                                        'Amaar'
-	                                    ),
-	                                    ' Falzani'
-	                                ),
-	                                React.createElement(
-	                                    'ul',
-	                                    { className: 'list-inline social-icon' },
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-twitter' })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-facebook' })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-linkedin' })
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-sm-4' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'team-member' },
-	                                React.createElement('img', { src: 'http://res.cloudinary.com/makerlink/image/upload/v1459110916/Josh_mdlrzx.jpg', className: 'img-responsive img-circle img-small', alt: '' }),
-	                                React.createElement(
-	                                    'h4',
-	                                    null,
-	                                    React.createElement(
-	                                        'span',
-	                                        { className: 'navy' },
-	                                        'Josh'
-	                                    ),
-	                                    ' Kim'
-	                                ),
-	                                React.createElement(
-	                                    'ul',
-	                                    { className: 'list-inline social-icon' },
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-twitter' })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-facebook' })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-linkedin' })
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        ),
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-sm-4 wow fadeInRight' },
-	                            React.createElement(
-	                                'div',
-	                                { className: 'team-member' },
-	                                React.createElement('img', { src: 'http://res.cloudinary.com/makerlink/image/upload/v1459110934/Zac_bzvuzj.png', className: 'img-responsive img-circle img-small', alt: '' }),
-	                                React.createElement(
-	                                    'h4',
-	                                    null,
-	                                    React.createElement(
-	                                        'span',
-	                                        { className: 'navy' },
-	                                        'Zac'
-	                                    ),
-	                                    ' Wickstrom'
-	                                ),
-	                                React.createElement(
-	                                    'ul',
-	                                    { className: 'list-inline social-icon' },
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-twitter' })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-facebook' })
-	                                        )
-	                                    ),
-	                                    React.createElement(
-	                                        'li',
-	                                        null,
-	                                        React.createElement(
-	                                            'a',
-	                                            { href: '#' },
-	                                            React.createElement('i', { className: 'fa fa-linkedin' })
-	                                        )
-	                                    )
-	                                )
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement('div', { className: 'col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg' })
-	                    )
-	                )
-	            ),
-	            React.createElement(
-	                'section',
-	                { id: 'contact', className: 'gray-section contact' },
-	                React.createElement(
-	                    'div',
-	                    { className: 'container' },
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row m-b-lg' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-lg-12 text-center' },
-	                            React.createElement('div', { className: 'navy-line' }),
-	                            React.createElement(
-	                                'h1',
-	                                null,
-	                                'Contact Us'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row m-b-lg', style: { margin_left: "30em" } },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-lg-3 col-lg-offset-3' },
-	                            React.createElement(
-	                                'address',
-	                                null,
-	                                React.createElement(
-	                                    'strong',
-	                                    null,
-	                                    React.createElement(
-	                                        'span',
-	                                        { className: 'navy' },
-	                                        'MAKERLINK'
-	                                    )
-	                                ),
-	                                React.createElement('br', null),
-	                                '1118 Folsom St',
-	                                React.createElement('br', null),
-	                                'San Francisco, CA 94103',
-	                                React.createElement('br', null),
-	                                React.createElement(
-	                                    'abbr',
-	                                    { title: 'Phone' },
-	                                    'P:'
-	                                ),
-	                                ' (123) 456-7890'
-	                            )
-	                        )
-	                    ),
-	                    React.createElement(
-	                        'div',
-	                        { className: 'row' },
-	                        React.createElement(
-	                            'div',
-	                            { className: 'col-lg-12 text-center' },
-	                            React.createElement(
-	                                'a',
-	                                { href: 'mailto:test@email.com', className: 'btn btn-primary' },
-	                                'Send us mail'
-	                            ),
-	                            React.createElement(
-	                                'p',
-	                                { className: 'm-t-sm' },
-	                                'Or follow us on social platform'
-	                            ),
-	                            React.createElement(
-	                                'ul',
-	                                { className: 'list-inline social-icon' },
-	                                React.createElement(
-	                                    'li',
-	                                    null,
-	                                    React.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        React.createElement('i', { className: 'fa fa-twitter' })
-	                                    )
-	                                ),
-	                                React.createElement(
-	                                    'li',
-	                                    null,
-	                                    React.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        React.createElement('i', { className: 'fa fa-facebook' })
-	                                    )
-	                                ),
-	                                React.createElement(
-	                                    'li',
-	                                    null,
-	                                    React.createElement(
-	                                        'a',
-	                                        { href: '#' },
-	                                        React.createElement('i', { className: 'fa fa-linkedin' })
-	                                    )
-	                                )
-	                            )
-	                        )
-	                    )
+	                    'p',
+	                    { className: 'splash-header' },
+	                    'COMING SOON.'
 	                )
 	            ),
 	            React.createElement(Footer, null)
@@ -26265,11 +25809,14 @@
 	var React = __webpack_require__(1);
 	var ApiUtil = __webpack_require__(230);
 	var SessionStore = __webpack_require__(239);
+	var LinkedStateMixin = __webpack_require__(225);
 
 	var NavBar = React.createClass({
 	  displayName: 'NavBar',
 
 	  contextTypes: { router: React.PropTypes.object.isRequired },
+
+	  mixins: [LinkedStateMixin],
 
 	  getInitialState: function getInitialState() {
 	    return {
@@ -26279,12 +25826,11 @@
 	      dashboardClass: 'none',
 	      notifications: 'none',
 	      news: [],
-	      logo: this.getRandomLogo()
+	      email: ""
 	    };
 	  },
 
 	  getRandomLogo: function getRandomLogo() {
-	    return "makerlink-logo-white";
 	    //   return [
 	    //   "makerlink-logo-red",
 	    //   "makerlink-logo-white",
@@ -26447,7 +25993,13 @@
 	    );
 	  },
 
-	  approveProject: function approveProject() {},
+	  saveEmail: function saveEmail() {
+	    ApiUtil.saveEmail(this.state.email, this.clearEmail);
+	  },
+
+	  clearEmail: function clearEmail() {
+	    this.setState({ email: "" });
+	  },
 
 	  render: function render() {
 	    return React.createElement(
@@ -26483,39 +26035,31 @@
 	              { className: 'nav navbar-nav navbar-right' },
 	              React.createElement(
 	                'li',
-	                { style: { display: this.state.signup } },
+	                null,
 	                React.createElement(
 	                  'a',
-	                  { className: 'page-scroll', onClick: this.goToSignup },
-	                  'Sign Up'
-	                )
-	              ),
-	              React.createElement(
-	                'li',
-	                { style: { display: this.state.login } },
+	                  { style: { fontSize: "14px", bottom: "12px" } },
+	                  'Need affordable software solutions?'
+	                ),
 	                React.createElement(
 	                  'a',
-	                  { className: 'page-scroll', onClick: this.goToLogin },
-	                  'Login'
-	                )
-	              ),
-	              React.createElement(
-	                'li',
-	                { style: { display: this.state.dashboardClass } },
+	                  { style: { bottom: "50px", fontSize: "12px", fontWeight: "200" } },
+	                  'Give us your email, we\'ll hit you up when our app\'s ready.'
+	                ),
 	                React.createElement(
-	                  'a',
-	                  { className: 'page-scroll', onClick: this.goToDashboard },
-	                  this.state.dashboardValue
-	                )
-	              ),
-	              this.renderNotifications(),
-	              React.createElement(
-	                'li',
-	                { style: { display: this.state.logOut } },
-	                React.createElement(
-	                  'a',
-	                  { className: 'page-scroll', onClick: this.logOut },
-	                  React.createElement('i', { className: 'fa fa-gear' })
+	                  'form',
+	                  { action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', 'class': 'validate', target: '_blank', novalidate: true },
+	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "300px" } }),
+	                  React.createElement(
+	                    'div',
+	                    { className: 'hidden', 'aria-hidden': 'true' },
+	                    React.createElement('input', { type: 'text', name: 'b_93a48221804b21d185ce1d9e2_4dfccf38a8', tabindex: '-1', value: '' })
+	                  ),
+	                  React.createElement(
+	                    'div',
+	                    { className: 'clear' },
+	                    React.createElement('input', { type: 'submit', className: 'mailchimp-button', value: 'KEEP ME POSTED', name: 'subscribe', id: 'mc-embedded-subscribe' })
+	                  )
 	                )
 	              )
 	            ),
@@ -26525,7 +26069,12 @@
 	              React.createElement(
 	                'li',
 	                null,
-	                React.createElement('div', { className: this.state.logo, onClick: this.goToLanding })
+	                React.createElement('div', { className: 'makerlink-logo-white', style: { position: "absolute", top: "25px", cursor: "pointer" }, onClick: this.goToLanding }),
+	                React.createElement(
+	                  'a',
+	                  { style: { top: "10px", left: "35px" } },
+	                  'MAKERLINK'
+	                )
 	              )
 	            )
 	          )
@@ -26534,6 +26083,38 @@
 	    );
 	  }
 	});
+
+	// <div className="navbar-wrapper" style={{marginBottom: "50px"}}>
+	//     <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
+	//         <div className="container">
+	//             <div className="navbar-header page-scroll">
+	//                 <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	//                     <span className="sr-only">Toggle navigation</span>
+	//                     <span className="icon-bar"></span>
+	//                     <span className="icon-bar"></span>
+	//                     <span className="icon-bar"></span>
+	//                 </button>
+	//             </div>
+	//             <div id="navbar" className="navbar-collapse collapse">
+	//                 <ul className="nav navbar-nav navbar-right">
+	//                   <li style={{display: this.state.signup}}><a className="page-scroll" onClick={this.goToSignup}>Sign Up</a></li>
+	//                   <li style={{display: this.state.login}}><a className="page-scroll" onClick={this.goToLogin}>Login</a></li>
+	//                   <li style={{display: this.state.dashboardClass}}><a className="page-scroll" onClick={this.goToDashboard}>{this.state.dashboardValue}</a></li>
+	//                   { this.renderNotifications() }
+	//                   <li style={{display: this.state.logOut}}><a className="page-scroll" onClick={this.logOut}><i className="fa fa-gear"></i></a></li>
+	//                 </ul>
+	//                 <ul className="nav navbar-nav navbar-left">
+	//                   <li>
+	//                     <div className={this.state.logo} onClick={this.goToLanding}>
+	//                     </div>
+	//                   </li>
+	//                 </ul>
+	//
+	//             </div>
+	//         </div>
+	//     </nav>
+	// </div>
+
 
 	module.exports = NavBar;
 
@@ -26796,6 +26377,17 @@
 	      },
 	      error: function error(_error16) {
 	        ApiActions.invalidEntry(_error16);
+	      }
+	    });
+	  },
+
+	  saveEmail: function saveEmail(email, successCallback) {
+	    $.ajax({
+	      url: 'http://eepurl.com/b-5RLz',
+	      method: "PUT",
+	      data: { "email_address": email, "status": "subscribed" },
+	      success: function success() {
+	        console.log("Seems legit!");
 	      }
 	    });
 	  }
@@ -44719,7 +44311,7 @@
 	    var self = this;
 
 	    $('#calendar').fullCalendar({
-	      googleCalendarApiKey: '',
+	      googleCalendarApiKey: 'AIzaSyD9Cpy9fmidTbTK7sG6-oinFh9NE-yr6mg',
 	      dayClick: self.handleDayClick,
 	      events: self.state.events,
 	      defaultView: "agendaWeek",

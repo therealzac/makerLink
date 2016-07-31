@@ -88,7 +88,6 @@ var App = React.createClass({
     return (
       <div className={this.state.dashboardBackground}>
         <NavBar session={this.state.session}/>
-
         { this.renderChildrenWithProps() }
       </div>
     );
