@@ -3,14 +3,13 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
 
   # TODO: find prevent forgery solution.
-
   helper_method :current_user
 
   # TODO: Get new stripe key
-  Stripe.api_key = ENV['STRIPE_API_KEY']
+  Stripe.api_key = ''
 
   Slack.configure do |config|
-    config.token = ENV['SLACK_API_TOKEN']
+    config.token = ''
     fail 'Missing ENV[SLACK_API_TOKEN]!' unless config.token
   end
 

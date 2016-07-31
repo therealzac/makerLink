@@ -158,14 +158,6 @@ var NavBar = React.createClass({
     )
   },
 
-  saveEmail: function () {
-    ApiUtil.saveEmail(this.state.email, this.clearEmail);
-  },
-
-  clearEmail: function () {
-    this.setState({email: ""});
-  },
-
   render: function () {
     return (
       <div className="navbar-wrapper" style={{marginBottom: "50px"}}>
@@ -185,9 +177,9 @@ var NavBar = React.createClass({
                           <a style={{fontSize: "14px", bottom: "12px"}}>Need affordable software solutions?</a>
                           <a style={{bottom: "50px", fontSize: "12px", fontWeight: "200"}}>Give us your email, we'll hit you up when our app's ready.</a>
 
-                          <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                          <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                             <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "300px"}}/>
-                            <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabindex="-1" value=""/></div>
+                            <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
                             <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
                           </form>
                         </li>

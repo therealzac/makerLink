@@ -217,8 +217,7 @@ ul.unstyled, ol.unstyled {
 /* FOOTER */
 
 .footer {
-
-  background: none repeat scroll 0 0 white;
+  background: none repeat scroll 0 0 #a1a1a1;
   border-top: 1px solid $border-color;
   bottom: 0;
   left: 0;
@@ -1344,6 +1343,16 @@ body.mini-navbar.fixed-sidebar .logo-element {
   background: image-url("landing/splash.jpg") 100% 0 no-repeat;
   min-height: 1000px;
   width: 100%;
+}
+
+.react-parallax {
+  height: 650px;
+}
+
+.landing-about {
+  display: block;
+  background-color: white;
+  height: 650px;
 }
 
 .splash-header {
