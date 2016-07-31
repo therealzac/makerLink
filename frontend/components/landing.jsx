@@ -88,7 +88,6 @@ var Landing = React.createClass({
         </Background>
         <p className="splash-header">COMING SOON.</p>
       </Parallax>
-      <div className="landing-about"></div>
       <Footer/>
     </div>
     )
