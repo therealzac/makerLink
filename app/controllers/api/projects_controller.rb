@@ -2,7 +2,7 @@ class Api::ProjectsController < ApplicationController
   def create
     @project = Project.create(project_params)
     if @project.save
-      
+
       render :show
     else
       render json: @project.errors.full_messages, status: 422
