@@ -40,7 +40,7 @@ var CohortForm = React.createClass({
               className="form-control"
             />
           <p style={{color: "red"}}>{this.props.message}</p>
-          <p><a className="btn btn-lg btn-primary" onClick={this.createCohort} role="button">Make It Happen</a></p>
+          <p><a className="btn btn-lg btn-primary" onClick={this.createCohort} role="button">Get Creative.</a></p>
       </div>
     )
   },

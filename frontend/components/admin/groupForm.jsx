@@ -83,7 +83,7 @@ var GroupForm = React.createClass({
             toggleMembership={this.toggleMembership}>
           </DevIndex>
           <p style={{color: "red"}}>{this.props.message}</p>
-          <p><a className="btn btn-lg btn-primary" onClick={this.createGroup} role="button">Make It Happen</a></p>
+          <p><a className="btn btn-lg btn-primary" onClick={this.createGroup} role="button">Get Creative.</a></p>
       </div>
     )
   }

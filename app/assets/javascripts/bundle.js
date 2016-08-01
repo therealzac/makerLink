@@ -43688,7 +43688,7 @@
 	        React.createElement(
 	          'a',
 	          { className: 'btn btn-lg btn-primary', onClick: this.createCohort, role: 'button' },
-	          'Make It Happen'
+	          'Get Creative.'
 	        )
 	      )
 	    );
@@ -43810,7 +43810,7 @@
 	        React.createElement(
 	          'a',
 	          { className: 'btn btn-lg btn-primary', onClick: this.createGroup, role: 'button' },
-	          'Make It Happen'
+	          'Get Creative.'
 	        )
 	      )
 	    );
