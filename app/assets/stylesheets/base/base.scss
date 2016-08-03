@@ -1346,7 +1346,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 
 .react-parallax {
-  height: 650px;
+  height: 1200px;
 }
 
 .landing-about {
@@ -1356,12 +1356,11 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 
 .splash-header {
-  font-size: 42px;
+  font-size: 7vmax;
   font-weight: 300;
   color: black;
   text-align: center;
-  margin: 300px;
-  margin-bottom: 0px;
+  margin-top: 12vmax;
 }
 
 .dashboard1-background {
@@ -1511,7 +1510,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
 .mailchimp-button {
   position: absolute;
   top: 73px;
-  left: 325px;
+  left: 38vmax;
   font-size: 10px;
   font-weight: 600;
   padding: 3px 8px;

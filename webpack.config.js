@@ -5,6 +5,7 @@ module.exports = {
   entry: "./frontend/makerlink.jsx",
   output: {
     path: path.join(__dirname, 'app', 'assets', 'javascripts'),
+    publicPath: "/app/assets/",
     filename: "bundle.js"
   },
   resolve: {

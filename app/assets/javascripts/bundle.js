@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
+/******/ 	__webpack_require__.p = "/assets/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -25352,6 +25352,12 @@
 
 	    contextTypes: { router: React.PropTypes.object.isRequired },
 
+	    mixins: [LinkedStateMixin],
+
+	    getInitialState: function getInitialState() {
+	        return { email: "" };
+	    },
+
 	    componentDidMount: function componentDidMount() {
 	        this.props.changeBackground("WHITE");
 	        var self = this;
@@ -25363,13 +25369,6 @@
 	                target: '.navbar-fixed-top',
 	                offset: 80
 	            });
-
-	            function resiveDiv() {
-	                var vpw = $(window).width();
-	                var vph = $(window).height();
-	                $('.react-parallax').css({ 'height': vph + 'px' });
-	                $('.landing-about').css({ 'height': vph + 'px' });
-	            }
 
 	            // Page scrolling feature
 	            $('a.page-scroll').bind('click', function (event) {
@@ -25387,7 +25386,6 @@
 	                    didScroll = false,
 	                    changeHeaderOn = 100;
 	                function init() {
-	                    resiveDiv();
 	                    window.addEventListener('scroll', function (event) {
 	                        if (!didScroll) {
 	                            didScroll = true;
@@ -25433,7 +25431,7 @@
 	                React.createElement(
 	                    _reactParallax.Background,
 	                    null,
-	                    React.createElement('img', { src: 'https://allowrypainting.files.wordpress.com/2013/08/paint-strokes_smaller.jpg' })
+	                    React.createElement('img', { src: 'http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg' })
 	                ),
 	                React.createElement(
 	                    'p',
@@ -25445,6 +25443,12 @@
 	        );
 	    }
 	});
+
+	// <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+	//   <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "300px"}}/>
+	//   <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
+	//   <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
+	// </form>
 
 	module.exports = Landing;
 
@@ -25468,7 +25472,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { className: "row", style: { backgroundColor: "#c4c4c4" } },
+	      { className: "row", style: { backgroundColor: "#c4c4c4", marginRight: "0" } },
 	      React.createElement(
 	        "div",
 	        { className: "col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg" },
@@ -25915,7 +25919,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      'div',
-	      { className: 'navbar-wrapper', style: { marginBottom: "50px" } },
+	      { style: { marginBottom: "50px" } },
 	      React.createElement(
 	        'nav',
 	        { className: 'navbar navbar-default navbar-fixed-top', role: 'navigation' },
@@ -25949,18 +25953,18 @@
 	                null,
 	                React.createElement(
 	                  'a',
-	                  { style: { fontSize: "14px", bottom: "12px" } },
+	                  { style: { fontSize: "2vmax", bottom: "12px" } },
 	                  'HAVE A SOFTWARE PROJECT?'
 	                ),
 	                React.createElement(
 	                  'a',
-	                  { style: { bottom: "50px", fontSize: "12px", fontWeight: "200" } },
+	                  { style: { bottom: "50px", fontSize: "1.4vmax", fontWeight: "200" } },
 	                  'Give us your email, we\'ll hit you up when our app\'s ready.'
 	                ),
 	                React.createElement(
 	                  'form',
 	                  { action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', className: 'validate', target: '_blank', noValidate: true },
-	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "300px" } }),
+	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "35vmax", border: "1px solid #676a6c" } }),
 	                  React.createElement(
 	                    'div',
 	                    { className: 'hidden', 'aria-hidden': 'true' },
@@ -25973,20 +25977,6 @@
 	                  )
 	                )
 	              )
-	            ),
-	            React.createElement(
-	              'ul',
-	              { className: 'nav navbar-nav navbar-left' },
-	              React.createElement(
-	                'li',
-	                null,
-	                React.createElement('div', { className: 'makerlink-logo-white', style: { position: "absolute", top: "25px", cursor: "pointer" }, onClick: this.goToLanding }),
-	                React.createElement(
-	                  'a',
-	                  { style: { top: "10px", left: "35px" } },
-	                  'MAKERLINK'
-	                )
-	              )
 	            )
 	          )
 	        )
@@ -25995,6 +25985,10 @@
 	  }
 	});
 
+	// <p style={{fontSize: "1vmax", color: "black", }}>Have a Software Project?</p>
+	// <p style={{fontSize: "0.618034vmax", color: "black"}}>Give us your email, we'll hit you up when our app's ready.</p>
+
+	// ORIGINAL nav
 	// <div className="navbar-wrapper" style={{marginBottom: "50px"}}>
 	//     <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
 	//         <div className="container">
@@ -26018,6 +26012,44 @@
 	//                   <li>
 	//                     <div className={this.state.logo} onClick={this.goToLanding}>
 	//                     </div>
+	//                   </li>
+	//                 </ul>
+	//
+	//             </div>
+	//         </div>
+	//     </nav>
+	//
+
+	// <div className="navbar-wrapper" style={{marginBottom: "50px"}}>
+	//     <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
+	//         <div className="container">
+	//             <div className="navbar-header page-scroll">
+	//                 <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	//                     <span className="sr-only">Toggle navigation</span>
+	//                     <span className="icon-bar"></span>
+	//                     <span className="icon-bar"></span>
+	//                     <span className="icon-bar"></span>
+	//                 </button>
+	//             </div>
+	//             <div id="navbar" className="navbar-collapse collapse">
+	//                 <ul className="nav navbar-nav navbar-right">
+	//                   <li>
+	//                     <a style={{fontSize: "14px", bottom: "12px"}}>HAVE A SOFTWARE PROJECT?</a>
+	//                     <a style={{bottom: "50px", fontSize: "12px", fontWeight: "200"}}>Give us your email, we'll hit you up when our app's ready.</a>
+	//
+	//                     <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+	//                       <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "300px"}}/>
+	//                       <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
+	//                       <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
+	//                     </form>
+	//                   </li>
+	//
+	//                 </ul>
+	//                 <ul className="nav navbar-nav navbar-left">
+	//                   <li>
+	//                     <div className="makerlink-logo-white" style={{position: "absolute", top: "25px", cursor: "pointer"}} onClick={this.goToLanding}>
+	//                     </div>
+	//                     <a style={{top: "10px", left: "35px"}}>MAKERLINK</a>
 	//                   </li>
 	//                 </ul>
 	//
