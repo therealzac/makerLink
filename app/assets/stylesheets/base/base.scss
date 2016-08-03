@@ -1,5 +1,5 @@
 body {
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   color: $text-color;
   overflow-x: hidden;
@@ -1360,7 +1360,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
   font-weight: 300;
   color: black;
   text-align: center;
-  margin-top: 12vmax;
+  margin-top: 17vmax;
 }
 
 .dashboard1-background {
@@ -1394,10 +1394,11 @@ body.mini-navbar.fixed-sidebar .logo-element {
 
 .makerlink-logo-white {
   display: block;
-  margin-top: 7px;
-  width: 35px;
-  height: 35px;
-  background: image-url("landing/logo_white.png") 73% no-repeat;
+  margin-left: 3vmax;
+  width: 8vmax;
+  height: 8vmax;
+  background: image-url("landing/logo.png") no-repeat;
+  background-size: 6.5vmax;
 }
 
 .makerlink-logo-red {
@@ -1509,11 +1510,13 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 .mailchimp-button {
   position: absolute;
-  top: 73px;
+  top: 75px;
   left: 38vmax;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 1.2vmax;
+  font-weight: 100;
   padding: 3px 8px;
+  padding-bottom: 1px;
+  border: none;
   background-color: $navy;
   color: #FFFFFF;
 }

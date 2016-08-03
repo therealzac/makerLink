@@ -34,7 +34,7 @@
 /******/ 	__webpack_require__.c = installedModules;
 
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/assets/";
+/******/ 	__webpack_require__.p = "/app/assets/";
 
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(0);
@@ -25940,6 +25940,15 @@
 	              React.createElement('span', { className: 'icon-bar' }),
 	              React.createElement('span', { className: 'icon-bar' }),
 	              React.createElement('span', { className: 'icon-bar' })
+	            ),
+	            React.createElement(
+	              'div',
+	              { className: 'makerlink-logo-white', style: { position: "absolute", top: "2vmin", cursor: "pointer" }, onClick: this.goToLanding },
+	              React.createElement(
+	                'p',
+	                { style: { position: "absolute", top: "4vmax", left: "6vmax", fontSize: "2vmax" } },
+	                'MakerLink'
+	              )
 	            )
 	          ),
 	          React.createElement(
@@ -25947,14 +25956,14 @@
 	            { id: 'navbar', className: 'navbar-collapse collapse' },
 	            React.createElement(
 	              'ul',
-	              { className: 'nav navbar-nav navbar-right' },
+	              { className: 'nav navbar-nav navbar-right', style: { marginRight: "0" } },
 	              React.createElement(
 	                'li',
 	                null,
 	                React.createElement(
 	                  'a',
-	                  { style: { fontSize: "2vmax", bottom: "12px" } },
-	                  'HAVE A SOFTWARE PROJECT?'
+	                  { style: { fontSize: "2vmax", fontWeight: "400", bottom: "12px" } },
+	                  'WE BUILD APPS. NEED ONE?'
 	                ),
 	                React.createElement(
 	                  'a',
@@ -25964,7 +25973,7 @@
 	                React.createElement(
 	                  'form',
 	                  { action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', className: 'validate', target: '_blank', noValidate: true },
-	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "35vmax", border: "1px solid #676a6c" } }),
+	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "35vmax", border: "1px solid #c4c4c4" } }),
 	                  React.createElement(
 	                    'div',
 	                    { className: 'hidden', 'aria-hidden': 'true' },
