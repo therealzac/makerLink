@@ -25948,24 +25948,24 @@
 	            { id: 'navbar', className: 'navbar-collapse collapse' },
 	            React.createElement(
 	              'ul',
-	              { className: 'nav navbar-nav navbar-right', style: { marginRight: "0" } },
+	              { className: 'nav navbar-nav navbar-right', style: { marginRight: "0", paddingRight: "1vw" } },
 	              React.createElement(
 	                'li',
 	                { style: { marginLeft: '20vw' } },
 	                React.createElement(
 	                  'a',
-	                  { style: { fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black" } },
-	                  'WE BUILD APPS. NEED ONE?'
+	                  { style: { fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black", paddingLeft: "0", marginBottom: "2vh", textTransform: "capitalize" } },
+	                  'We build apps. Need one?'
 	                ),
 	                React.createElement(
 	                  'a',
-	                  { style: { bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black" } },
+	                  { style: { bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize" } },
 	                  'Give us your email, we\'ll hit you up when our platform\'s ready.'
 	                ),
 	                React.createElement(
 	                  'form',
-	                  { action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', className: 'validate', target: '_blank', noValidate: true },
-	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "35vw", border: "1px solid #c4c4c4" } }),
+	                  { style: { marginTop: "-5vh" }, action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', className: 'validate', target: '_blank', noValidate: true },
+	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { float: "left", width: "35vw", border: "1px solid #c4c4c4" } }),
 	                  React.createElement(
 	                    'div',
 	                    { className: 'hidden', 'aria-hidden': 'true' },

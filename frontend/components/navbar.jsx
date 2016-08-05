@@ -173,13 +173,13 @@ var NavBar = React.createClass({
                         <img src='http://res.cloudinary.com/makerlink/image/upload/v1470282316/logo_xoqsyf.png' className="makerlink-logo-white" style={{position: "absolute", top: "2vmin", cursor: "pointer"}} onClick={this.goToLanding}/>
                   </div>
                   <div id="navbar" className="navbar-collapse collapse">
-                      <ul className="nav navbar-nav navbar-right" style={{marginRight: "0"}}>
+                      <ul className="nav navbar-nav navbar-right" style={{marginRight: "0", paddingRight: "1vw"}}>
                         <li style={{marginLeft: '20vw'}}>
-                          <a style={{fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black"}}>WE BUILD APPS. NEED ONE?</a>
-                          <a style={{bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black"}}>Give us your email, we'll hit you up when our platform's ready.</a>
+                          <a style={{fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black", paddingLeft: "0", marginBottom: "2vh", textTransform: "capitalize"}}>We build apps. Need one?</a>
+                          <a style={{bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize"}}>Give us your email, we'll hit you up when our platform's ready.</a>
 
-                          <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                            <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "35vw", border: "1px solid #c4c4c4"}}/>
+                          <form style={{marginTop: "-5vh"}} action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+                            <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{float: "left", width: "35vw", border: "1px solid #c4c4c4"}}/>
                             <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
                             <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
                           </form>
