@@ -80,7 +80,7 @@ var Landing = React.createClass({
   render: function () {
     return(
     <div id='landing'>
-      <Parallax strength={400}>
+      <Parallax strength={0}>
         <Background>
           <img src="http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg"/>
         </Background>

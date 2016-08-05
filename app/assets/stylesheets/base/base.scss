@@ -217,7 +217,7 @@ ul.unstyled, ol.unstyled {
 /* FOOTER */
 
 .footer {
-  background: none repeat scroll 0 0 #a1a1a1;
+  background: rgba(0, 0, 0, 0.7);
   border-top: 1px solid $border-color;
   bottom: 0;
   left: 0;
@@ -1356,11 +1356,11 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 
 .splash-header {
-  font-size: 7vmax;
+  font-size: 7vw;
   font-weight: 300;
   color: black;
   text-align: center;
-  margin-top: 17vmax;
+  margin-top: 30vh;
 }
 
 .dashboard1-background {
@@ -1394,11 +1394,9 @@ body.mini-navbar.fixed-sidebar .logo-element {
 
 .makerlink-logo-white {
   display: block;
-  margin-left: 3vmax;
-  width: 8vmax;
-  height: 8vmax;
-  background: image-url("landing/logo.png") no-repeat;
-  background-size: 6.5vmax;
+  margin-left: 6vmin;
+  margin-top: 3vmin;
+  height: 50%;
 }
 
 .makerlink-logo-red {
@@ -1511,11 +1509,11 @@ body.mini-navbar.fixed-sidebar .logo-element {
 .mailchimp-button {
   position: absolute;
   top: 75px;
-  left: 38vmax;
-  font-size: 1.2vmax;
+  left: 38vw;
   font-weight: 100;
-  padding: 3px 8px;
+  padding: 0.35vh 1.5vw;
   padding-bottom: 1px;
+  margin-left: 2vw;
   border: none;
   background-color: $navy;
   color: #FFFFFF;

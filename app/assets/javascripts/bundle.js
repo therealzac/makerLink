@@ -25427,7 +25427,7 @@
 	            { id: 'landing' },
 	            React.createElement(
 	                _reactParallax.Parallax,
-	                { strength: 400 },
+	                { strength: 0 },
 	                React.createElement(
 	                    _reactParallax.Background,
 	                    null,
@@ -25472,7 +25472,7 @@
 	  render: function render() {
 	    return React.createElement(
 	      "div",
-	      { className: "row", style: { backgroundColor: "#c4c4c4", marginRight: "0" } },
+	      { className: "row", style: { background: "rgba(0, 0, 0, 0.7)", marginRight: "0" } },
 	      React.createElement(
 	        "div",
 	        { className: "col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg" },
@@ -25481,8 +25481,8 @@
 	          null,
 	          React.createElement(
 	            "strong",
-	            null,
-	            "© 2016 MAKERLINK"
+	            { style: { fontFamily: '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: "300" } },
+	            "© 2016 Makerlink, Inc."
 	          ),
 	          React.createElement("br", null)
 	        )
@@ -25925,7 +25925,7 @@
 	        { className: 'navbar navbar-default navbar-fixed-top', role: 'navigation' },
 	        React.createElement(
 	          'div',
-	          { className: 'container' },
+	          { className: 'container', style: { width: "100%" } },
 	          React.createElement(
 	            'div',
 	            { className: 'navbar-header page-scroll' },
@@ -25941,15 +25941,7 @@
 	              React.createElement('span', { className: 'icon-bar' }),
 	              React.createElement('span', { className: 'icon-bar' })
 	            ),
-	            React.createElement(
-	              'div',
-	              { className: 'makerlink-logo-white', style: { position: "absolute", top: "2vmin", cursor: "pointer" }, onClick: this.goToLanding },
-	              React.createElement(
-	                'p',
-	                { style: { position: "absolute", top: "4vmax", left: "6vmax", fontSize: "2vmax" } },
-	                'MakerLink'
-	              )
-	            )
+	            React.createElement('img', { src: 'http://res.cloudinary.com/makerlink/image/upload/v1470282316/logo_xoqsyf.png', className: 'makerlink-logo-white', style: { position: "absolute", top: "2vmin", cursor: "pointer" }, onClick: this.goToLanding })
 	          ),
 	          React.createElement(
 	            'div',
@@ -25959,21 +25951,21 @@
 	              { className: 'nav navbar-nav navbar-right', style: { marginRight: "0" } },
 	              React.createElement(
 	                'li',
-	                null,
+	                { style: { marginLeft: '20vw' } },
 	                React.createElement(
 	                  'a',
-	                  { style: { fontSize: "2vmax", fontWeight: "400", bottom: "12px" } },
+	                  { style: { fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black" } },
 	                  'WE BUILD APPS. NEED ONE?'
 	                ),
 	                React.createElement(
 	                  'a',
-	                  { style: { bottom: "50px", fontSize: "1.4vmax", fontWeight: "200" } },
-	                  'Give us your email, we\'ll hit you up when our app\'s ready.'
+	                  { style: { bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black" } },
+	                  'Give us your email, we\'ll hit you up when our platform\'s ready.'
 	                ),
 	                React.createElement(
 	                  'form',
 	                  { action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', className: 'validate', target: '_blank', noValidate: true },
-	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "35vmax", border: "1px solid #c4c4c4" } }),
+	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { position: "absolute", bottom: "35px", left: "10px", width: "35vw", border: "1px solid #c4c4c4" } }),
 	                  React.createElement(
 	                    'div',
 	                    { className: 'hidden', 'aria-hidden': 'true' },

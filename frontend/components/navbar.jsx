@@ -162,7 +162,7 @@ var NavBar = React.createClass({
     return (
       <div style={{marginBottom: "50px"}}>
           <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
-              <div className="container">
+              <div className="container" style={{width: "100%"}}>
                   <div className="navbar-header page-scroll">
                       <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                           <span className="sr-only">Toggle navigation</span>
@@ -170,18 +170,16 @@ var NavBar = React.createClass({
                           <span className="icon-bar"></span>
                           <span className="icon-bar"></span>
                       </button>
-                        <div className="makerlink-logo-white" style={{position: "absolute", top: "2vmin", cursor: "pointer"}} onClick={this.goToLanding}>
-                          <p style={{position: "absolute", top: "4vmax", left: "6vmax", fontSize: "2vmax"}}>MakerLink</p>
-                        </div>
+                        <img src='http://res.cloudinary.com/makerlink/image/upload/v1470282316/logo_xoqsyf.png' className="makerlink-logo-white" style={{position: "absolute", top: "2vmin", cursor: "pointer"}} onClick={this.goToLanding}/>
                   </div>
                   <div id="navbar" className="navbar-collapse collapse">
                       <ul className="nav navbar-nav navbar-right" style={{marginRight: "0"}}>
-                        <li>
-                          <a style={{fontSize: "2vmax", fontWeight: "400", bottom: "12px"}}>WE BUILD APPS. NEED ONE?</a>
-                          <a style={{bottom: "50px", fontSize: "1.4vmax", fontWeight: "200"}}>Give us your email, we'll hit you up when our app's ready.</a>
+                        <li style={{marginLeft: '20vw'}}>
+                          <a style={{fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black"}}>WE BUILD APPS. NEED ONE?</a>
+                          <a style={{bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black"}}>Give us your email, we'll hit you up when our platform's ready.</a>
 
                           <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                            <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "35vmax", border: "1px solid #c4c4c4"}}/>
+                            <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "35vw", border: "1px solid #c4c4c4"}}/>
                             <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
                             <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
                           </form>
