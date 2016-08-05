@@ -176,7 +176,7 @@ var NavBar = React.createClass({
                       <ul className="nav navbar-nav navbar-right" style={{marginRight: "0", paddingRight: "1vw"}}>
                         <li style={{marginLeft: '20vw'}}>
                           <a style={{fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black", paddingLeft: "0", marginBottom: "2vh", textTransform: "capitalize"}}>We build apps. Need one?</a>
-                          <a style={{bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize"}}>Give us your email, we'll hit you up when our platform's ready.</a>
+                          <a style={{bottom: "50px", fontSize: "1.5vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize"}}>Give us your email, we'll hit you up when our platform's ready.</a>
 
                           <form style={{marginTop: "-5vh"}} action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
                             <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{float: "left", width: "35vw", border: "1px solid #c4c4c4"}}/>

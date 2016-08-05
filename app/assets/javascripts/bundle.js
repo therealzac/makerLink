@@ -25959,7 +25959,7 @@
 	                ),
 	                React.createElement(
 	                  'a',
-	                  { style: { bottom: "50px", fontSize: "1.7vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize" } },
+	                  { style: { bottom: "50px", fontSize: "1.5vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize" } },
 	                  'Give us your email, we\'ll hit you up when our platform\'s ready.'
 	                ),
 	                React.createElement(
