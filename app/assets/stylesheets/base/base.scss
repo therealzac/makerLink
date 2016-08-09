@@ -1356,11 +1356,11 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 
 .splash-header {
-  font-size: 7vw;
+  font-size: 5em;
   font-weight: 300;
   color: black;
   text-align: center;
-  margin-top: 30vh;
+  margin-top: 2em;
 }
 
 .dashboard1-background {
@@ -1390,6 +1390,11 @@ body.mini-navbar.fixed-sidebar .logo-element {
 
 .dashboard-white {
   background: 'white';
+}
+
+.landing-parallax {
+  background-position: center bottom;
+  height: 1000px;
 }
 
 .makerlink-logo-white {
@@ -1559,5 +1564,13 @@ body.mini-navbar.fixed-sidebar .logo-element {
     color: black !important;
     text-transform: none !important;
     text-align: right;
+  }
+
+  .splash-header {
+    font-size: 4em;
+    font-weight: 300;
+    color: black;
+    text-align: center;
+    margin-top: 2em;
   }
 }

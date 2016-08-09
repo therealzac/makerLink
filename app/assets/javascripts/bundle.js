@@ -25427,11 +25427,11 @@
 	            { id: 'landing' },
 	            React.createElement(
 	                _reactParallax.Parallax,
-	                { strength: 0 },
+	                { disabled: true, className: 'landing-parallax' },
 	                React.createElement(
 	                    _reactParallax.Background,
 	                    null,
-	                    React.createElement('img', { src: 'http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg' })
+	                    React.createElement('img', { className: 'landing-parallax', src: 'http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg' })
 	                ),
 	                React.createElement(
 	                    'p',

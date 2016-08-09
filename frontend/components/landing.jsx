@@ -80,9 +80,9 @@ var Landing = React.createClass({
   render: function () {
     return(
     <div id='landing'>
-      <Parallax strength={0}>
+      <Parallax disabled={true} className="landing-parallax">
         <Background>
-          <img src="http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg"/>
+          <img className="landing-parallax" src="http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg"/>
         </Background>
         <p className="splash-header">COMING SOON.</p>
       </Parallax>
