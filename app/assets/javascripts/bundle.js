@@ -25954,28 +25954,25 @@
 	                { style: { marginLeft: '20vw' } },
 	                React.createElement(
 	                  'a',
-	                  { style: { fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black", paddingLeft: "0", marginBottom: "2vh", textTransform: "capitalize" } },
+	                  { className: 'temp-header' },
 	                  'We build apps. Need one?'
 	                ),
 	                React.createElement(
 	                  'a',
-	                  { style: { bottom: "50px", fontSize: "1.5vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize" } },
+	                  { className: 'temp-subheader' },
 	                  'Give us your email, we\'ll hit you up when our platform\'s ready.'
 	                ),
 	                React.createElement(
 	                  'form',
 	                  { style: { marginTop: "-5vh" }, action: '//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&id=4dfccf38a8', method: 'post', id: 'mc-embedded-subscribe-form', name: 'mc-embedded-subscribe-form', className: 'validate', target: '_blank', noValidate: true },
-	                  React.createElement('input', { type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email"), style: { float: "left", width: "35vw", border: "1px solid #c4c4c4" } }),
+	                  React.createElement('input', { type: 'submit', className: 'mailchimp-button', value: 'KEEP ME POSTED', name: 'subscribe', id: 'mc-embedded-subscribe' }),
+	                  React.createElement('input', { className: 'mailchimp-input', type: 'text', id: 'mce-EMAIL', name: 'EMAIL', valueLink: this.linkState("email") }),
 	                  React.createElement(
 	                    'div',
 	                    { className: 'hidden', 'aria-hidden': 'true' },
 	                    React.createElement('input', { type: 'text', name: 'b_93a48221804b21d185ce1d9e2_4dfccf38a8', tabIndex: '-1', value: '' })
 	                  ),
-	                  React.createElement(
-	                    'div',
-	                    { className: 'clear' },
-	                    React.createElement('input', { type: 'submit', className: 'mailchimp-button', value: 'KEEP ME POSTED', name: 'subscribe', id: 'mc-embedded-subscribe' })
-	                  )
+	                  React.createElement('div', { className: 'clear' })
 	                )
 	              )
 	            )

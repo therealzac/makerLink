@@ -175,13 +175,14 @@ var NavBar = React.createClass({
                   <div id="navbar" className="navbar-collapse collapse">
                       <ul className="nav navbar-nav navbar-right" style={{marginRight: "0", paddingRight: "1vw"}}>
                         <li style={{marginLeft: '20vw'}}>
-                          <a style={{fontSize: "3vw", fontWeight: "400", bottom: "12px", color: "black", paddingLeft: "0", marginBottom: "2vh", textTransform: "capitalize"}}>We build apps. Need one?</a>
-                          <a style={{bottom: "50px", fontSize: "1.5vw", fontWeight: "200", color: "black", paddingLeft: "0", textTransform: "capitalize"}}>Give us your email, we'll hit you up when our platform's ready.</a>
+                          <a className="temp-header">We build apps. Need one?</a>
+                          <a className="temp-subheader">Give us your email, we'll hit you up when our platform's ready.</a>
 
                           <form style={{marginTop: "-5vh"}} action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                            <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{float: "left", width: "35vw", border: "1px solid #c4c4c4"}}/>
+                            <input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/>
+                            <input className="mailchimp-input" type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")}/>
                             <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
-                            <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
+                            <div className="clear"></div>
                           </form>
                         </li>
 

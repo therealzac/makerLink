@@ -1506,8 +1506,15 @@ body.mini-navbar.fixed-sidebar .logo-element {
   padding: 5px;
   width: 80px;
 }
+
+.mailchimp-input {
+  float: right;
+  width: 42vw;
+  border: 1px solid #c4c4c4;
+}
+
 .mailchimp-button {
-  float: left;
+  float: right;
   font-weight: 100;
   padding: 0.35vh 1.5vw;
   padding-bottom: 1px;
@@ -1515,4 +1522,42 @@ body.mini-navbar.fixed-sidebar .logo-element {
   border: none;
   background-color: $navy;
   color: #FFFFFF;
+}
+
+.temp-header {
+  font-size: 1.5em !important;
+  font-weight: 500 !important;
+  bottom: 12px !important;
+  color: black !important;
+  text-transform: none !important;
+  padding-left: 0 !important;
+}
+
+.temp-subheader {
+  bottom: 50px !important;
+  font-size: 1em !important;
+  font-weight: 200 !important;
+  color: black !important;
+  text-transform: none !important;
+  padding-left: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .temp-header {
+    font-size: 1.25em !important;
+    font-weight: 500 !important;
+    bottom: 12px !important;
+    color: black !important;
+    text-transform: none !important;
+    text-align: right;
+  }
+
+  .temp-subheader {
+    bottom: 50px !important;
+    font-size: 1em !important;
+    font-weight: 200 !important;
+    color: black !important;
+    text-transform: none !important;
+    text-align: right;
+  }
 }
