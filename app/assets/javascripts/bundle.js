@@ -25945,7 +25945,7 @@
 	          ),
 	          React.createElement(
 	            'div',
-	            { id: 'navbar', className: 'navbar-collapse collapse' },
+	            { id: 'navbar', style: { border: "none" }, className: 'navbar-collapse collapse' },
 	            React.createElement(
 	              'ul',
 	              { className: 'nav navbar-nav navbar-right', style: { marginRight: "0", paddingRight: "1vw" } },

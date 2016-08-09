@@ -172,7 +172,7 @@ var NavBar = React.createClass({
                       </button>
                         <img src='http://res.cloudinary.com/makerlink/image/upload/v1470282316/logo_xoqsyf.png' className="makerlink-logo-white" style={{position: "absolute", top: "2vmin", cursor: "pointer"}} onClick={this.goToLanding}/>
                   </div>
-                  <div id="navbar" className="navbar-collapse collapse">
+                  <div id="navbar" style={{border: "none"}} className="navbar-collapse collapse">
                       <ul className="nav navbar-nav navbar-right" style={{marginRight: "0", paddingRight: "1vw"}}>
                         <li style={{marginLeft: '20vw'}}>
                           <a className="temp-header">We build apps. Need one?</a>
