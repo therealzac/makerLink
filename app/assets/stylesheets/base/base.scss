@@ -1559,6 +1559,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
   height: 90px;
   display: table;
   text-align: center;
+  margin-top: 55px;
   font-size: 25px;
   font-weight: 200;
   padding-top: 24px;
@@ -1632,23 +1633,16 @@ body.mini-navbar.fixed-sidebar .logo-element {
 
 .pending-project-show {
   width: 55.7%;
+  height: 1800px;
   background-color: #ebebeb;
   border: 1px solid #979797;
   border-radius: 16px;
+  display: inline-block;
   font-size: 30px;
-  position: absolute;
-  margin-top: -50em;
-  margin-left: 38.2%;
 }
 
 .pending-project-completion-date {
-  float: left;
-}
-
-.pending-project-completion-date-header {
-  margin-top: -36px;
-  float: left;
-  font-size: 24px;
+  margin-left: calc(50% - 160px);
 }
 
 .pending-project-title {
@@ -1704,20 +1698,12 @@ body.mini-navbar.fixed-sidebar .logo-element {
 
 .pending-project-main-features {
   width: 38.2%;
-  height: 302px;
-  margin-left: 6.18%;
-  margin-right: 3.82%;
+  height: 382px;
+  margin-left: 30.9%;
   border: 1px solid #979797;
   margin-bottom: 34px;
   background-color: white;
   background-size: cover;
-  float: left;
-}
-
-.pending-project-main-features-header {
-  margin-left: 6.18%;
-  font-size: 24px;
-  margin-top: 90px;
 }
 
 .pending-project-header {
@@ -1804,7 +1790,7 @@ body.mini-navbar.fixed-sidebar .logo-element {
 
 .main-backdrop {
   width: 100%;
-  height: 292px;
+  height: 236px;
   margin-bottom: -90px;
 }
 

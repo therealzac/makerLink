@@ -216,20 +216,18 @@ var PendingProjectShow = React.createClass({
           </textarea>
         </div>
 
-        <div>
-          <h1 className="pending-project-main-features-header">Main Features</h1>
+          <h1 className="pending-project-header">Main Features</h1>
           <div className="pending-project-main-features">
             { this.renderMainFeatures() }
           </div>
 
-          <h1 className="pending-project-completion-date-header">Desired Completion Date</h1>
+          <h1 className="pending-project-header">Desired Completion Date</h1>
           <Calendar
             onChange={this.saveProjectDate}
             id="target_date"
             date={project ? project.target_date : null}
             className="pending-project-completion-date">
           </Calendar>
-        </div>
       </div>
     )
   }

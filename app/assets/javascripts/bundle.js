@@ -44194,29 +44194,25 @@
 	          className: 'pending-project-edit-description' })
 	      ),
 	      React.createElement(
+	        'h1',
+	        { className: 'pending-project-header' },
+	        'Main Features'
+	      ),
+	      React.createElement(
 	        'div',
-	        null,
-	        React.createElement(
-	          'h1',
-	          { className: 'pending-project-main-features-header' },
-	          'Main Features'
-	        ),
-	        React.createElement(
-	          'div',
-	          { className: 'pending-project-main-features' },
-	          this.renderMainFeatures()
-	        ),
-	        React.createElement(
-	          'h1',
-	          { className: 'pending-project-completion-date-header' },
-	          'Desired Completion Date'
-	        ),
-	        React.createElement(_reactDatePicker.Calendar, {
-	          onChange: this.saveProjectDate,
-	          id: 'target_date',
-	          date: project ? project.target_date : null,
-	          className: 'pending-project-completion-date' })
-	      )
+	        { className: 'pending-project-main-features' },
+	        this.renderMainFeatures()
+	      ),
+	      React.createElement(
+	        'h1',
+	        { className: 'pending-project-header' },
+	        'Desired Completion Date'
+	      ),
+	      React.createElement(_reactDatePicker.Calendar, {
+	        onChange: this.saveProjectDate,
+	        id: 'target_date',
+	        date: project ? project.target_date : null,
+	        className: 'pending-project-completion-date' })
 	    );
 	  }
 	});
