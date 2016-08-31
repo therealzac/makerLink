@@ -165,6 +165,21 @@ var ApiUtil = {
     });
   },
 
+  updateProject: function (project) {
+    $.ajax({
+      url: "api/projects/" + project.id + "/",
+      data: {project: project},
+      method: "PATCH",
+      success: function (updatedProject) {
+        updatedProject.idx = project.idx;
+        ApiActions.receiveUpdatedProject(updatedProject);
+      },
+      error: function (error) {
+        ApiActions.invalidEntry(error);
+      }
+    })
+  },
+
   createTask: function (task, projectIdx, successCallback) {
     $.ajax({
       url: "api/tasks",
@@ -174,7 +189,7 @@ var ApiUtil = {
         successCallback();
 
         project.idx = projectIdx;
-        ApiActions.receiveProjectWithNewTask(project);
+        ApiActions.receiveUpdatedProject(project);
       },
       error: function (error) {
         ApiActions.invalidEntry(error);
@@ -192,7 +207,7 @@ var ApiUtil = {
       method: "PATCH",
       success: function (project) {
         project.idx = projectIdx;
-        ApiActions.receiveProjectWithNewTask(project);
+        ApiActions.receiveUpdatedProject(project);
       },
     });
   },

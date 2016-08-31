@@ -82,7 +82,8 @@ var Landing = React.createClass({
     <div id='landing'>
       <Parallax disabled={true} className="landing-parallax">
         <Background>
-          <img className="landing-parallax" src="http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg"/>
+          <img className="landing-parallax"
+            src="http://res.cloudinary.com/makerlink/image/upload/v1470192113/splash_uywhak.jpg"/>
         </Background>
         <p className="splash-header">COMING SOON.</p>
       </Parallax>
@@ -91,12 +92,5 @@ var Landing = React.createClass({
     )
   }
 });
-
-
-// <form action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-//   <input type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")} style={{position: "absolute", bottom: "35px", left: "10px", width: "300px"}}/>
-//   <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
-//   <div className="clear"><input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/></div>
-// </form>
 
 module.exports = Landing;

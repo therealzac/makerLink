@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     @user = User.find_by_credentials(email, password)
     if @user
       if @user.is_customer?
-        @projects = @user.projects
+        @projects = @user.projects.order(updated_at: :DESC)
         @projects.each do |project|
           # This can't handle cases of multiple groups
           project.flag = Flag.where("project_id = #{project.id} AND
@@ -53,7 +53,7 @@ class SessionsController < ApplicationController
     @user = current_user
     if @user
       if @user.is_customer?
-        @projects = @user.projects
+        @projects = @user.projects.order(updated_at: :DESC)
         @projects.each do |project|
           # This can't handle cases of multiple groups
           project.flag = Flag.where("project_id = #{project.id} AND

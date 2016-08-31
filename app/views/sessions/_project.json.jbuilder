@@ -13,6 +13,8 @@ json.extract!(
         :calendar_id,
         :tags,
         :youtube_link,
-        :inspiration_links,
-        :involvement_level
+        :inspiration_link,
+        :involvement_level,
+        :screenshot_url,
+        :target_date
 )

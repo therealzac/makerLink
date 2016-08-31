@@ -69,7 +69,6 @@ var ProjectIndexItem = React.createClass({
       <div className="grow">
           <img src="https://unsplash.it/g/200/300/?random" alt="ALT"/>
           <p style={{fontSize: "18px"}}> {name} </p>
-          <p>{pitch}</p>
           <p>{url}</p>
           <p>{description}</p>
           <p>{ this.renderActionButton() }</p>

@@ -68,8 +68,6 @@ var App = React.createClass({
           this.context.router.push('/admin');
           break;
       }
-    } else {
-      this.context.router.push('/');
     }
   },
 

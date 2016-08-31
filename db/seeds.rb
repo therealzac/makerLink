@@ -18,49 +18,37 @@ User.create(
 Project.create(
   author_id: 1,
   name: "HeirBNB",
-  pitch: "Find your castle",
   description: "Blah blah blha.",
-  expiration_date: "06-06-2006"
 )
 
 Project.create(
   author_id: 1,
   name: "Snooper",
-  pitch: "Find the best pair of snoops.",
   description: "Blah blah blha.",
-  expiration_date: "06-06-2006"
 )
 
 Project.create(
   author_id: 1,
   name: "Cliff",
-  pitch: "Faker would have been a good choice.",
   description: "Blah blah blha.",
-  expiration_date: "06-06-2006"
 )
 
 Project.create(
   author_id: 1,
   name: "Spliff",
-  pitch: "Faker would have been a good choice.",
   description: "Blah blah blha.",
-  expiration_date: "06-06-2006"
 )
 
 Project.create(
   author_id: 1,
   name: "Sightcast",
-  pitch: "Faker would have been a good choice.",
   description: "Blah blah blha.",
-  expiration_date: "06-06-2006"
 )
 
 Project.create(
   author_id: 1,
   name: "Free College",
-  pitch: "Faker would have been a good choice.",
   description: "Blah blah blha.",
-  expiration_date: "06-06-2006"
 )
 
 User.create(

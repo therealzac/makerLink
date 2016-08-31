@@ -3,18 +3,18 @@ var React = require('react');
 var ProjectIndexItem = React.createClass({
   getInitialState: function () {
     if (this.props.isActive) {
-      return { className: "active" }
+      return { className: "sidenav-item-active" }
     } else {
-      return { className: "" }
+      return { className: "sidenav-item" }
     }
 
   },
 
   componentWillReceiveProps: function (newProps) {
     if (newProps.isActive) {
-      this.setState( {className: "active"} );
+      this.setState( {className: "sidenav-item-active"} );
     } else {
-      this.setState( {className: ""} );
+      this.setState( {className: "sidenav-item"} );
     }
   },
 
@@ -25,9 +25,10 @@ var ProjectIndexItem = React.createClass({
 
   render: function () {
     return (
-      <li id="cohorts" className={this.state.className} onClick={this.handleClick}>
-          <a> <i className="fa fa-th-large"></i> <span className="nav-label">{this.props.project.name}</span> <span className="fa arrow"></span></a>
-      </li>
+      <div className={this.state.className} onClick={this.handleClick}>
+          { this.props.project.name }
+          <div className="customer-sidenav-item-progress-bar"/>
+      </div>
     )
   }
 })

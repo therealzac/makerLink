@@ -54,7 +54,7 @@ var ApiActions = {
     });
   },
 
-  receiveProjectWithNewTask: function (project) {
+  receiveUpdatedProject: function (project) {
     AppDispatcher.dispatch({
       actionType: SessionConstants.UPDATED_PROJECT_RECEIVED,
       project: project

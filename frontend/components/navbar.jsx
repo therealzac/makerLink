@@ -124,74 +124,45 @@ var NavBar = React.createClass({
     var newsNumber = news.length > 0 ? news.length : null;
 
     return (
-      <li style={{display: this.state.notifications}} className="dropdown">
-          <a className="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-              <i className="fa fa-envelope"></i>  <span className="label label-warning">{newsNumber}</span>
-          </a>
+      <div style={{display: this.state.notifications}} className="topnav-option">
+        <i className="fa fa-envelope"></i>  <span className="label label-warning">{newsNumber}</span>
+
             {
-              <ul className="dropdown-menu dropdown-messages">
-                {
-                  news.map(function (newsItem, idx) {
-                    return (
-                      <li key={idx}>
-                        <div className="dropdown-messages-box">
-                            <a className="pull-left">
-                            </a>
-                            <div>
-                                <strong>{newsItem.body}</strong><br/>
-                            </div>
-                        </div>
-                      </li>
-                    );
-                  })
-                }
-                <li>
-                  <div className="text-center link-block">
-                    <a>
-                      <strong onClick={this.approveProject}>All Notifications</strong>
-                    </a>
+              news.map(function (newsItem, idx) {
+                return (
+                  <div key={idx}>
                   </div>
-                </li>
-              </ul>
+                );
+              })
             }
-      </li>
+      </div>
     )
   },
 
   render: function () {
     return (
-      <div style={{marginBottom: "50px"}}>
-          <nav className="navbar navbar-default navbar-fixed-top" role="navigation">
-              <div className="container" style={{width: "100%"}}>
-                  <div className="navbar-header page-scroll">
-                      <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                          <span className="sr-only">Toggle navigation</span>
-                          <span className="icon-bar"></span>
-                          <span className="icon-bar"></span>
-                          <span className="icon-bar"></span>
-                      </button>
-                        <img src='http://res.cloudinary.com/makerlink/image/upload/v1470282316/logo_xoqsyf.png' className="makerlink-logo-white" style={{position: "absolute", top: "2vmin", cursor: "pointer"}} onClick={this.goToLanding}/>
-                  </div>
-                  <div id="navbar" style={{border: "none"}} className="navbar-collapse collapse">
-                      <ul className="nav navbar-nav navbar-right" style={{marginRight: "0", paddingRight: "1vw"}}>
-                        <li style={{marginLeft: '20vw'}}>
-                          <a className="temp-header">We build apps. Need one?</a>
-                          <a className="temp-subheader">Give us your email, we'll hit you up when our platform's ready.</a>
+          <nav className="topnav">
+            <svg className="topnav-svg" xmlns="http://www.w3.org/2000/svg"
+             width="55.000000pt" height="61.000000pt" viewBox="0 0 55.000000 140.000000"
+             preserveAspectRatio="xMidYMid meet">
+            <g transform="translate(0.000000,100.000000) scale(0.100000,-0.100000)"
+            fill="#fff" stroke="none">
+            <path d="M389 840 c-40 -21 -73 -64 -65 -85 2 -7 21 -18 41 -25 33 -11 39 -10
+            59 9 28 26 76 27 107 2 38 -30 30 -74 -31 -173 -52 -84 -79 -108 -121 -108
+            -26 0 -69 43 -69 69 0 40 -39 37 -59 -5 -16 -35 -14 -76 5 -103 21 -30 89 -61
+            134 -61 41 0 108 29 131 56 36 42 127 206 133 239 13 70 -30 157 -95 190 -39
+            21 -126 18 -170 -5z"/>
+            <path d="M215 681 c-22 -10 -47 -27 -56 -37 -36 -41 -127 -205 -133 -238 -14
+            -74 33 -164 101 -192 76 -32 189 -2 222 59 17 31 10 42 -35 57 -32 11 -38 10
+            -58 -9 -48 -45 -130 -14 -130 50 0 38 102 212 130 223 48 18 114 -18 114 -63
+            0 -40 39 -37 59 5 28 61 5 114 -63 145 -52 23 -100 24 -151 0z"/>
+            </g>
+            </svg>
+            <div className="topnav-brand"><strong>MAKER</strong>LINK</div>
+            <div className="topnav-option" onClick={this.logOut}>Log Out</div>
 
-                          <form style={{marginTop: "-5vh"}} action="//makerlink.us13.list-manage.com/subscribe/post?u=93a48221804b21d185ce1d9e2&amp;id=4dfccf38a8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
-                            <input type="submit" className="mailchimp-button" value="KEEP ME POSTED" name="subscribe" id="mc-embedded-subscribe"/>
-                            <input className="mailchimp-input" type="text" id="mce-EMAIL" name="EMAIL" valueLink={this.linkState("email")}/>
-                            <div className="hidden" aria-hidden="true"><input type="text" name="b_93a48221804b21d185ce1d9e2_4dfccf38a8" tabIndex="-1" value=""/></div>
-                            <div className="clear"></div>
-                          </form>
-                        </li>
-
-                      </ul>
-
-                  </div>
-              </div>
+            { this.renderNotifications() }
           </nav>
-      </div>
     )
   }
 });

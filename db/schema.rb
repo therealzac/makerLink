@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160725020449) do
+ActiveRecord::Schema.define(version: 20160830032721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,8 +72,10 @@ ActiveRecord::Schema.define(version: 20160725020449) do
     t.string   "slack_id"
     t.string   "calendar_id"
     t.string   "youtube_link"
-    t.string   "inspiration_links"
     t.integer  "involvement_level"
+    t.string   "inspiration_link"
+    t.string   "screenshot_url"
+    t.string   "target_date"
   end
 
   add_index "projects", ["author_id"], name: "index_projects_on_author_id", using: :btree
@@ -100,6 +102,7 @@ ActiveRecord::Schema.define(version: 20160725020449) do
   end
 
   add_index "tags", ["project_id"], name: "index_tags_on_project_id", using: :btree
+  add_index "tags", ["value", "project_id"], name: "index_tags_on_value_and_project_id", unique: true, using: :btree
 
   create_table "tasks", force: :cascade do |t|
     t.integer  "author_id",              null: false

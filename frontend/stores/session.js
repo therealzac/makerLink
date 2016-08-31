@@ -47,7 +47,7 @@ SessionStore.__onDispatch = function (payload) {
       break;
 
     case SessionConstants.PROJECT_RECEIVED:
-      addProject(payload.project);
+      addProjectToUser(payload.project);
       SessionStore.__emitChange();
       break;
 
@@ -87,7 +87,7 @@ var updateCohort = function(cohort) {
   _session.cohorts[cohortIdx] = cohort;
 }
 
-var addProject = function(project) {
+var addProjectToUser = function(project) {
   var user = _session.user;
 
   if (!user.projects) { return user.projects = [project] }

@@ -4,7 +4,6 @@ json.extract!(
         :author_id,
         :group,
         :name,
-        :pitch,
         :description,
         :url,
         :view_count,

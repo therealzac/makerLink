@@ -104,41 +104,6 @@ var Signup = React.createClass({
                     valueLink={this.linkState("mobile")}/>
                 </div>
 
-                <div className="form-group">
-                  <label>Payment Information</label>
-                  <input type="text"
-                    name="stripe[number]"
-                    className="form-control"
-                    size="20"
-                    placeholder="Card Number"
-                    valueLink={this.linkState("number")}/>
-                </div>
-
-                <div className="form-group" style={{float: "left"}}>
-                  <input type="text"
-                    name="stripe[exp_month]"
-                    className="form-control"
-                    placeholder="MM"
-                    valueLink={this.linkState("exp_month")}/>
-                </div>
-
-                <div className="form-group" style={{float: "right"}}>
-                  <input type="text"
-                    name="stripe[exp_year]"
-                    className="form-control"
-                    placeholder="YYYY"
-                    valueLink={this.linkState("exp_year")}/>
-                </div>
-
-                <div className="form-group">
-                  <input type="text"
-                    name="stripe[cvc]"
-                    className="form-control"
-                    placeholder="Security Code"
-                    valueLink={this.linkState("cvc")}/>
-                </div>
-
-
                 <div className="form-group" style={{float: "left"}}>
                     <label>Developer?</label>
                     <input type="text"
@@ -189,5 +154,40 @@ var Signup = React.createClass({
     )
   }
 });
+
+
+// <div className="form-group">
+//   <label>Payment Information</label>
+//   <input type="text"
+//     name="stripe[number]"
+//     className="form-control"
+//     size="20"
+//     placeholder="Card Number"
+//     valueLink={this.linkState("number")}/>
+// </div>
+//
+// <div className="form-group" style={{float: "left"}}>
+//   <input type="text"
+//     name="stripe[exp_month]"
+//     className="form-control"
+//     placeholder="MM"
+//     valueLink={this.linkState("exp_month")}/>
+// </div>
+//
+// <div className="form-group" style={{float: "right"}}>
+//   <input type="text"
+//     name="stripe[exp_year]"
+//     className="form-control"
+//     placeholder="YYYY"
+//     valueLink={this.linkState("exp_year")}/>
+// </div>
+//
+// <div className="form-group">
+//   <input type="text"
+//     name="stripe[cvc]"
+//     className="form-control"
+//     placeholder="Security Code"
+//     valueLink={this.linkState("cvc")}/>
+// </div>
 
 module.exports = Signup;

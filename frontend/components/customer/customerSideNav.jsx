@@ -38,20 +38,16 @@ var AdminSideNav = React.createClass({
 
   render: function () {
     return (
-        <nav className="navbar-default navbar-static-side sidebar-content" role="navigation">
-          <div className="sidebar-collapse">
-              <ul className="nav metismenu" id="side-menu">
-                  <li className="nav-header">
-                      <div className="logo-element">
-                          mL
-                      </div>
-                  </li>
-                  <li><a><span className="label label-primary" onClick={this.goToProjectSubmission}>NEW Project</span></a></li>
+        <nav className="customer-sidenav">
+          <div className="sidenav-header">All Projects</div>
 
-                  { this.renderProjects() }
+          { this.renderProjects() }
 
-              </ul>
+          <div className="customer-sidenav-new-project">
+            <img src="http://res.cloudinary.com/makerlink/image/upload/v1471225399/symbol_add_bccrff.png" className="customer-sidenav-new-project-plus"/>
+            New Project
           </div>
+
         </nav>
       )
   }

@@ -23,7 +23,7 @@ var SubmissionForm = React.createClass({
         name: "",
         description: "",
         tags: [],
-        inspiration_links: "",
+        inspiration_link: "",
         youtube_link: "",
         involvement_level: 0,
         author_id: author_id,
@@ -61,6 +61,7 @@ var SubmissionForm = React.createClass({
   },
 
   render: function () {
+    console.log(this.state);
     return (
       <div id="wrapper">
           <div className="ibox-content">
@@ -74,7 +75,7 @@ var SubmissionForm = React.createClass({
                   <TagsInput value={this.state.tags} onChange={this.tagsChange} />
               </div>
               <div>
-                  <input valueLink={this.linkState("inspiration_links")} type="textarea" className="inspiration-input"></input>
+                  <input valueLink={this.linkState("inspiration_link")} type="textarea" className="inspiration-input"></input>
               </div>
               <div>
                   <select valueLink={this.linkState("involvement_level")} className="involvement-level">

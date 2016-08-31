@@ -7,15 +7,15 @@ class Api::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.valid?
-      token = Stripe::Token.create(card: card_params)
-
-      customer = Stripe::Customer.create(
-        source: token.id,
-        email: @user.email,
-        description: @user.full_name
-      )
-
-      @user.stripe_id = customer.id
+      # token = Stripe::Token.create(card: card_params)
+      #
+      # customer = Stripe::Customer.create(
+      #   source: token.id,
+      #   email: @user.email,
+      #   description: @user.full_name
+      # )
+      #
+      # @user.stripe_id = customer.id
 
       @user.save
       render :show

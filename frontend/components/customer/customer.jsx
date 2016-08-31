@@ -1,5 +1,7 @@
 var React = require('react');
 var CustomerSideNav = require('./customerSideNav.jsx');
+var PendingProjectShow = require('./PendingProjectShow.jsx');
+var MainBackdrop = require('../mainBackdrop.jsx');
 var ProjectShow = require('../projectShow.jsx');
 var ApiUtil = require('../../util/apiUtil.js');
 var Footer = require('../footer.jsx');
@@ -37,29 +39,22 @@ var Customer = React.createClass({
 
   render: function () {
     return(
-      <div id='customer'>
+      <div id='customer' className="main-customer-dashboard">
+        <MainBackdrop
+          user={this.state.user}>
+        </MainBackdrop>
+
         <CustomerSideNav
           projects={this.state.projects}
           activeProject={this.state.activeProject}
           setActiveProjectCallback={this.setActiveProjectCallback}>
         </CustomerSideNav>
 
-        <div id="page-wrapper" className="gray-bg sidebar-content">
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="wrapper wrapper-content animated fadeInUp">
-                <div className="ibox">
+        <PendingProjectShow
+          user={this.state.user}
+          project={this.state.activeProject}>
+        </PendingProjectShow>
 
-                  <ProjectShow
-                    user={this.state.user}
-                    project={this.state.activeProject}>
-                  </ProjectShow>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <Footer/>
       </div>
     )
