@@ -138,6 +138,8 @@ var PendingProjectShow = React.createClass({
   },
 
   renderMainFeatures: function () {
+    if (!this.state.project || !this.state.project.features) { return };
+
     return this.state.project.features.map (function (feature) {
       return (
         <div className="pending-project-feature">

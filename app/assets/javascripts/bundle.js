@@ -44090,6 +44090,10 @@
 	  },
 
 	  renderMainFeatures: function renderMainFeatures() {
+	    if (!this.state.project || !this.state.project.features) {
+	      return;
+	    };
+
 	    return this.state.project.features.map(function (feature) {
 	      return React.createElement(
 	        'div',
