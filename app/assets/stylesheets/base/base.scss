@@ -1697,13 +1697,37 @@ body.mini-navbar.fixed-sidebar .logo-element {
 }
 
 .pending-project-main-features {
-  width: 38.2%;
+  width: 61.8%;
   height: 382px;
-  margin-left: 30.9%;
+  margin-left: 19.1%;
   border: 1px solid #979797;
   margin-bottom: 34px;
   background-color: white;
   background-size: cover;
+}
+
+.pending-project-feature {
+  height: 20%;
+  border-bottom: 1px solid #f8f8f8;
+  text-align: center;
+  padding-top: 24px;
+  background: #555;
+  font-size: 18px;
+  color: white;
+  font-weight: 200;
+  cursor: pointer;
+}
+
+.pending-project-edit-feature {
+  width: 100%;
+  height: 100%;
+  display: block;
+  font-size: 14px;
+  border: none;
+  resize: none;
+  background: none;
+  margin-left: 19.1%;
+  outline: none;
 }
 
 .pending-project-header {

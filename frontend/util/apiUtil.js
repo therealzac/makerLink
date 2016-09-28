@@ -166,6 +166,7 @@ var ApiUtil = {
   },
 
   updateProject: function (project) {
+    console.log(project);
     $.ajax({
       url: "api/projects/" + project.id + "/",
       data: {project: project},

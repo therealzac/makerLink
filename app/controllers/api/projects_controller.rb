@@ -44,21 +44,43 @@ class Api::ProjectsController < ApplicationController
       end
 
       if @project.save
-        if new_tag_params[:tags] && @project.tags.length < new_tag_params[:tags].length
+        tags = new_tag_params[:tags]
+
+        if tags && @project.tags.length < tags.length
           previous_tag_values = @project.tags.map { |tag| tag.value }
 
-          new_tag_params[:tags].each do |tag|
+          tags.each do |tag|
             next if previous_tag_values.include?(tag)
             Tag.create(value: tag, project_id: @project.id)
           end
-        elsif new_tag_params[:tags]
+        elsif tags
           @project.tags.each do |tag|
-            next if new_tag_params[:tags].include?(tag.value)
+            next if tags.include?(tag.value)
             tag.destroy
           end
         elsif !params[:project][:tags]
           @project.tags.destroy_all
         end
+
+        features = feature_params[:features]
+
+        if features && @project.features.length < features.length
+          p features
+          previous_values = @projects.features.map { |feature| feature.value }
+
+          features.each do |feature|
+            next if previous_values.include?(feature)
+            Feature.create(value: feature, project_id: @project.id)
+          end
+        elsif features
+          @project.features.each do |feature|
+            next if features.include?(feature)
+            feature.destroy
+          end
+        elsif !params[:project][:features]
+          @project.features.destroy_all
+        end
+
 
         @project.reload
         render :show
@@ -86,5 +108,9 @@ class Api::ProjectsController < ApplicationController
 
   def new_tag_params
     params.require(:project).permit(tags: [])
+  end
+
+  def feature_params
+    params.require(:project).permit(features: [])
   end
 end

@@ -26139,6 +26139,7 @@
 	  },
 
 	  updateProject: function updateProject(project) {
+	    console.log(project);
 	    $.ajax({
 	      url: "api/projects/" + project.id + "/",
 	      data: { project: project },
@@ -43960,34 +43961,6 @@
 	    return this.props;
 	  },
 
-	  componentDidMount: function componentDidMount() {
-	    var self = this;
-
-	    $(".pending-project-edit-title").on("blur", function () {
-	      $(this).addClass("hidden");
-	      self.saveProject();
-	      $(".pending-project-title").removeClass("hidden");
-	    }).keydown(function (e) {
-	      if (e.keyCode === 13) {
-	        $(this).blur();
-	      }
-	    });
-
-	    $(".pending-project-edit-link").on("blur", function () {
-	      self.renderScreenshot({ gradient: 0 });
-	      $(this).addClass("hidden");
-	      self.saveProject();
-	    }).keydown(function (e) {
-	      if (e.keyCode === 13) {
-	        $(this).blur();
-	      }
-	    });
-
-	    $(".pending-project-edit-description").on("blur", function () {
-	      self.saveProject();
-	    });
-	  },
-
 	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
 	    var self = this;
 
@@ -44017,6 +43990,40 @@
 	        this.state.project = {};
 	      }
 	    }
+
+	    $(".pending-project-edit-title").on("blur", function () {
+	      $(this).addClass("hidden");
+	      self.saveProject();
+	      $(".pending-project-title").removeClass("hidden");
+	    }).keydown(function (e) {
+	      if (e.keyCode === 13) {
+	        $(this).blur();
+	      }
+	    });
+
+	    $(".pending-project-edit-link").on("blur", function () {
+	      self.renderScreenshot({ gradient: 0 });
+	      $(this).addClass("hidden");
+	      self.saveProject();
+	    }).keydown(function (e) {
+	      if (e.keyCode === 13) {
+	        $(this).blur();
+	      }
+	    });
+
+	    $(".pending-project-edit-feature").on("blur", function () {
+	      $(this).addClass("hidden");
+	      self.saveProject();
+	      $(".pending-project-new-feature").removeClass("hidden");
+	    }).keydown(function (e) {
+	      if (e.keyCode === 13) {
+	        $(this).blur();
+	      }
+	    });
+
+	    $(".pending-project-edit-description").on("blur", function () {
+	      self.saveProject();
+	    });
 
 	    this.setState(newProps);
 	  },
@@ -44052,10 +44059,26 @@
 	    $(".pending-project-edit-description").select();
 	  },
 
+	  focusFeature: function focusFeature(e) {
+	    e.preventDefault();
+	    $("#" + e.target.id).addClass("hidden");
+	    $("#edit" + e.target.id).removeClass("hidden").select();
+	  },
+
 	  updateProject: function updateProject(e) {
 	    this.state.project[e.target.id] = e.target.value;
 	    this.state.updated = true;
 	    this.setState(this.state);
+	  },
+
+	  updateFeatures: function updateFeatures(e) {
+	    var idx = e.target.id[11];
+	    var value = e.target.value;
+	    var features = this.state.project.features.slice();
+
+	    features[idx] ? features[idx] = value : features.push(value);
+
+	    this.setState({ features: features, updated: true });
 	  },
 
 	  saveProjectDate: function saveProjectDate(date) {
@@ -44068,6 +44091,11 @@
 	      if (tags) {
 	        this.state.project.tags = tags;
 	      };
+
+	      this.state.project.features = this.state.project.features.map(function (feature) {
+	        return feature.value;
+	      });
+
 	      ApiUtil.updateProject(this.state.project);
 	    }
 
@@ -44075,7 +44103,7 @@
 	  },
 
 	  renderLinkPlaceholder: function renderLinkPlaceholder() {
-	    var appName = this.state.project ? this.state.project.name : "your app";
+	    var appName = this.state.project ? this.state.project.name : "Your App";
 	    return "What site do you want " + appName + " to look like?";
 	  },
 
@@ -44090,16 +44118,59 @@
 	  },
 
 	  renderMainFeatures: function renderMainFeatures() {
-	    if (!this.state.project || !this.state.project.features) {
+	    if (!this.state.project) {
 	      return;
 	    };
 
-	    return this.state.project.features.map(function (feature) {
-	      return React.createElement(
-	        'div',
-	        { className: 'pending-project-feature' },
-	        feature.value
-	      );
+	    var self = this;
+	    var features = this.state.project.features.slice();
+
+	    if (features.length < 5) {
+	      features.push({});
+	    };
+
+	    return features.map(function (feature, idx) {
+	      if (feature.value) {
+	        return React.createElement(
+	          'div',
+	          {
+	            key: idx,
+	            onClick: self.focusFeature,
+	            className: 'pending-project-feature' },
+	          React.createElement(
+	            'p',
+	            {
+	              id: "feature" + idx,
+	              className: 'pending-project-new-feature' },
+	            feature.value
+	          ),
+	          React.createElement('textarea', {
+	            onChange: self.updateFeatures,
+	            id: "editfeature" + idx,
+	            className: 'pending-project-edit-feature hidden',
+	            value: feature.value })
+	        );
+	      } else {
+	        return React.createElement(
+	          'div',
+	          {
+	            key: idx,
+	            onClick: self.focusFeature,
+	            className: 'pending-project-feature' },
+	          React.createElement(
+	            'p',
+	            {
+	              id: "feature" + idx,
+	              className: 'pending-project-new-feature' },
+	            'Add New Feature'
+	          ),
+	          React.createElement('textarea', {
+	            onChange: self.updateFeatures,
+	            id: "editfeature" + idx,
+	            className: 'pending-project-edit-feature hidden',
+	            placeholder: 'A user can...' })
+	        );
+	      }
 	    });
 	  },
 

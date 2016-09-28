@@ -9,26 +9,6 @@ var PendingProjectShow = React.createClass({
     return this.props;
   },
 
-  componentDidMount: function () {
-    var self = this;
-
-    $(".pending-project-edit-title").on("blur", function () {
-      $(this).addClass("hidden");
-      self.saveProject();
-      $(".pending-project-title").removeClass("hidden");
-    }).keydown(function(e) { if (e.keyCode === 13) { $(this).blur() } });
-
-    $(".pending-project-edit-link").on("blur", function () {
-      self.renderScreenshot({gradient: 0});
-      $(this).addClass("hidden");
-      self.saveProject();
-    }).keydown(function(e) { if (e.keyCode === 13) { $(this).blur() } });
-
-    $(".pending-project-edit-description").on("blur", function () {
-      self.saveProject();
-    });
-  },
-
   componentWillReceiveProps: function (newProps) {
     var self = this;
 
@@ -56,6 +36,28 @@ var PendingProjectShow = React.createClass({
         this.state.project = {};
       }
     }
+
+    $(".pending-project-edit-title").on("blur", function () {
+      $(this).addClass("hidden");
+      self.saveProject();
+      $(".pending-project-title").removeClass("hidden");
+    }).keydown(function(e) { if (e.keyCode === 13) { $(this).blur() } });
+
+    $(".pending-project-edit-link").on("blur", function () {
+      self.renderScreenshot({gradient: 0});
+      $(this).addClass("hidden");
+      self.saveProject();
+    }).keydown(function(e) { if (e.keyCode === 13) { $(this).blur() } });
+
+    $(".pending-project-edit-feature").on("blur", function () {
+      $(this).addClass("hidden");
+      self.saveProject();
+      $(".pending-project-new-feature").removeClass("hidden");
+    }).keydown(function(e) { if (e.keyCode === 13) { $(this).blur() } });
+
+    $(".pending-project-edit-description").on("blur", function () {
+      self.saveProject();
+    });
 
     this.setState(newProps);
   },
@@ -100,10 +102,26 @@ var PendingProjectShow = React.createClass({
     $(".pending-project-edit-description").select();
   },
 
+  focusFeature: function (e) {
+    e.preventDefault();
+    $("#" + e.target.id).addClass("hidden");
+    $("#edit" + e.target.id).removeClass("hidden").select();
+  },
+
   updateProject: function (e) {
     this.state.project[e.target.id] = e.target.value;
     this.state.updated = true;
     this.setState(this.state);
+  },
+
+  updateFeatures: function (e) {
+    var idx = e.target.id[11];
+    var value = e.target.value;
+    var features = this.state.project.features.slice();
+
+    features[idx] ? features[idx] = value : features.push(value);
+
+    this.setState({features: features, updated: true});
   },
 
   saveProjectDate: function (date) {
@@ -114,6 +132,11 @@ var PendingProjectShow = React.createClass({
   saveProject: function (tags) {
     if (this.state.updated || tags) {
       if (tags) { this.state.project.tags = tags };
+
+      this.state.project.features = this.state.project.features.map(function (feature) {
+        return feature.value;
+      })
+
       ApiUtil.updateProject(this.state.project);
     }
 
@@ -121,7 +144,7 @@ var PendingProjectShow = React.createClass({
   },
 
   renderLinkPlaceholder: function () {
-    var appName = (this.state.project ? this.state.project.name : "your app");
+    var appName = (this.state.project ? this.state.project.name : "Your App");
     return "What site do you want " + appName + " to look like?";
   },
 
@@ -138,14 +161,57 @@ var PendingProjectShow = React.createClass({
   },
 
   renderMainFeatures: function () {
-    if (!this.state.project || !this.state.project.features) { return };
+    if (!this.state.project) { return };
 
-    return this.state.project.features.map (function (feature) {
-      return (
-        <div className="pending-project-feature">
-          { feature.value }
-        </div>
-      )
+    var self = this;
+    var features = this.state.project.features.slice();
+
+    if (features.length < 5) { features.push({}) };
+
+    return features.map (function (feature, idx) {
+      if (feature.value) {
+        return (
+          <div
+            key={idx}
+            onClick={ self.focusFeature }
+            className="pending-project-feature">
+            <p
+              id={ "feature" + idx }
+              className="pending-project-new-feature">
+              { feature.value }
+            </p>
+
+            <textarea
+              onChange={ self.updateFeatures }
+              id={ "editfeature" + idx }
+              className="pending-project-edit-feature hidden"
+              value={ feature.value }>
+            </textarea>
+          </div>
+        )
+
+      } else {
+        return (
+          <div
+            key={idx}
+            onClick={ self.focusFeature }
+            className="pending-project-feature">
+            <p
+              id={ "feature" + idx }
+              className="pending-project-new-feature">
+              Add New Feature
+            </p>
+
+            <textarea
+              onChange={ self.updateFeatures }
+              id={ "editfeature" + idx }
+              className="pending-project-edit-feature hidden"
+              placeholder="A user can...">
+            </textarea>
+          </div>
+        )
+      }
+
     });
   },
 
@@ -178,7 +244,7 @@ var PendingProjectShow = React.createClass({
         <div className="pending-project-section" onClick={this.focusLink} id="screenshot">
           <textarea
             value={ project ? project.inspiration_link : "" }
-            onChange={this.updateProject}
+            onChange={ this.updateProject }
             id="inspiration_link"
             className="pending-project-edit-link hidden"
             placeholder={ this.renderLinkPlaceholder() }>
@@ -204,13 +270,13 @@ var PendingProjectShow = React.createClass({
 
         <h1 className="pending-project-header">
           Description
-          <strong onClick={this.focusDescription}>edit</strong>
+          <strong onClick={ this.focusDescription }>edit</strong>
         </h1>
 
         <div className="pending-project-section">
           <textarea
             value={ project ? project.description : "" }
-            onChange={this.updateProject}
+            onChange={ this.updateProject }
             id="description"
             className="pending-project-edit-description">
           </textarea>
@@ -223,9 +289,9 @@ var PendingProjectShow = React.createClass({
 
           <h1 className="pending-project-header">Desired Completion Date</h1>
           <Calendar
-            onChange={this.saveProjectDate}
+            onChange={ this.saveProjectDate }
             id="target_date"
-            date={project ? project.target_date : null}
+            date={ project ? project.target_date : null }
             className="pending-project-completion-date">
           </Calendar>
       </div>

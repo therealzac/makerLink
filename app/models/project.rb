@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   belongs_to :group
   has_many :tags
   has_many :tasks
+  has_many :features
   has_many :flags
 
   attr_accessor :flagged, :flag

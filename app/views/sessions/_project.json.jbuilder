@@ -16,5 +16,6 @@ json.extract!(
         :inspiration_link,
         :involvement_level,
         :screenshot_url,
-        :target_date
+        :target_date,
+        :features
 )
