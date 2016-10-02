@@ -44,8 +44,8 @@ class Api::ProjectsController < ApplicationController
       end
 
       if @project.save
-        tags = new_tag_params[:tags]
 
+        tags = new_tag_params[:tags]
         if tags && @project.tags.length < tags.length
           previous_tag_values = @project.tags.map { |tag| tag.value }
 
@@ -63,10 +63,8 @@ class Api::ProjectsController < ApplicationController
         end
 
         features = feature_params[:features]
-
         if features && @project.features.length < features.length
-          p features
-          previous_values = @projects.features.map { |feature| feature.value }
+          previous_values = @project.features.map { |feature| feature.value }
 
           features.each do |feature|
             next if previous_values.include?(feature)
@@ -74,7 +72,7 @@ class Api::ProjectsController < ApplicationController
           end
         elsif features
           @project.features.each do |feature|
-            next if features.include?(feature)
+            next if features.include?(feature.value)
             feature.destroy
           end
         elsif !params[:project][:features]

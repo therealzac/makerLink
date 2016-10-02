@@ -26139,7 +26139,6 @@
 	  },
 
 	  updateProject: function updateProject(project) {
-	    console.log(project);
 	    $.ajax({
 	      url: "api/projects/" + project.id + "/",
 	      data: { project: project },
@@ -44074,11 +44073,11 @@
 	  updateFeatures: function updateFeatures(e) {
 	    var idx = e.target.id[11];
 	    var value = e.target.value;
-	    var features = this.state.project.features.slice();
 
-	    features[idx] ? features[idx] = value : features.push(value);
+	    this.state.project.features[idx] = { value: value };
+	    this.state.updated = true;
 
-	    this.setState({ features: features, updated: true });
+	    this.setState(this.state);
 	  },
 
 	  saveProjectDate: function saveProjectDate(date) {
@@ -44088,18 +44087,19 @@
 
 	  saveProject: function saveProject(tags) {
 	    if (this.state.updated || tags) {
-	      if (tags) {
-	        this.state.project.tags = tags;
-	      };
+	      var project = this.state.project;
 
-	      this.state.project.features = this.state.project.features.map(function (feature) {
+	      if (tags) {
+	        project.tags = tags;
+	      }
+
+	      project.features = this.state.project.features.map(function (feature) {
 	        return feature.value;
 	      });
 
-	      ApiUtil.updateProject(this.state.project);
+	      ApiUtil.updateProject(project);
+	      this.setState({ updated: false });
 	    }
-
-	    this.setState({ updated: false });
 	  },
 
 	  renderLinkPlaceholder: function renderLinkPlaceholder() {
